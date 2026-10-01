@@ -1,0 +1,95 @@
+﻿<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>404 | Venta de Entradas</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background:
+                radial-gradient(circle at top right, #24184a 0, transparent 35%),
+                #080b12;
+            color: #f7f7fb;
+            font-family: Arial, Helvetica, sans-serif;
+        }
+
+        .error-box {
+            width: min(620px, 90%);
+            padding: 55px 35px;
+            text-align: center;
+            background: #101522;
+            border: 1px solid #292f40;
+            border-radius: 22px;
+            box-shadow: 0 25px 70px rgba(0, 0, 0, 0.35);
+        }
+
+        .codigo {
+            font-size: 110px;
+            line-height: 1;
+            font-weight: 900;
+            color: #8b5cf6;
+            margin-bottom: 18px;
+        }
+
+        h1 {
+            font-size: 32px;
+            margin-bottom: 15px;
+        }
+
+        p {
+            color: #aab6cc;
+            line-height: 1.7;
+            margin-bottom: 32px;
+        }
+
+        .boton {
+            display: inline-block;
+            padding: 14px 26px;
+            border-radius: 10px;
+            background: #7c4dff;
+            color: white;
+            text-decoration: none;
+            font-weight: 800;
+            transition: 0.2s ease;
+        }
+
+        .boton:hover {
+            transform: translateY(-2px);
+            background: #936cff;
+        }
+    </style>
+</head>
+
+<body>
+
+    <main class="error-box">
+
+        <div class="codigo">404</div>
+
+        <h1>Página no encontrada</h1>
+
+        <p>
+            La página que buscas no existe, fue eliminada
+            o la dirección ingresada no es correcta.
+        </p>
+
+        <a href="/" class="boton">
+            VOLVER AL INICIO
+        </a>
+
+    </main>
+
+</body>
+</html>

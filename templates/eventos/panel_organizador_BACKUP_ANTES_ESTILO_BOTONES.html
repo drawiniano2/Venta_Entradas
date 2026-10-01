@@ -1,0 +1,1229 @@
+﻿<!DOCTYPE html>
+<html lang="es">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>
+        Panel Organizador | Venta de Entradas
+    </title>
+
+    <style>
+
+        /* =====================================================
+           CONFIGURACION GENERAL
+           ===================================================== */
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        :root {
+            --fondo: #080b12;
+            --fondo-secundario: #0f1420;
+            --tarjeta: #151b29;
+            --tarjeta-hover: #1b2334;
+
+            --texto: #f5f7fb;
+            --texto-suave: #9da8ba;
+
+            --borde: rgba(255, 255, 255, 0.08);
+
+            --acento: #7c5cff;
+            --acento-claro: #9d87ff;
+
+            --verde: #43d17d;
+            --amarillo: #f4c95d;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            min-height: 100vh;
+
+            display: flex;
+            flex-direction: column;
+
+            background:
+                radial-gradient(
+                    circle at 75% 10%,
+                    rgba(124, 92, 255, 0.14),
+                    transparent 30%
+                ),
+                var(--fondo);
+
+            color: var(--texto);
+
+            font-family:
+                Inter,
+                system-ui,
+                -apple-system,
+                BlinkMacSystemFont,
+                "Segoe UI",
+                sans-serif;
+        }
+
+        a {
+            color: inherit;
+            text-decoration: none;
+        }
+
+
+        /* =====================================================
+           NAVEGACION
+           ===================================================== */
+
+        .navbar {
+            min-height: 82px;
+
+            border-bottom:
+                1px solid var(--borde);
+
+            background:
+                rgba(8, 11, 18, 0.92);
+
+            backdrop-filter: blur(16px);
+
+            display: flex;
+            align-items: center;
+
+            position: sticky;
+            top: 0;
+
+            z-index: 100;
+        }
+
+        .navbar-contenido {
+            width:
+                min(1180px, calc(100% - 40px));
+
+            min-height: 82px;
+
+            margin: 0 auto;
+
+            display: grid;
+
+            grid-template-columns:
+                minmax(220px, 1fr)
+                auto
+                minmax(320px, 1fr);
+
+            align-items: center;
+
+            gap: 32px;
+        }
+
+        .logo {
+            justify-self: start;
+
+            display: flex;
+            align-items: center;
+
+            gap: 12px;
+
+            font-size: 21px;
+            font-weight: 900;
+
+            letter-spacing: -0.5px;
+
+            white-space: nowrap;
+        }
+
+        .logo-icono {
+            width: 38px;
+            height: 38px;
+
+            display: grid;
+            place-items: center;
+
+            border-radius: 11px;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    var(--acento),
+                    #b55cff
+                );
+
+            font-size: 20px;
+
+            box-shadow:
+                0 8px 30px
+                rgba(124, 92, 255, 0.28);
+        }
+
+        .menu {
+            justify-self: center;
+
+            display: flex;
+            align-items: center;
+
+            gap: 28px;
+
+            color: var(--texto-suave);
+
+            font-size: 14px;
+            font-weight: 700;
+
+            white-space: nowrap;
+        }
+
+        .menu a {
+            transition:
+                color .2s;
+        }
+
+        .menu a:hover {
+            color: var(--texto);
+        }
+
+        .menu-activo {
+            color: var(--acento-claro) !important;
+        }
+
+        .acciones {
+            justify-self: end;
+
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+
+            gap: 10px;
+
+            white-space: nowrap;
+        }
+
+        .usuario-sesion {
+            min-height: 40px;
+
+            display: flex;
+            align-items: center;
+
+            color: var(--texto);
+
+            font-size: 14px;
+            font-weight: 700;
+        }
+
+        .usuario-rol {
+            margin-left: 6px;
+
+            color: var(--acento-claro);
+
+            font-size: 12px;
+            font-weight: 900;
+        }
+
+        .acciones form {
+            margin: 0;
+
+            display: flex;
+            align-items: center;
+        }
+
+        .boton-sesion {
+            min-height: 40px;
+
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+
+            padding: 0 16px;
+
+            border:
+                1px solid var(--borde);
+
+            border-radius: 10px;
+
+            background: transparent;
+
+            color: var(--texto);
+
+            font-family: inherit;
+            font-size: 14px;
+            font-weight: 700;
+
+            cursor: pointer;
+
+            transition:
+                border-color .2s,
+                background .2s;
+        }
+
+        .boton-sesion:hover {
+            border-color: var(--acento);
+
+            background:
+                rgba(124, 92, 255, 0.10);
+        }
+
+
+        /* =====================================================
+           CONTENIDO PRINCIPAL
+           ===================================================== */
+
+        .panel {
+            width:
+                min(1180px, calc(100% - 40px));
+
+            margin: 0 auto;
+
+            flex: 1;
+
+            padding:
+                60px 0 80px;
+        }
+
+        .panel-cabecera {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+
+            gap: 30px;
+
+            margin-bottom: 38px;
+        }
+
+        .panel-etiqueta {
+            display: inline-flex;
+            align-items: center;
+
+            gap: 8px;
+
+            margin-bottom: 14px;
+
+            padding: 7px 12px;
+
+            border:
+                1px solid
+                rgba(124, 92, 255, .25);
+
+            border-radius: 999px;
+
+            background:
+                rgba(124, 92, 255, .10);
+
+            color: var(--acento-claro);
+
+            font-size: 11px;
+            font-weight: 900;
+
+            letter-spacing: 1px;
+        }
+
+        .panel-titulo {
+            margin-bottom: 10px;
+
+            font-size:
+                clamp(32px, 5vw, 48px);
+
+            line-height: 1;
+
+            letter-spacing: -2px;
+        }
+
+        .panel-descripcion {
+            max-width: 650px;
+
+            color: var(--texto-suave);
+
+            font-size: 15px;
+            line-height: 1.7;
+        }
+
+        .boton-nuevo {
+            min-height: 44px;
+
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+
+            padding: 0 20px;
+
+            border:
+                1px solid
+                rgba(124, 92, 255, .50);
+
+            border-radius: 11px;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    var(--acento),
+                    #9c5cff
+                );
+
+            color: white;
+
+            font-size: 13px;
+            font-weight: 900;
+
+            opacity: .55;
+
+            cursor: not-allowed;
+        }
+
+
+        /* =====================================================
+           RESUMEN
+           ===================================================== */
+
+        .resumen {
+            display: grid;
+
+            grid-template-columns:
+                repeat(3, minmax(0, 1fr));
+
+            gap: 16px;
+
+            margin-bottom: 32px;
+        }
+
+        .resumen-tarjeta {
+            padding: 22px;
+
+            border:
+                1px solid var(--borde);
+
+            border-radius: 16px;
+
+            background:
+                rgba(21, 27, 41, .72);
+        }
+
+        .resumen-etiqueta {
+            margin-bottom: 8px;
+
+            color: var(--texto-suave);
+
+            font-size: 11px;
+            font-weight: 900;
+
+            letter-spacing: 1px;
+        }
+
+        .resumen-numero {
+            font-size: 30px;
+            font-weight: 900;
+        }
+
+        .resumen-numero.acento {
+            color: var(--acento-claro);
+        }
+
+        .resumen-numero.verde {
+            color: var(--verde);
+        }
+
+
+        /* =====================================================
+           TITULO LISTADO
+           ===================================================== */
+
+        .listado-cabecera {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+
+            margin-bottom: 18px;
+        }
+
+        .listado-cabecera h2 {
+            font-size: 20px;
+        }
+
+        .listado-cabecera span {
+            color: var(--texto-suave);
+
+            font-size: 13px;
+        }
+
+
+        /* =====================================================
+           TARJETAS DE EVENTOS
+           ===================================================== */
+
+        .eventos-lista {
+            display: grid;
+
+            gap: 18px;
+        }
+
+        .evento {
+            position: relative;
+
+            overflow: hidden;
+
+            padding: 26px;
+
+            border:
+                1px solid var(--borde);
+
+            border-radius: 18px;
+
+            background:
+                linear-gradient(
+                    145deg,
+                    rgba(21,27,41,.96),
+                    rgba(15,20,32,.92)
+                );
+
+            transition:
+                border-color .2s,
+                transform .2s,
+                background .2s;
+        }
+
+        .evento:hover {
+            transform:
+                translateY(-2px);
+
+            border-color:
+                rgba(124, 92, 255, .28);
+
+            background:
+                var(--tarjeta-hover);
+        }
+
+        .evento::before {
+            content: "";
+
+            position: absolute;
+
+            left: 0;
+            top: 0;
+            bottom: 0;
+
+            width: 3px;
+
+            background:
+                linear-gradient(
+                    var(--acento),
+                    #b55cff
+                );
+        }
+
+        .evento-superior {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+
+            gap: 24px;
+
+            margin-bottom: 24px;
+        }
+
+        .evento-nombre {
+            margin-bottom: 8px;
+
+            font-size: 22px;
+            font-weight: 900;
+        }
+
+        .evento-info {
+            color: var(--texto-suave);
+
+            font-size: 13px;
+            line-height: 1.7;
+        }
+
+        .estado {
+            display: inline-flex;
+            align-items: center;
+
+            padding: 7px 11px;
+
+            border-radius: 999px;
+
+            font-size: 10px;
+            font-weight: 900;
+
+            letter-spacing: .8px;
+        }
+
+        .estado-publicado {
+            border:
+                1px solid
+                rgba(67,209,125,.25);
+
+            background:
+                rgba(67,209,125,.10);
+
+            color: var(--verde);
+        }
+
+        .estado-borrador {
+            border:
+                1px solid
+                rgba(244,201,93,.25);
+
+            background:
+                rgba(244,201,93,.10);
+
+            color: var(--amarillo);
+        }
+
+        .estado-otro {
+            border:
+                1px solid var(--borde);
+
+            background:
+                rgba(255,255,255,.04);
+
+            color: var(--texto-suave);
+        }
+
+
+        /* =====================================================
+           DATOS DEL EVENTO
+           ===================================================== */
+
+        .evento-datos {
+            display: grid;
+
+            grid-template-columns:
+                repeat(3, minmax(0, 1fr));
+
+            gap: 14px;
+
+            margin-bottom: 24px;
+        }
+
+        .dato {
+            padding: 15px;
+
+            border:
+                1px solid var(--borde);
+
+            border-radius: 12px;
+
+            background:
+                rgba(8, 11, 18, .45);
+        }
+
+        .dato-label {
+            display: block;
+
+            margin-bottom: 6px;
+
+            color: var(--texto-suave);
+
+            font-size: 10px;
+            font-weight: 900;
+
+            letter-spacing: .8px;
+
+            text-transform: uppercase;
+        }
+
+        .dato-valor {
+            font-size: 15px;
+            font-weight: 800;
+        }
+
+
+        /* =====================================================
+           ACCIONES
+           ===================================================== */
+
+        .evento-acciones {
+            display: flex;
+            align-items: center;
+
+            gap: 10px;
+
+            padding-top: 20px;
+
+            border-top:
+                1px solid var(--borde);
+        }
+
+        .accion {
+            min-height: 40px;
+
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+
+            padding: 0 16px;
+
+            border:
+                1px solid var(--borde);
+
+            border-radius: 10px;
+
+            background:
+                rgba(255,255,255,.03);
+
+            color: var(--texto);
+
+            font-size: 12px;
+            font-weight: 800;
+
+            transition:
+                background .2s,
+                border-color .2s;
+        }
+
+        .accion:hover {
+            border-color:
+                rgba(124,92,255,.45);
+
+            background:
+                rgba(124,92,255,.10);
+        }
+
+        .accion-deshabilitada {
+            opacity: .45;
+
+            cursor: not-allowed;
+        }
+
+
+        /* =====================================================
+           SIN EVENTOS
+           ===================================================== */
+
+        .sin-eventos {
+            padding: 55px 30px;
+
+            border:
+                1px dashed
+                rgba(255,255,255,.14);
+
+            border-radius: 18px;
+
+            background:
+                rgba(21,27,41,.45);
+
+            text-align: center;
+        }
+
+        .sin-eventos-icono {
+            margin-bottom: 15px;
+
+            font-size: 36px;
+        }
+
+        .sin-eventos h3 {
+            margin-bottom: 8px;
+
+            font-size: 20px;
+        }
+
+        .sin-eventos p {
+            color: var(--texto-suave);
+
+            font-size: 14px;
+        }
+
+
+        /* =====================================================
+           FOOTER
+           ===================================================== */
+
+        .footer {
+            width: 100%;
+
+            padding: 22px 20px;
+
+            border-top:
+                1px solid var(--borde);
+
+            background:
+                rgba(8,11,18,.80);
+
+            color: var(--texto-suave);
+
+            text-align: center;
+
+            font-size: 12px;
+        }
+
+
+        /* =====================================================
+           RESPONSIVE
+           ===================================================== */
+
+        @media (max-width: 900px) {
+
+            .navbar-contenido {
+                grid-template-columns:
+                    auto 1fr;
+
+                padding: 14px 0;
+            }
+
+            .menu {
+                grid-column: 1 / -1;
+                grid-row: 2;
+            }
+
+            .acciones {
+                grid-column: 2;
+                grid-row: 1;
+            }
+
+            .panel-cabecera {
+                align-items: flex-start;
+                flex-direction: column;
+            }
+
+            .resumen {
+                grid-template-columns: 1fr;
+            }
+
+            .evento-datos {
+                grid-template-columns: 1fr;
+            }
+
+        }
+
+        @media (max-width: 620px) {
+
+            .navbar-contenido {
+                display: flex;
+                flex-wrap: wrap;
+                justify-content: space-between;
+            }
+
+            .menu {
+                width: 100%;
+
+                order: 3;
+
+                justify-content: center;
+            }
+
+            .usuario-sesion {
+                display: none;
+            }
+
+            .panel {
+                width:
+                    min(100% - 28px, 1180px);
+
+                padding-top: 40px;
+            }
+
+            .evento-superior {
+                flex-direction: column;
+            }
+
+            .evento-acciones {
+                align-items: stretch;
+                flex-direction: column;
+            }
+
+        }
+
+    
+        /* =====================================================
+           ACCIONES DEL PANEL ORGANIZADOR
+           ===================================================== */
+
+        .acciones-panel {
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .boton-validar {
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .boton-validar:hover {
+            transform: translateY(-1px);
+            filter: brightness(1.10);
+        }
+</style>
+
+</head>
+
+
+<body>
+
+
+    <!-- =====================================================
+         NAVEGACION
+         ===================================================== -->
+
+    <header class="navbar">
+
+        <div class="navbar-contenido">
+
+            <a
+                href="{% url 'eventos:inicio' %}"
+                class="logo"
+            >
+
+                <span class="logo-icono">
+                    🎟
+                </span>
+
+                <span>
+                    Venta de Entradas
+                </span>
+
+            </a>
+
+
+            <nav class="menu">
+
+                <a href="{% url 'eventos:inicio' %}">
+                    Eventos
+                </a>
+
+                <a
+                    href="{% url 'eventos:panel_organizador' %}"
+                    class="menu-activo"
+                >
+                    Panel organizador
+                </a>
+
+            </nav>
+
+
+            <div class="acciones">
+
+                <span class="usuario-sesion">
+
+                    {{ user.username }}
+
+                    <span class="usuario-rol">
+                        [ORGANIZADOR]
+                    </span>
+
+                </span>
+
+
+                <form
+                    method="post"
+                    action="{% url 'accounts_web:logout' %}"
+                >
+
+                    {% csrf_token %}
+
+                    <button
+                        type="submit"
+                        class="boton-sesion"
+                    >
+                        Cerrar sesión
+                    </button>
+
+                </form>
+
+            </div>
+
+        </div>
+
+    </header>
+
+
+    <!-- =====================================================
+         PANEL ORGANIZADOR
+         ===================================================== -->
+
+    <main class="panel">
+
+
+        <section class="panel-cabecera">
+
+            <div>
+
+                <div class="panel-etiqueta">
+                    GESTIÓN DE PUBLICACIONES
+                </div>
+
+                <h1 class="panel-titulo">
+                    Panel organizador
+                </h1>
+
+                <p class="panel-descripcion">
+                    Administra tus publicaciones, revisa la
+                    disponibilidad de entradas y controla la
+                    información de tus actividades.
+                </p>
+
+            </div>
+
+
+            <div class="acciones-panel">
+
+                <a
+                    href="{% url 'eventos:nuevo_evento' %}"
+                    class="boton-nuevo"
+                    title="Crear un nuevo evento"
+                >
+                    + NUEVO EVENTO
+                </a>
+
+                <a
+                    href="{% url 'entradas_web:validar-entrada' %}"
+                    class="boton-nuevo boton-validar"
+                    title="Validar entrada mediante código UUID"
+                >
+                    ✓ VALIDAR ENTRADA
+                </a>
+
+            </div>
+
+        </section>
+
+
+        <!-- =================================================
+             RESUMEN
+             ================================================= -->
+
+        <section class="resumen">
+
+            <article class="resumen-tarjeta">
+
+                <div class="resumen-etiqueta">
+                    MIS EVENTOS
+                </div>
+
+                <div class="resumen-numero">
+                    {{ eventos|length }}
+                </div>
+
+            </article>
+
+
+            <article class="resumen-tarjeta">
+
+                <div class="resumen-etiqueta">
+                    PUBLICACIONES
+                </div>
+
+                <div class="resumen-numero acento">
+                    {{ eventos|length }}
+                </div>
+
+            </article>
+
+
+            <article class="resumen-tarjeta">
+
+                <div class="resumen-etiqueta">
+                    ACCESO
+                </div>
+
+                <div class="resumen-numero verde">
+                    ACTIVO
+                </div>
+
+            </article>
+
+        </section>
+
+
+        <!-- =================================================
+             LISTADO
+             ================================================= -->
+
+        <section>
+
+            <div class="listado-cabecera">
+
+                <h2>
+                    Mis publicaciones
+                </h2>
+
+                <span>
+                    {{ eventos|length }} registros
+                </span>
+
+            </div>
+
+
+            <div class="eventos-lista">
+
+
+                {% for evento in eventos %}
+
+                    <article class="evento">
+
+
+                        <div class="evento-superior">
+
+                            <div>
+
+                                <h3 class="evento-nombre">
+                                    {{ evento.nombre }}
+                                </h3>
+
+                                <div class="evento-info">
+
+                                    {{ evento.fecha_inicio|date:"d M Y · H:i" }}
+
+                                    <br>
+
+                                    {{ evento.recinto.nombre }}
+
+                                </div>
+
+                            </div>
+
+
+                            {% if evento.estado == "PUBLICADO" %}
+
+                                <span class="estado estado-publicado">
+                                    PUBLICADO
+                                </span>
+
+                            {% elif evento.estado == "BORRADOR" %}
+
+                                <span class="estado estado-borrador">
+                                    BORRADOR
+                                </span>
+
+                            {% else %}
+
+                                <span class="estado estado-otro">
+                                    {{ evento.estado }}
+                                </span>
+
+                            {% endif %}
+
+                        </div>
+
+
+                        <div class="evento-datos">
+
+                            <div class="dato">
+
+                                <span class="dato-label">
+                                    Tipos de entrada
+                                </span>
+
+                                <span class="dato-valor">
+                                    {{ evento.tipos_entrada.all|length }}
+                                </span>
+
+                            </div>
+
+
+                            <div class="dato">
+
+                                <span class="dato-label">
+                                    Recinto
+                                </span>
+
+                                <span class="dato-valor">
+                                    {{ evento.recinto.nombre }}
+                                </span>
+
+                            </div>
+
+
+                            <div class="dato">
+
+                                <span class="dato-label">
+                                    Estado
+                                </span>
+
+                                <span class="dato-valor">
+
+                                    {% if evento.activo %}
+                                        Activo
+                                    {% else %}
+                                        Inactivo
+                                    {% endif %}
+
+                                </span>
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="evento-acciones">
+
+                            {% if evento.estado == "PUBLICADO" and evento.activo %}
+
+                                <a
+                                    href="{% url 'eventos:detalle' evento.pk %}"
+                                    class="accion"
+                                >
+                                    Ver publicación
+                                </a>
+
+                            {% endif %}
+
+
+                            <a
+                                href="{% url 'eventos:editar_evento' evento.pk %}"
+                                class="accion"
+                                title="Gestionar este evento"
+                            >
+                                Gestionar
+                            </a>
+
+                        </div>
+
+
+                    </article>
+
+                {% empty %}
+
+
+                    <div class="sin-eventos">
+
+                        <div class="sin-eventos-icono">
+                            🎫
+                        </div>
+
+                        <h3>
+                            Aún no tienes publicaciones
+                        </h3>
+
+                        <p>
+                            Los eventos asociados a tu cuenta
+                            aparecerán en este panel.
+                        </p>
+
+                    </div>
+
+
+                {% endfor %}
+
+
+            </div>
+
+        </section>
+
+
+    </main>
+
+
+    <!-- =====================================================
+         FOOTER
+         ===================================================== -->
+
+    <footer class="footer">
+        Venta de Entradas · Christian Cisterna · TILE22 · INACAP Temuco · 2026
+    </footer>
+
+
+</body>
+
+</html>
+
+
+
+
+

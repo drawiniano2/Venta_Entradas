@@ -1,0 +1,357 @@
+﻿{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>{{ titulo }} | Venta de Entradas</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+            font-family: Arial, Helvetica, sans-serif;
+            background:
+                radial-gradient(circle at 15% 10%, #19335a 0, transparent 30%),
+                linear-gradient(135deg, #07101f 0%, #0c1628 55%, #111b2e 100%);
+            color: #f4f7fb;
+        }
+
+        .barra-superior {
+            min-height: 74px;
+            padding: 16px 6%;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 20px;
+            border-bottom: 1px solid rgba(255,255,255,.08);
+            background: rgba(4, 10, 20, .78);
+        }
+
+        .marca {
+            font-size: 1.35rem;
+            font-weight: 900;
+            letter-spacing: .04em;
+        }
+
+        .marca span {
+            color: #2fd3c7;
+        }
+
+        .volver {
+            color: #d9e5f4;
+            text-decoration: none;
+            font-weight: 700;
+            padding: 10px 16px;
+            border: 1px solid rgba(255,255,255,.18);
+            border-radius: 10px;
+        }
+
+        .volver:hover {
+            border-color: #2fd3c7;
+            color: #2fd3c7;
+        }
+
+        main {
+            width: min(920px, 92%);
+            margin: 42px auto 70px;
+        }
+
+        .encabezado {
+            margin-bottom: 24px;
+        }
+
+        .encabezado small {
+            color: #2fd3c7;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: .12em;
+        }
+
+        .encabezado h1 {
+            margin: 8px 0 6px;
+            font-size: clamp(2rem, 5vw, 3.4rem);
+        }
+
+        .encabezado p {
+            color: #9eacc0;
+            margin: 0;
+        }
+
+        .tarjeta {
+            padding: 28px;
+            border-radius: 18px;
+            background: rgba(13, 24, 42, .94);
+            border: 1px solid rgba(255,255,255,.09);
+            box-shadow: 0 20px 55px rgba(0,0,0,.28);
+        }
+
+        .grupo {
+            margin-bottom: 21px;
+        }
+
+        .grupo label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 800;
+            color: #eaf0f8;
+        }
+
+        .campo,
+        input[type="text"],
+        input[type="datetime-local"],
+        input[type="file"],
+        textarea,
+        select {
+            width: 100%;
+            padding: 13px 14px;
+            border: 1px solid #31435d;
+            border-radius: 10px;
+            background: #091424;
+            color: #f4f7fb;
+            outline: none;
+            font: inherit;
+        }
+
+        textarea {
+            resize: vertical;
+        }
+
+        .campo:focus,
+        input:focus,
+        textarea:focus,
+        select:focus {
+            border-color: #2fd3c7;
+        }
+
+        .fila {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 18px;
+        }
+
+        .errores {
+            margin-top: 7px;
+            color: #ff7e88;
+            font-size: .9rem;
+        }
+
+        .error-general {
+            margin-bottom: 20px;
+            padding: 14px;
+            border-radius: 10px;
+            background: rgba(220, 60, 75, .12);
+            border: 1px solid rgba(255, 100, 110, .4);
+            color: #ffadb4;
+        }
+
+        .activo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 14px;
+            border-radius: 10px;
+            background: #091424;
+            border: 1px solid #31435d;
+        }
+
+        .activo input {
+            width: 18px;
+            height: 18px;
+        }
+
+        .acciones {
+            display: flex;
+            justify-content: flex-end;
+            gap: 12px;
+            margin-top: 28px;
+            padding-top: 22px;
+            border-top: 1px solid rgba(255,255,255,.08);
+        }
+
+        .boton {
+            border: 0;
+            border-radius: 10px;
+            padding: 13px 20px;
+            font-weight: 900;
+            cursor: pointer;
+            text-decoration: none;
+        }
+
+        .cancelar {
+            background: #1c293c;
+            color: #dbe5f2;
+        }
+
+        .guardar {
+            background: #2fd3c7;
+            color: #041318;
+        }
+
+        .guardar:hover {
+            filter: brightness(1.08);
+        }
+
+        @media (max-width: 680px) {
+            .fila {
+                grid-template-columns: 1fr;
+            }
+
+            .barra-superior {
+                align-items: flex-start;
+                flex-direction: column;
+            }
+
+            .acciones {
+                flex-direction: column-reverse;
+            }
+
+            .boton {
+                text-align: center;
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<header class="barra-superior">
+    <div class="marca">
+        VENTA DE <span>ENTRADAS</span>
+    </div>
+
+    <a
+        href="{% url 'eventos:panel_organizador' %}"
+        class="volver"
+    >
+        ← Volver al panel
+    </a>
+</header>
+
+<main>
+
+    <section class="encabezado">
+        <small>Panel organizador</small>
+        <h1>{{ titulo }}</h1>
+        <p>
+            Completa la información del evento.
+            El organizador se asigna automáticamente a tu cuenta.
+        </p>
+    </section>
+
+    <form
+        method="post"
+        enctype="multipart/form-data"
+        class="tarjeta"
+    >
+        {% csrf_token %}
+
+        {% if form.non_field_errors %}
+            <div class="error-general">
+                {{ form.non_field_errors }}
+            </div>
+        {% endif %}
+
+        <div class="grupo">
+            <label for="{{ form.nombre.id_for_label }}">
+                Nombre del evento
+            </label>
+            {{ form.nombre }}
+            <div class="errores">{{ form.nombre.errors }}</div>
+        </div>
+
+        <div class="grupo">
+            <label for="{{ form.descripcion.id_for_label }}">
+                Descripción
+            </label>
+            {{ form.descripcion }}
+            <div class="errores">{{ form.descripcion.errors }}</div>
+        </div>
+
+        <div class="grupo">
+            <label for="{{ form.imagen.id_for_label }}">
+                Imagen / afiche
+            </label>
+            {{ form.imagen }}
+            <div class="errores">{{ form.imagen.errors }}</div>
+        </div>
+
+        <div class="fila">
+            <div class="grupo">
+                <label for="{{ form.fecha_inicio.id_for_label }}">
+                    Fecha de inicio
+                </label>
+                {{ form.fecha_inicio }}
+                <div class="errores">
+                    {{ form.fecha_inicio.errors }}
+                </div>
+            </div>
+
+            <div class="grupo">
+                <label for="{{ form.fecha_fin.id_for_label }}">
+                    Fecha de término
+                </label>
+                {{ form.fecha_fin }}
+                <div class="errores">
+                    {{ form.fecha_fin.errors }}
+                </div>
+            </div>
+        </div>
+
+        <div class="fila">
+            <div class="grupo">
+                <label for="{{ form.recinto.id_for_label }}">
+                    Recinto
+                </label>
+                {{ form.recinto }}
+                <div class="errores">{{ form.recinto.errors }}</div>
+            </div>
+
+            <div class="grupo">
+                <label for="{{ form.estado.id_for_label }}">
+                    Estado
+                </label>
+                {{ form.estado }}
+                <div class="errores">{{ form.estado.errors }}</div>
+            </div>
+        </div>
+
+        <div class="grupo">
+            <label>Disponibilidad</label>
+
+            <div class="activo">
+                {{ form.activo }}
+                <span>Evento activo en el sistema</span>
+            </div>
+
+            <div class="errores">{{ form.activo.errors }}</div>
+        </div>
+
+        <div class="acciones">
+            <a
+                href="{% url 'eventos:panel_organizador' %}"
+                class="boton cancelar"
+            >
+                CANCELAR
+            </a>
+
+            <button
+                type="submit"
+                class="boton guardar"
+            >
+                {{ texto_boton }}
+            </button>
+        </div>
+
+    </form>
+
+</main>
+
+</body>
+</html>

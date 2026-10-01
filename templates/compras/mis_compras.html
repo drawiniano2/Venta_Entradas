@@ -1,0 +1,785 @@
+﻿<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Mis compras | Venta de Entradas</title>
+
+    <style>
+        /* =====================================================
+           BASE
+           ===================================================== */
+
+        * {
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+
+            background:
+                radial-gradient(
+                    circle at 15% 10%,
+                    rgba(124, 92, 255, 0.08),
+                    transparent 28%
+                ),
+                #080b12;
+
+            color: #f5f7fb;
+
+            font-family:
+                Inter,
+                system-ui,
+                -apple-system,
+                BlinkMacSystemFont,
+                "Segoe UI",
+                sans-serif;
+        }
+
+        a {
+            color: inherit;
+            text-decoration: none;
+        }
+
+
+        /* =====================================================
+           HEADER
+           ===================================================== */
+
+        .header {
+            border-bottom:
+                1px solid rgba(255, 255, 255, 0.07);
+
+            background:
+                rgba(8, 11, 18, 0.94);
+
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-inner {
+            width: min(1180px, calc(100% - 40px));
+            min-height: 72px;
+
+            margin: 0 auto;
+
+            display: flex;
+            align-items: center;
+
+            gap: 28px;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+
+            font-size: 17px;
+            font-weight: 900;
+            letter-spacing: 0.04em;
+        }
+
+        .brand-icon {
+            width: 31px;
+            height: 31px;
+
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+
+            border:
+                1px solid rgba(167, 139, 250, 0.42);
+
+            border-radius: 9px;
+
+            background:
+                rgba(124, 92, 255, 0.14);
+
+            color: #b8a6ff;
+        }
+
+        .nav {
+            margin-left: auto;
+
+            display: flex;
+            align-items: center;
+            gap: 9px;
+        }
+
+        .menu-accion {
+            min-height: 38px;
+
+            padding: 0 14px;
+
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+
+            border:
+                1px solid rgba(255, 255, 255, 0.07);
+
+            border-radius: 9px;
+
+            background:
+                rgba(255, 255, 255, 0.025);
+
+            color: #aab3c5;
+
+            font-family: inherit;
+            font-size: 12px;
+            font-weight: 800;
+
+            cursor: pointer;
+        }
+
+        .menu-accion:hover {
+            color: #ffffff;
+
+            border-color:
+                rgba(167, 139, 250, 0.30);
+
+            background:
+                rgba(124, 92, 255, 0.08);
+        }
+
+        .menu-accion-activa {
+            color: #d9d1ff;
+
+            border-color:
+                rgba(167, 139, 250, 0.34);
+
+            background:
+                rgba(124, 92, 255, 0.12);
+        }
+
+        .logout-form {
+            margin: 0;
+        }
+
+        .menu-accion-boton {
+            appearance: none;
+        }
+
+        .account {
+            padding-left: 15px;
+
+            border-left:
+                1px solid rgba(255, 255, 255, 0.08);
+
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        .username {
+            color: #e8ebf2;
+
+            font-size: 12px;
+            font-weight: 800;
+        }
+
+        .usuario-rol {
+            color: #777f90;
+
+            font-size: 9px;
+            font-weight: 800;
+            letter-spacing: 0.08em;
+        }
+
+
+        /* =====================================================
+           CONTENIDO
+           ===================================================== */
+
+        .main {
+            width: min(1180px, calc(100% - 40px));
+            margin: 0 auto;
+
+            padding: 70px 0 90px;
+        }
+
+        .encabezado {
+            margin-bottom: 34px;
+        }
+
+        .eyebrow {
+            margin-bottom: 11px;
+
+            color: #9d87ff;
+
+            font-size: 11px;
+            font-weight: 900;
+            letter-spacing: 0.14em;
+
+            text-transform: uppercase;
+        }
+
+        .titulo {
+            margin: 0;
+
+            font-size: clamp(30px, 5vw, 48px);
+            line-height: 1.05;
+
+            letter-spacing: -0.04em;
+        }
+
+        .descripcion {
+            max-width: 650px;
+
+            margin: 15px 0 0;
+
+            color: #8d97aa;
+
+            font-size: 14px;
+            line-height: 1.7;
+        }
+
+
+        /* =====================================================
+           LISTA DE COMPRAS
+           ===================================================== */
+
+        .compras-lista {
+            display: grid;
+            gap: 16px;
+        }
+
+        .compra {
+            padding: 24px;
+
+            border:
+                1px solid rgba(255, 255, 255, 0.075);
+
+            border-radius: 16px;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    rgba(255, 255, 255, 0.035),
+                    rgba(124, 92, 255, 0.025)
+                );
+
+            box-shadow:
+                0 18px 50px rgba(0, 0, 0, 0.16);
+
+            display: grid;
+            grid-template-columns:
+                minmax(0, 1fr)
+                auto;
+
+            gap: 25px;
+            align-items: center;
+        }
+
+        .compra-principal {
+            min-width: 0;
+        }
+
+        .compra-superior {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+
+            margin-bottom: 13px;
+        }
+
+        .compra-numero {
+            font-size: 18px;
+            font-weight: 900;
+        }
+
+        .estado {
+            padding: 5px 9px;
+
+            border-radius: 999px;
+
+            font-size: 9px;
+            font-weight: 900;
+            letter-spacing: 0.08em;
+        }
+
+        .estado-pendiente {
+            color: #f8c76a;
+            background: rgba(248, 199, 106, 0.10);
+            border: 1px solid rgba(248, 199, 106, 0.20);
+        }
+
+        .estado-pagado {
+            color: #66d9a6;
+            background: rgba(102, 217, 166, 0.10);
+            border: 1px solid rgba(102, 217, 166, 0.20);
+        }
+
+        .estado-cancelado {
+            color: #f17f8f;
+            background: rgba(241, 127, 143, 0.10);
+            border: 1px solid rgba(241, 127, 143, 0.20);
+        }
+
+        .compra-meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px 20px;
+
+            color: #7f899d;
+
+            font-size: 12px;
+        }
+
+        .compra-eventos {
+            margin-top: 16px;
+
+            color: #aeb6c6;
+
+            font-size: 13px;
+            line-height: 1.65;
+        }
+
+        .compra-evento + .compra-evento {
+            margin-top: 3px;
+        }
+
+        .compra-lateral {
+            min-width: 165px;
+
+            text-align: right;
+        }
+
+        .total-label {
+            color: #70798b;
+
+            font-size: 9px;
+            font-weight: 900;
+            letter-spacing: 0.10em;
+
+            text-transform: uppercase;
+        }
+
+        .total {
+            margin-top: 5px;
+
+            font-size: 24px;
+            font-weight: 900;
+        }
+
+        .ver-detalle {
+            margin-top: 15px;
+
+            min-height: 39px;
+
+            padding: 0 17px;
+
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+
+            border:
+                1px solid rgba(167, 139, 250, 0.34);
+
+            border-radius: 9px;
+
+            background:
+                rgba(124, 92, 255, 0.12);
+
+            color: #d8ceff;
+
+            font-size: 11px;
+            font-weight: 900;
+        }
+
+        .ver-detalle:hover {
+            background:
+                rgba(124, 92, 255, 0.22);
+
+            color: #ffffff;
+        }
+
+
+        /* =====================================================
+           SIN COMPRAS
+           ===================================================== */
+
+        .sin-compras {
+            padding: 55px 30px;
+
+            border:
+                1px solid rgba(255, 255, 255, 0.075);
+
+            border-radius: 16px;
+
+            background:
+                rgba(255, 255, 255, 0.025);
+
+            text-align: center;
+        }
+
+        .sin-compras h2 {
+            margin: 0 0 10px;
+
+            font-size: 22px;
+        }
+
+        .sin-compras p {
+            margin: 0 0 24px;
+
+            color: #838da0;
+
+            font-size: 13px;
+        }
+
+
+        /* =====================================================
+           FOOTER
+           ===================================================== */
+
+        .footer {
+            border-top: 1px solid #202738;
+
+            padding: 28px 20px;
+
+            color: #77839d;
+
+            font-size: 12px;
+            text-align: center;
+        }
+
+
+        /* =====================================================
+           RESPONSIVE
+           ===================================================== */
+
+        @media (max-width: 900px) {
+
+            .header-inner {
+                padding: 14px 0;
+
+                flex-wrap: wrap;
+            }
+
+            .nav {
+                width: 100%;
+
+                order: 3;
+
+                margin-left: 0;
+
+                flex-wrap: wrap;
+            }
+
+            .account {
+                margin-left: auto;
+            }
+
+            .compra {
+                grid-template-columns: 1fr;
+            }
+
+            .compra-lateral {
+                text-align: left;
+            }
+        }
+
+        @media (max-width: 560px) {
+
+            .main {
+                width: min(100% - 24px, 1180px);
+
+                padding-top: 45px;
+            }
+
+            .header-inner {
+                width: min(100% - 24px, 1180px);
+            }
+
+            .compra {
+                padding: 19px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- =====================================================
+         HEADER
+         ===================================================== -->
+
+    <header class="header">
+
+        <div class="header-inner">
+
+            <a
+                href="{% url 'eventos:inicio' %}"
+                class="brand"
+            >
+                <span class="brand-icon">
+                    E
+                </span>
+
+                <span>
+                    ENTRADAS
+                </span>
+            </a>
+
+
+            <nav class="nav">
+
+                <a
+                    href="{% url 'eventos:inicio' %}#eventos"
+                    class="menu-accion"
+                >
+                    Eventos
+                </a>
+
+
+                {% if request.user.rol == "ORGANIZADOR" %}
+
+                    <a
+                        href="{% url 'eventos:panel_organizador' %}"
+                        class="menu-accion"
+                    >
+                        Panel organizador
+                    </a>
+
+                {% endif %}
+
+
+                <a
+                    href="{% url 'compras_web:mis-compras' %}"
+                    class="menu-accion menu-accion-activa"
+                >
+                    Mis compras
+                </a>
+
+
+                <a
+                    href="{% url 'carrito_web:mi-carrito' %}"
+                    class="menu-accion"
+                >
+                    Mi carrito
+                </a>
+
+
+                <form
+                    method="post"
+                    action="{% url 'accounts_web:logout' %}"
+                    class="logout-form"
+                >
+                    {% csrf_token %}
+
+                    <button
+                        type="submit"
+                        class="menu-accion menu-accion-boton"
+                    >
+                        Cerrar sesión
+                    </button>
+
+                </form>
+
+            </nav>
+
+
+            <div class="account">
+
+                <span class="username">
+                    {{ request.user.username }}
+                </span>
+
+                {% if request.user.rol %}
+
+                    <span class="usuario-rol">
+                        {{ request.user.rol }}
+                    </span>
+
+                {% endif %}
+
+            </div>
+
+        </div>
+
+    </header>
+
+
+    <!-- =====================================================
+         CONTENIDO
+         ===================================================== -->
+
+    <main class="main">
+
+        <section class="encabezado">
+
+            <div class="eyebrow">
+                HISTORIAL PERSONAL
+            </div>
+
+            <h1 class="titulo">
+                Mis compras
+            </h1>
+
+            <p class="descripcion">
+                Revisa tus compras, su estado y las entradas
+                asociadas a cada operación.
+            </p>
+
+        </section>
+
+
+        {% if compras %}
+
+            <section class="compras-lista">
+
+                {% for compra in compras %}
+
+                    <article class="compra">
+
+                        <div class="compra-principal">
+
+                            <div class="compra-superior">
+
+                                <span class="compra-numero">
+                                    Compra #{{ compra.id }}
+                                </span>
+
+
+                                {% if compra.estado == "PENDIENTE" %}
+
+                                    <span class="estado estado-pendiente">
+                                        PENDIENTE
+                                    </span>
+
+                                {% elif compra.estado == "PAGADO" %}
+
+                                    <span class="estado estado-pagado">
+                                        PAGADO
+                                    </span>
+
+                                {% elif compra.estado == "CANCELADO" %}
+
+                                    <span class="estado estado-cancelado">
+                                        CANCELADO
+                                    </span>
+
+                                {% else %}
+
+                                    <span class="estado">
+                                        {{ compra.estado }}
+                                    </span>
+
+                                {% endif %}
+
+                            </div>
+
+
+                            <div class="compra-meta">
+
+                                <span>
+                                    Creada:
+                                    {{ compra.creada_en|date:"d/m/Y H:i" }}
+                                </span>
+
+                                {% if compra.pagada_en %}
+
+                                    <span>
+                                        Pagada:
+                                        {{ compra.pagada_en|date:"d/m/Y H:i" }}
+                                    </span>
+
+                                {% endif %}
+
+                            </div>
+
+
+                            <div class="compra-eventos">
+
+                                {% for detalle in compra.detalles.all %}
+
+                                    <div class="compra-evento">
+
+                                        {{ detalle.cantidad }} ×
+                                        {{ detalle.tipo_entrada.nombre }}
+
+                                        ·
+
+                                        {{ detalle.tipo_entrada.evento.nombre }}
+
+                                    </div>
+
+                                {% endfor %}
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="compra-lateral">
+
+                            <div class="total-label">
+                                Total
+                            </div>
+
+                            <div class="total">
+                                ${{ compra.total }}
+                            </div>
+
+                            <a
+                                href="{% url 'compras_web:detalle-compra' compra.id %}"
+                                class="ver-detalle"
+                            >
+                                Ver detalle
+                            </a>
+
+                        </div>
+
+                    </article>
+
+                {% endfor %}
+
+            </section>
+
+        {% else %}
+
+            <section class="sin-compras">
+
+                <h2>
+                    Todavía no tienes compras
+                </h2>
+
+                <p>
+                    Explora los eventos disponibles y agrega
+                    entradas a tu carrito.
+                </p>
+
+                <a
+                    href="{% url 'eventos:inicio' %}#eventos"
+                    class="ver-detalle"
+                >
+                    Ver eventos
+                </a>
+
+            </section>
+
+        {% endif %}
+
+    </main>
+
+
+    <!-- =====================================================
+         FOOTER
+         ===================================================== -->
+
+    <footer class="footer">
+        Venta de Entradas · Christian Cisterna · TILE22 · INACAP Temuco · 2026
+    </footer>
+
+</body>
+</html>

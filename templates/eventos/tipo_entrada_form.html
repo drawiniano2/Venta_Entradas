@@ -1,0 +1,461 @@
+﻿<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>{{ titulo }} | Venta de Entradas</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+            font-family: Arial, Helvetica, sans-serif;
+
+            background:
+                radial-gradient(
+                    circle at 15% 10%,
+                    #19335a 0,
+                    transparent 30%
+                ),
+                linear-gradient(
+                    135deg,
+                    #07101f 0%,
+                    #0c1628 55%,
+                    #111b2e 100%
+                );
+
+            color: #f4f7fb;
+        }
+
+        .barra-superior {
+            min-height: 74px;
+            padding: 16px 6%;
+
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 20px;
+
+            border-bottom:
+                1px solid rgba(255,255,255,.08);
+
+            background:
+                rgba(4,10,20,.78);
+        }
+
+        .marca {
+            font-size: 1.35rem;
+            font-weight: 900;
+        }
+
+        .marca span {
+            color: #2fd3c7;
+        }
+
+        .volver {
+            padding: 10px 16px;
+
+            border:
+                1px solid rgba(255,255,255,.18);
+
+            border-radius: 10px;
+
+            color: #d9e5f4;
+            text-decoration: none;
+            font-weight: 700;
+        }
+
+        .volver:hover {
+            border-color: #2fd3c7;
+            color: #2fd3c7;
+        }
+
+        main {
+            width: min(850px, 92%);
+            margin: 42px auto 70px;
+        }
+
+        .encabezado {
+            margin-bottom: 24px;
+        }
+
+        .encabezado small {
+            color: #2fd3c7;
+
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: .12em;
+        }
+
+        .encabezado h1 {
+            margin: 8px 0;
+            font-size: clamp(
+                2rem,
+                5vw,
+                3.2rem
+            );
+        }
+
+        .evento {
+            color: #9eacc0;
+        }
+
+        .evento strong {
+            color: #ffffff;
+        }
+
+        .tarjeta {
+            padding: 28px;
+
+            border:
+                1px solid rgba(255,255,255,.09);
+
+            border-radius: 18px;
+
+            background:
+                rgba(13,24,42,.94);
+
+            box-shadow:
+                0 20px 55px rgba(0,0,0,.28);
+        }
+
+        .grupo {
+            margin-bottom: 21px;
+        }
+
+        .grupo label {
+            display: block;
+
+            margin-bottom: 8px;
+
+            color: #eaf0f8;
+            font-weight: 800;
+        }
+
+        .campo,
+        input[type="text"],
+        input[type="number"] {
+            width: 100%;
+
+            padding: 13px 14px;
+
+            border: 1px solid #31435d;
+            border-radius: 10px;
+
+            background: #091424;
+            color: #f4f7fb;
+
+            outline: none;
+            font: inherit;
+        }
+
+        .campo:focus,
+        input:focus {
+            border-color: #2fd3c7;
+        }
+
+        .fila {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 18px;
+        }
+
+        .activo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+
+            padding: 14px;
+
+            border:
+                1px solid #31435d;
+
+            border-radius: 10px;
+
+            background: #091424;
+        }
+
+        .activo input {
+            width: 18px;
+            height: 18px;
+        }
+
+        .errores {
+            margin-top: 7px;
+
+            color: #ff8c95;
+            font-size: .9rem;
+        }
+
+        .error-general {
+            margin-bottom: 20px;
+            padding: 14px;
+
+            border:
+                1px solid rgba(255,100,110,.4);
+
+            border-radius: 10px;
+
+            background:
+                rgba(220,60,75,.12);
+
+            color: #ffadb4;
+        }
+
+        .nota-stock {
+            margin-top: 7px;
+
+            color: #7f91a8;
+            font-size: .82rem;
+            line-height: 1.5;
+        }
+
+        .acciones {
+            display: flex;
+            justify-content: flex-end;
+            gap: 12px;
+
+            margin-top: 28px;
+            padding-top: 22px;
+
+            border-top:
+                1px solid rgba(255,255,255,.08);
+        }
+
+        .boton {
+            padding: 13px 20px;
+
+            border: 0;
+            border-radius: 10px;
+
+            text-decoration: none;
+            font-weight: 900;
+
+            cursor: pointer;
+        }
+
+        .cancelar {
+            background: #1c293c;
+            color: #dbe5f2;
+        }
+
+        .guardar {
+            background:
+                linear-gradient(
+                    135deg,
+                    #7c5cff,
+                    #633cff
+                );
+
+            color: #ffffff;
+
+            box-shadow:
+                0 8px 24px
+                rgba(99,60,255,.24);
+        }
+
+        .guardar:hover {
+            filter: brightness(1.12);
+        }
+
+        @media (max-width: 650px) {
+            .fila {
+                grid-template-columns: 1fr;
+            }
+
+            .barra-superior {
+                align-items: flex-start;
+                flex-direction: column;
+            }
+
+            .acciones {
+                flex-direction: column-reverse;
+            }
+
+            .boton {
+                width: 100%;
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<header class="barra-superior">
+
+    <div class="marca">
+        VENTA DE <span>ENTRADAS</span>
+    </div>
+
+    <a
+        href="{% url 'eventos:editar_evento' evento.pk %}"
+        class="volver"
+    >
+        ← Volver al evento
+    </a>
+
+</header>
+
+
+<main>
+
+    <section class="encabezado">
+
+        <small>Panel organizador</small>
+
+        <h1>{{ titulo }}</h1>
+
+        <div class="evento">
+            Evento:
+            <strong>{{ evento.nombre }}</strong>
+        </div>
+
+    </section>
+
+
+    <form
+        method="post"
+        class="tarjeta"
+    >
+
+        {% csrf_token %}
+
+        {% if form.non_field_errors %}
+            <div class="error-general">
+                {{ form.non_field_errors }}
+            </div>
+        {% endif %}
+
+
+        <div class="grupo">
+
+            <label for="{{ form.nombre.id_for_label }}">
+                Nombre
+            </label>
+
+            {{ form.nombre }}
+
+            <div class="errores">
+                {{ form.nombre.errors }}
+            </div>
+
+        </div>
+
+
+        <div class="grupo">
+
+            <label for="{{ form.descripcion.id_for_label }}">
+                Descripción
+            </label>
+
+            {{ form.descripcion }}
+
+            <div class="errores">
+                {{ form.descripcion.errors }}
+            </div>
+
+        </div>
+
+
+        <div class="fila">
+
+            <div class="grupo">
+
+                <label for="{{ form.precio.id_for_label }}">
+                    Precio
+                </label>
+
+                {{ form.precio }}
+
+                <div class="errores">
+                    {{ form.precio.errors }}
+                </div>
+
+            </div>
+
+
+            <div class="grupo">
+
+                <label for="{{ form.stock_total.id_for_label }}">
+                    Stock total
+                </label>
+
+                {{ form.stock_total }}
+
+                <div class="errores">
+                    {{ form.stock_total.errors }}
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <div class="grupo">
+
+            <label for="{{ form.stock_disponible.id_for_label }}">
+                Stock disponible
+            </label>
+
+            {{ form.stock_disponible }}
+
+            <div class="nota-stock">
+                Agregar entradas al carrito no descuenta stock.
+                El descuento ocurre al confirmar el pago.
+            </div>
+
+            <div class="errores">
+                {{ form.stock_disponible.errors }}
+            </div>
+
+        </div>
+
+
+        <div class="grupo">
+
+            <label>Estado</label>
+
+            <div class="activo">
+                {{ form.activo }}
+                <span>
+                    Tipo de entrada activo para la venta
+                </span>
+            </div>
+
+            <div class="errores">
+                {{ form.activo.errors }}
+            </div>
+
+        </div>
+
+
+        <div class="acciones">
+
+            <a
+                href="{% url 'eventos:editar_evento' evento.pk %}"
+                class="boton cancelar"
+            >
+                CANCELAR
+            </a>
+
+            <button
+                type="submit"
+                class="boton guardar"
+            >
+                {{ texto_boton }}
+            </button>
+
+        </div>
+
+    </form>
+
+</main>
+
+</body>
+</html>

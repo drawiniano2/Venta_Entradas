@@ -1,0 +1,1005 @@
+﻿<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Mi carrito | Entradas</title>
+
+    <style>
+        /* =====================================================
+           CONFIGURACION GENERAL
+           ===================================================== */
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        :root {
+            --bg: #070b14;
+            --bg-soft: #0d1220;
+            --panel: #111725;
+            --panel-soft: #151c2b;
+            --border: #283144;
+            --text: #f5f7ff;
+            --muted: #96a1ba;
+            --purple: #8b5cf6;
+            --purple-light: #a78bfa;
+            --success: #42d392;
+            --warning: #f5c451;
+        }
+
+        body {
+            min-height: 100vh;
+            background:
+                radial-gradient(
+                    circle at 50% 0%,
+                    rgba(91, 65, 190, 0.13),
+                    transparent 35%
+                ),
+                var(--bg);
+
+            color: var(--text);
+
+            font-family:
+                Inter,
+                ui-sans-serif,
+                system-ui,
+                -apple-system,
+                BlinkMacSystemFont,
+                "Segoe UI",
+                sans-serif;
+        }
+
+        a {
+            color: inherit;
+            text-decoration: none;
+        }
+
+
+        /* =====================================================
+           HEADER
+           ===================================================== */
+
+        .header {
+            border-bottom: 1px solid #202738;
+            background: rgba(7, 11, 20, 0.96);
+        }
+
+        .header-inner {
+            width: min(1070px, calc(100% - 40px));
+            min-height: 112px;
+            margin: 0 auto;
+
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 30px;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+
+            font-size: 20px;
+            font-weight: 900;
+            letter-spacing: 0.3px;
+        }
+
+        .brand-icon {
+            width: 36px;
+            height: 36px;
+
+            display: grid;
+            place-items: center;
+
+            border-radius: 10px;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    #6d3df5,
+                    #a855f7
+                );
+
+            box-shadow:
+                0 10px 30px rgba(139, 92, 246, 0.25);
+
+            font-weight: 900;
+        }
+
+        .nav {
+            display: flex;
+            align-items: center;
+            gap: 30px;
+
+            color: var(--muted);
+            font-size: 14px;
+            font-weight: 700;
+        }
+
+        .nav a:hover {
+            color: white;
+        }
+
+        .account {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+
+            font-size: 14px;
+        }
+
+        .username {
+            color: #e6e9f3;
+            font-weight: 700;
+        }
+
+        .logout-form {
+            margin: 0;
+        }
+
+        .logout-button {
+            border: 0;
+            background: transparent;
+            color: #d5daea;
+
+            cursor: pointer;
+
+            font: inherit;
+            font-weight: 700;
+        }
+
+        .logout-button:hover {
+            color: white;
+        }
+
+
+        /* =====================================================
+           CONTENIDO PRINCIPAL
+           ===================================================== */
+
+        .page {
+            width: min(1070px, calc(100% - 40px));
+            margin: 0 auto;
+            padding: 54px 0 90px;
+        }
+
+        .back {
+            display: inline-flex;
+            margin-bottom: 32px;
+
+            color: var(--purple-light);
+
+            font-size: 14px;
+            font-weight: 800;
+        }
+
+        .page-heading {
+            margin-bottom: 38px;
+        }
+
+        .eyebrow {
+            display: inline-block;
+
+            margin-bottom: 15px;
+            padding: 7px 13px;
+
+            border: 1px solid rgba(139, 92, 246, 0.45);
+            border-radius: 999px;
+
+            background: rgba(139, 92, 246, 0.08);
+
+            color: var(--purple-light);
+
+            font-size: 11px;
+            font-weight: 900;
+            letter-spacing: 1px;
+        }
+
+        h1 {
+            margin-bottom: 10px;
+
+            font-size: clamp(34px, 5vw, 52px);
+            line-height: 1;
+        }
+
+        .page-heading p {
+            max-width: 680px;
+
+            color: var(--muted);
+
+            font-size: 15px;
+            line-height: 1.7;
+        }
+
+
+        /* =====================================================
+           MENSAJES DJANGO
+           ===================================================== */
+
+        .messages {
+            display: grid;
+            gap: 10px;
+
+            margin-bottom: 25px;
+        }
+
+        .message {
+            padding: 14px 16px;
+
+            border: 1px solid #33405a;
+            border-radius: 12px;
+
+            background: var(--panel);
+
+            color: #dfe5f5;
+
+            font-size: 14px;
+        }
+
+
+        /* =====================================================
+           LAYOUT DEL CARRITO
+           ===================================================== */
+
+        .cart-layout {
+            display: grid;
+
+            grid-template-columns:
+                minmax(0, 1fr)
+                330px;
+
+            gap: 26px;
+
+            align-items: start;
+        }
+
+        .cart-items {
+            display: grid;
+            gap: 16px;
+        }
+
+
+        /* =====================================================
+           ITEM
+           ===================================================== */
+
+        .cart-item {
+            padding: 24px;
+
+            border: 1px solid var(--border);
+            border-radius: 18px;
+
+            background:
+                linear-gradient(
+                    145deg,
+                    rgba(21, 28, 43, 0.98),
+                    rgba(12, 17, 29, 0.98)
+                );
+
+            box-shadow:
+                0 20px 50px rgba(0, 0, 0, 0.18);
+        }
+
+        .item-top {
+            display: flex;
+            justify-content: space-between;
+            gap: 25px;
+
+            margin-bottom: 22px;
+        }
+
+        .event-name {
+            margin-bottom: 7px;
+
+            color: var(--purple-light);
+
+            font-size: 12px;
+            font-weight: 900;
+            letter-spacing: 0.7px;
+            text-transform: uppercase;
+        }
+
+        .ticket-name {
+            margin-bottom: 8px;
+
+            font-size: 22px;
+            font-weight: 900;
+        }
+
+        .ticket-description {
+            color: var(--muted);
+
+            font-size: 13px;
+            line-height: 1.55;
+        }
+
+        .unit-price {
+            flex-shrink: 0;
+            text-align: right;
+        }
+
+        .unit-price-label {
+            display: block;
+
+            margin-bottom: 4px;
+
+            color: var(--muted);
+
+            font-size: 11px;
+            text-transform: uppercase;
+        }
+
+        .unit-price-value {
+            font-size: 19px;
+            font-weight: 900;
+        }
+
+        .item-bottom {
+            display: flex;
+            align-items: flex-end;
+            justify-content: space-between;
+            gap: 20px;
+
+            padding-top: 20px;
+
+            border-top: 1px solid #293247;
+        }
+
+        .quantity-label,
+        .subtotal-label {
+            display: block;
+
+            margin-bottom: 6px;
+
+            color: var(--muted);
+
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+
+        .quantity-value {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+
+            min-width: 42px;
+            height: 34px;
+
+            padding: 0 12px;
+
+            border: 1px solid #36415a;
+            border-radius: 9px;
+
+            background: #0b101c;
+
+            font-weight: 900;
+        }
+
+        .stock-info {
+            margin-left: 9px;
+
+            color: var(--muted);
+
+            font-size: 12px;
+        }
+
+        .subtotal {
+            text-align: right;
+        }
+
+        .subtotal-value {
+            color: white;
+
+            font-size: 22px;
+            font-weight: 900;
+        }
+
+
+        /* =====================================================
+           RESUMEN
+           ===================================================== */
+
+        .summary {
+            position: sticky;
+            top: 25px;
+
+            padding: 26px;
+
+            border: 1px solid #343054;
+            border-radius: 20px;
+
+            background:
+                linear-gradient(
+                    145deg,
+                    rgba(37, 29, 75, 0.94),
+                    rgba(15, 19, 34, 0.98)
+                );
+
+            box-shadow:
+                0 25px 60px rgba(0, 0, 0, 0.25);
+        }
+
+        .summary-title {
+            margin-bottom: 24px;
+
+            font-size: 21px;
+            font-weight: 900;
+        }
+
+        .summary-row {
+            display: flex;
+            justify-content: space-between;
+            gap: 15px;
+
+            padding: 12px 0;
+
+            color: var(--muted);
+
+            font-size: 14px;
+        }
+
+        .summary-row strong {
+            color: white;
+        }
+
+        .summary-divider {
+            height: 1px;
+
+            margin: 10px 0;
+
+            background: #3a3658;
+        }
+
+        .summary-total {
+            display: flex;
+            align-items: flex-end;
+            justify-content: space-between;
+            gap: 15px;
+
+            margin: 18px 0 24px;
+        }
+
+        .summary-total span {
+            color: var(--muted);
+
+            font-size: 13px;
+            font-weight: 700;
+        }
+
+        .summary-total strong {
+            color: white;
+
+            font-size: 30px;
+            line-height: 1;
+        }
+
+        .checkout-button {
+            width: 100%;
+
+            padding: 15px 18px;
+
+            border: 0;
+            border-radius: 11px;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    #7c4dff,
+                    #6d35e8
+                );
+
+            color: white;
+
+            font-size: 14px;
+            font-weight: 900;
+
+            cursor: pointer;
+        }
+
+        .checkout-button:hover {
+            filter: brightness(1.08);
+        }
+
+        .checkout-note {
+            margin-top: 15px;
+
+            color: var(--muted);
+
+            font-size: 11px;
+            line-height: 1.55;
+            text-align: center;
+        }
+
+
+        /* =====================================================
+           CARRITO VACIO
+           ===================================================== */
+
+        .empty-cart {
+            padding: 65px 30px;
+
+            border: 1px dashed #374158;
+            border-radius: 20px;
+
+            background: rgba(17, 23, 37, 0.65);
+
+            text-align: center;
+        }
+
+        .empty-icon {
+            width: 66px;
+            height: 66px;
+
+            margin: 0 auto 20px;
+
+            display: grid;
+            place-items: center;
+
+            border-radius: 50%;
+
+            background: rgba(139, 92, 246, 0.12);
+
+            color: var(--purple-light);
+
+            font-size: 28px;
+            font-weight: 900;
+        }
+
+        .empty-cart h2 {
+            margin-bottom: 10px;
+
+            font-size: 25px;
+        }
+
+        .empty-cart p {
+            margin-bottom: 24px;
+
+            color: var(--muted);
+
+            line-height: 1.6;
+        }
+
+        .events-button {
+            display: inline-block;
+
+            padding: 13px 19px;
+
+            border-radius: 10px;
+
+            background: var(--purple);
+
+            color: white;
+
+            font-size: 14px;
+            font-weight: 900;
+        }
+
+
+        /* =====================================================
+           FOOTER
+           ===================================================== */
+
+        .footer {
+            border-top: 1px solid #202738;
+
+            padding: 28px 20px;
+
+            color: #77839d;
+
+            font-size: 12px;
+            text-align: center;
+        }
+
+
+        /* =====================================================
+           RESPONSIVE
+           ===================================================== */
+
+        @media (max-width: 850px) {
+
+            .header-inner {
+                padding: 20px 0;
+
+                flex-wrap: wrap;
+            }
+
+            .nav {
+                order: 3;
+
+                width: 100%;
+
+                justify-content: center;
+            }
+
+            .cart-layout {
+                grid-template-columns: 1fr;
+            }
+
+            .summary {
+                position: static;
+            }
+        }
+
+        @media (max-width: 600px) {
+
+            .page {
+                width: min(100% - 28px, 1070px);
+            }
+
+            .header-inner {
+                width: min(100% - 28px, 1070px);
+            }
+
+            .item-top,
+            .item-bottom {
+                align-items: flex-start;
+                flex-direction: column;
+            }
+
+            .unit-price,
+            .subtotal {
+                text-align: left;
+            }
+
+            .account {
+                width: 100%;
+
+                justify-content: space-between;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- =====================================================
+         CABECERA
+         ===================================================== -->
+
+    <header class="header">
+
+        <div class="header-inner">
+
+            <a
+                href="{% url 'eventos:inicio' %}"
+                class="brand"
+            >
+                <span class="brand-icon">
+                    E
+                </span>
+
+                <span>
+                    ENTRADAS
+                </span>
+            </a>
+
+
+            <nav class="nav">
+
+                <a href="{% url 'eventos:inicio' %}#eventos">
+                    Eventos
+                </a>
+
+                <a href="/api/docs/">
+                    API
+                </a>
+
+                <a href="/admin/">
+                    Administración
+                </a>
+
+            </nav>
+
+
+            <div class="account">
+
+                <span class="username">
+                    {{ request.user.username }}
+                </span>
+
+                <form
+                    method="post"
+                    action="{% url 'accounts_web:logout' %}"
+                    class="logout-form"
+                >
+                    {% csrf_token %}
+
+                    <button
+                        type="submit"
+                        class="logout-button"
+                    >
+                        Cerrar sesión
+                    </button>
+                </form>
+
+            </div>
+
+        </div>
+
+    </header>
+
+
+    <!-- =====================================================
+         CONTENIDO
+         ===================================================== -->
+
+    <main class="page">
+
+        <a
+            href="{% url 'eventos:inicio' %}#eventos"
+            class="back"
+        >
+            ← Seguir explorando eventos
+        </a>
+
+
+        <section class="page-heading">
+
+            <span class="eyebrow">
+                TU COMPRA
+            </span>
+
+            <h1>
+                Mi carrito
+            </h1>
+
+            <p>
+                Revisa las entradas seleccionadas antes de
+                continuar con tu compra. Agregar entradas al
+                carrito no descuenta el stock disponible.
+            </p>
+
+        </section>
+
+
+        <!-- =================================================
+             MENSAJES
+             ================================================= -->
+
+        {% if messages %}
+
+            <div class="messages">
+
+                {% for message in messages %}
+
+                    <div class="message">
+                        {{ message }}
+                    </div>
+
+                {% endfor %}
+
+            </div>
+
+        {% endif %}
+
+
+        <!-- =================================================
+             CARRITO CON ITEMS
+             ================================================= -->
+
+        {% if items %}
+
+            <div class="cart-layout">
+
+                <section class="cart-items">
+
+                    {% for item in items %}
+
+                        <article class="cart-item">
+
+                            <div class="item-top">
+
+                                <div>
+
+                                    <div class="event-name">
+                                        {{ item.tipo_entrada.evento.nombre }}
+                                    </div>
+
+                                    <h2 class="ticket-name">
+                                        {{ item.tipo_entrada.nombre }}
+                                    </h2>
+
+                                    {% if item.tipo_entrada.descripcion %}
+
+                                        <p class="ticket-description">
+                                            {{ item.tipo_entrada.descripcion }}
+                                        </p>
+
+                                    {% endif %}
+
+                                </div>
+
+
+                                <div class="unit-price">
+
+                                    <span class="unit-price-label">
+                                        Precio unitario
+                                    </span>
+
+                                    <strong class="unit-price-value">
+                                        ${{ item.tipo_entrada.precio|floatformat:0 }}
+                                    </strong>
+
+                                </div>
+
+                            </div>
+
+
+                            <div class="item-bottom">
+
+                                <div>
+
+                                    <span class="quantity-label">
+                                        Cantidad
+                                    </span>
+
+                                    <span class="quantity-value">
+                                        {{ item.cantidad }}
+                                    </span>
+
+                                    <span class="stock-info">
+                                        Stock disponible:
+                                        {{ item.tipo_entrada.stock_disponible }}
+                                    </span>
+
+                                </div>
+
+
+                                <div class="subtotal">
+
+                                    <span class="subtotal-label">
+                                        Subtotal
+                                    </span>
+
+                                    <strong class="subtotal-value">
+                                        ${{ item.subtotal|floatformat:0 }}
+                                    </strong>
+
+                                </div>
+
+                            </div>
+
+                        </article>
+
+                    {% endfor %}
+
+                </section>
+
+
+                <!-- =========================================
+                     RESUMEN
+                     ========================================= -->
+
+                <aside class="summary">
+
+                    <h2 class="summary-title">
+                        Resumen
+                    </h2>
+
+
+                    <div class="summary-row">
+
+                        <span>
+                            Entradas
+                        </span>
+
+                        <strong>
+                            {{ cantidad_total }}
+                        </strong>
+
+                    </div>
+
+
+                    <div class="summary-row">
+
+                        <span>
+                            Usuario
+                        </span>
+
+                        <strong>
+                            {{ request.user.username }}
+                        </strong>
+
+                    </div>
+
+
+                    <div class="summary-divider"></div>
+
+
+                    <div class="summary-total">
+
+                        <span>
+                            Total
+                        </span>
+
+                        <strong>
+                            ${{ total|floatformat:0 }}
+                        </strong>
+
+                    </div>
+
+
+                    <form
+                        method="post"
+                        action="{% url 'carrito_web:confirmar-carrito' %}"
+                        style="margin: 0;"
+                    >
+                        {% csrf_token %}
+
+                        <button
+                            type="submit"
+                            class="checkout-button"
+                        >
+                            Continuar compra
+                        </button>
+                    </form>
+
+
+                    <p class="checkout-note">
+                        El stock todavía no será descontado.
+                        La validación definitiva se realizará
+                        al confirmar el pago.
+                    </p>
+
+                </aside>
+
+            </div>
+
+
+        <!-- =================================================
+             CARRITO VACIO
+             ================================================= -->
+
+        {% else %}
+
+            <section class="empty-cart">
+
+                <div class="empty-icon">
+                    E
+                </div>
+
+                <h2>
+                    Tu carrito está vacío
+                </h2>
+
+                <p>
+                    Todavía no has seleccionado entradas.
+                    Explora los eventos disponibles y agrega
+                    las entradas que quieras comprar.
+                </p>
+
+                <a
+                    href="{% url 'eventos:inicio' %}#eventos"
+                    class="events-button"
+                >
+                    Explorar eventos
+                </a>
+
+            </section>
+
+        {% endif %}
+
+    </main>
+
+
+    <!-- =====================================================
+         FOOTER
+         ===================================================== -->
+
+    <footer class="footer">
+        Sistema de Venta de Entradas · Proyecto Backend · 2026
+    </footer>
+
+</body>
+</html>
+

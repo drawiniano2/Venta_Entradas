@@ -1,0 +1,126 @@
+﻿<header class="header">
+
+    <div class="header-inner">
+
+        <!-- =====================================================
+             MARCA
+             ===================================================== -->
+
+        <a
+            href="{% url 'eventos:inicio' %}"
+            class="brand"
+        >
+            <span class="brand-icon">
+                E
+            </span>
+
+            <span>
+                ENTRADAS
+            </span>
+        </a>
+
+
+        <!-- =====================================================
+             NAVEGACION PRINCIPAL
+             ===================================================== -->
+
+        <nav class="nav">
+
+            <a
+                href="{% url 'eventos:inicio' %}#eventos"
+                class="menu-accion {% if navbar_activa == 'eventos' %}menu-accion-activa{% endif %}"
+            >
+                Eventos
+            </a>
+
+
+            {% if request.user.rol == "ORGANIZADOR" %}
+
+                <a
+                    href="{% url 'eventos:panel_organizador' %}"
+                    class="menu-accion {% if navbar_activa == 'panel' %}menu-accion-activa{% endif %}"
+                >
+                    Panel organizador
+                </a>
+
+            {% endif %}
+
+
+            <a
+                href="{% url 'compras_web:mis-compras' %}"
+                class="menu-accion {% if navbar_activa == 'compras' %}menu-accion-activa{% endif %}"
+            >
+                Mis compras
+            </a>
+
+
+            <a
+                href="{% url 'entradas_web:mis-entradas' %}"
+                class="menu-accion {% if navbar_activa == 'entradas' %}menu-accion-activa{% endif %}"
+            >
+                Mis entradas
+            </a>
+
+
+            <a
+                href="{% url 'carrito_web:mi-carrito' %}"
+                class="menu-accion {% if navbar_activa == 'carrito' %}menu-accion-activa{% endif %}"
+            >
+                Mi carrito
+            </a>
+
+
+            {% if request.user.rol == "ORGANIZADOR" %}
+
+                <a
+                    href="{% url 'entradas_web:validar-entrada' %}"
+                    class="menu-accion {% if navbar_activa == 'validar' %}menu-accion-activa{% endif %}"
+                >
+                    Validar entrada
+                </a>
+
+            {% endif %}
+
+
+            <form
+                method="post"
+                action="{% url 'accounts_web:logout' %}"
+                class="logout-form"
+            >
+                {% csrf_token %}
+
+                <button
+                    type="submit"
+                    class="menu-accion menu-accion-boton"
+                >
+                    Cerrar sesión
+                </button>
+
+            </form>
+
+        </nav>
+
+
+        <!-- =====================================================
+             USUARIO
+             ===================================================== -->
+
+        <div class="account">
+
+            <span class="username">
+                {{ request.user.username }}
+            </span>
+
+            {% if request.user.rol %}
+
+                <span class="usuario-rol">
+                    {{ request.user.rol }}
+                </span>
+
+            {% endif %}
+
+        </div>
+
+    </div>
+
+</header>

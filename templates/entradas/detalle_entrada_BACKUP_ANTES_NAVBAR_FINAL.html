@@ -1,0 +1,730 @@
+﻿<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Mi entrada | Entradas</title>
+
+    <style>
+        /* =====================================================
+           CONFIGURACION GENERAL
+           ===================================================== */
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        :root {
+            --bg: #070b14;
+            --bg-soft: #0d1220;
+            --panel: #111725;
+            --panel-soft: #151c2b;
+            --border: #283144;
+            --text: #f5f7ff;
+            --muted: #96a1ba;
+            --purple: #8b5cf6;
+            --purple-light: #a78bfa;
+            --success: #42d392;
+            --danger: #ff667d;
+            --warning: #f5c451;
+        }
+
+        body {
+            min-height: 100vh;
+
+            background:
+                radial-gradient(
+                    circle at 50% 0%,
+                    rgba(91, 65, 190, 0.13),
+                    transparent 35%
+                ),
+                var(--bg);
+
+            color: var(--text);
+
+            font-family:
+                Inter,
+                ui-sans-serif,
+                system-ui,
+                -apple-system,
+                BlinkMacSystemFont,
+                "Segoe UI",
+                sans-serif;
+        }
+
+        a {
+            color: inherit;
+            text-decoration: none;
+        }
+
+
+        /* =====================================================
+           HEADER
+           ===================================================== */
+
+        .header {
+            border-bottom: 1px solid #202738;
+            background: rgba(7, 11, 20, 0.96);
+        }
+
+        .header-inner {
+            width: min(1070px, calc(100% - 40px));
+            min-height: 100px;
+            margin: 0 auto;
+
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 30px;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+
+            font-size: 20px;
+            font-weight: 900;
+        }
+
+        .brand-icon {
+            width: 36px;
+            height: 36px;
+
+            display: grid;
+            place-items: center;
+
+            border-radius: 10px;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    #6d3df5,
+                    #a855f7
+                );
+
+            font-weight: 900;
+        }
+
+        .nav {
+            display: flex;
+            align-items: center;
+            gap: 28px;
+
+            color: var(--muted);
+            font-size: 14px;
+            font-weight: 700;
+        }
+
+        .nav a:hover {
+            color: white;
+        }
+
+        .nav .active {
+            color: white;
+        }
+
+        .account {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+
+            font-size: 14px;
+        }
+
+        .username {
+            color: var(--muted);
+        }
+
+        .logout {
+            padding: 11px 17px;
+
+            border: 1px solid var(--border);
+            border-radius: 10px;
+
+            font-weight: 800;
+        }
+
+
+        /* =====================================================
+           CONTENIDO
+           ===================================================== */
+
+        .container {
+            width: min(970px, calc(100% - 40px));
+            margin: 0 auto;
+            padding: 45px 0 70px;
+        }
+
+        .back-link {
+            display: inline-block;
+            margin-bottom: 30px;
+
+            color: var(--purple-light);
+
+            font-size: 14px;
+            font-weight: 800;
+        }
+
+        .eyebrow {
+            margin-bottom: 8px;
+
+            color: var(--purple-light);
+
+            font-size: 12px;
+            font-weight: 900;
+            letter-spacing: 1px;
+        }
+
+        h1 {
+            font-size: clamp(34px, 5vw, 48px);
+            line-height: 1;
+            margin-bottom: 12px;
+        }
+
+        .intro {
+            color: var(--muted);
+            line-height: 1.7;
+            margin-bottom: 32px;
+        }
+
+
+        /* =====================================================
+           ENTRADA
+           ===================================================== */
+
+        .ticket {
+            overflow: hidden;
+
+            border: 1px solid var(--border);
+            border-radius: 20px;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    rgba(139, 92, 246, 0.13),
+                    transparent 45%
+                ),
+                var(--panel);
+
+            box-shadow:
+                0 25px 60px rgba(0, 0, 0, 0.22);
+        }
+
+        .ticket-top {
+            padding: 28px 30px;
+
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 25px;
+
+            border-bottom: 1px solid var(--border);
+        }
+
+        .event-name {
+            font-size: 26px;
+            font-weight: 900;
+            margin-bottom: 8px;
+        }
+
+        .ticket-type {
+            color: var(--purple-light);
+            font-weight: 900;
+        }
+
+        .status {
+            padding: 8px 13px;
+
+            border-radius: 999px;
+
+            font-size: 12px;
+            font-weight: 900;
+            letter-spacing: 0.6px;
+        }
+
+        .status-valid {
+            color: #5af0aa;
+            background: rgba(66, 211, 146, 0.14);
+            border: 1px solid rgba(66, 211, 146, 0.35);
+        }
+
+        .status-used {
+            color: var(--warning);
+            background: rgba(245, 196, 81, 0.12);
+            border: 1px solid rgba(245, 196, 81, 0.30);
+        }
+
+        .status-cancelled {
+            color: var(--danger);
+            background: rgba(255, 102, 125, 0.12);
+            border: 1px solid rgba(255, 102, 125, 0.30);
+        }
+
+        .ticket-body {
+            display: grid;
+            grid-template-columns: 1.4fr 0.9fr;
+        }
+
+        .ticket-info {
+            padding: 30px;
+        }
+
+        .ticket-code {
+            padding: 30px;
+
+            border-left: 1px dashed #39445d;
+
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 24px;
+        }
+
+        .info-item {
+            min-width: 0;
+        }
+
+        .label {
+            display: block;
+            margin-bottom: 7px;
+
+            color: var(--muted);
+
+            font-size: 11px;
+            font-weight: 900;
+            letter-spacing: 0.7px;
+            text-transform: uppercase;
+        }
+
+        .value {
+            font-size: 15px;
+            font-weight: 800;
+            line-height: 1.5;
+        }
+
+        .uuid {
+            overflow-wrap: anywhere;
+
+            color: var(--purple-light);
+
+            font-family:
+                Consolas,
+                "Courier New",
+                monospace;
+
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        .code-title {
+            margin-bottom: 10px;
+
+            color: var(--muted);
+
+            font-size: 11px;
+            font-weight: 900;
+            letter-spacing: 0.7px;
+            text-transform: uppercase;
+        }
+
+        .code-box {
+            padding: 20px;
+
+            border: 1px solid #39445d;
+            border-radius: 14px;
+
+            background: #0b101c;
+        }
+
+        .code-note {
+            margin-top: 14px;
+
+            color: var(--muted);
+
+            font-size: 12px;
+            line-height: 1.6;
+        }
+
+
+        /* =====================================================
+           FOOTER
+           ===================================================== */
+
+        .footer {
+            width: min(970px, calc(100% - 40px));
+            margin: 0 auto;
+            padding: 26px 0;
+
+            border-top: 1px solid #202738;
+
+            color: var(--muted);
+            text-align: center;
+            font-size: 12px;
+        }
+
+
+        /* =====================================================
+           RESPONSIVE
+           ===================================================== */
+
+        @media (max-width: 760px) {
+
+            .header-inner {
+                min-height: auto;
+                padding: 20px 0;
+
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .nav {
+                flex-wrap: wrap;
+                gap: 18px;
+            }
+
+            .account {
+                width: 100%;
+                justify-content: space-between;
+            }
+
+            .ticket-top {
+                flex-direction: column;
+            }
+
+            .ticket-body {
+                grid-template-columns: 1fr;
+            }
+
+            .ticket-code {
+                border-left: 0;
+                border-top: 1px dashed #39445d;
+            }
+
+            .info-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- =====================================================
+         HEADER
+         ===================================================== -->
+
+    <header class="header">
+        <div class="header-inner">
+
+            <a
+                href="{% url 'eventos:inicio' %}"
+                class="brand"
+            >
+                <span class="brand-icon">E</span>
+                <span>Entradas</span>
+            </a>
+
+            <nav class="nav">
+                <a href="{% url 'eventos:inicio' %}">
+                    Eventos
+                </a>
+
+                <a href="{% url 'carrito:mi-carrito' %}">
+                    Mi carrito
+                </a>
+
+                <a
+                    href="{% url 'entradas_web:mis-entradas' %}"
+                    class="active"
+                >
+                    Mis entradas
+                </a>
+            </nav>
+
+            <div class="account">
+
+                <span class="username">
+                    {{ user.username }}
+                </span>
+
+                <a
+                    href="{% url 'accounts_web:logout' %}"
+                    class="logout"
+                >
+                    Cerrar sesión
+                </a>
+
+            </div>
+
+        </div>
+    </header>
+
+
+    <!-- =====================================================
+         CONTENIDO
+         ===================================================== -->
+
+    <main class="container">
+
+        <a
+            href="{% url 'entradas_web:mis-entradas' %}"
+            class="back-link"
+        >
+            ← Volver a mis entradas
+        </a>
+
+        <div class="eyebrow">
+            ENTRADA DIGITAL
+        </div>
+
+        <h1>Tu entrada</h1>
+
+        <p class="intro">
+            Esta entrada está asociada a tu cuenta y posee
+            un código UUID único.
+        </p>
+
+
+        <!-- =================================================
+             TICKET
+             ================================================= -->
+
+        <section class="ticket">
+
+            <div class="ticket-top">
+
+                <div>
+                    <div class="event-name">
+                        {{ entrada.detalle_compra.tipo_entrada.evento.nombre }}
+                    </div>
+
+                    <div class="ticket-type">
+                        {{ entrada.detalle_compra.tipo_entrada.nombre }}
+                    </div>
+                </div>
+
+
+                {% if entrada.estado == "VALIDA" %}
+
+                    <span class="status status-valid">
+                        VÁLIDA
+                    </span>
+
+                {% elif entrada.estado == "UTILIZADA" %}
+
+                    <span class="status status-used">
+                        UTILIZADA
+                    </span>
+
+                {% else %}
+
+                    <span class="status status-cancelled">
+                        ANULADA
+                    </span>
+
+                {% endif %}
+
+            </div>
+
+
+            <div class="ticket-body">
+
+                <div class="ticket-info">
+
+                    <div class="info-grid">
+
+                        <div class="info-item">
+                            <span class="label">
+                                Titular
+                            </span>
+
+                            <div class="value">
+                                {{ user.username }}
+                            </div>
+                        </div>
+
+
+                        <div class="info-item">
+                            <span class="label">
+                                Compra
+                            </span>
+
+                            <div class="value">
+                                #{{ entrada.detalle_compra.compra.id }}
+                            </div>
+                        </div>
+
+
+                        <div class="info-item">
+                            <span class="label">
+                                Fecha del evento
+                            </span>
+
+                            <div class="value">
+                                {{ entrada.detalle_compra.tipo_entrada.evento.fecha_inicio|date:"d/m/Y H:i" }}
+                            </div>
+                        </div>
+
+
+                        <div class="info-item">
+                            <span class="label">
+                                Emitida
+                            </span>
+
+                            <div class="value">
+                                {{ entrada.emitida_en|date:"d/m/Y H:i" }}
+                            </div>
+                        </div>
+
+
+                        <div class="info-item">
+                            <span class="label">
+                                Tipo de entrada
+                            </span>
+
+                            <div class="value">
+                                {{ entrada.detalle_compra.tipo_entrada.nombre }}
+                            </div>
+                        </div>
+
+
+                        <div class="info-item">
+                            <span class="label">
+                                Estado
+                            </span>
+
+                            <div class="value">
+                                {{ entrada.get_estado_display }}
+                            </div>
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <aside class="ticket-code">
+
+                    {% if entrada.estado == "VALIDA" %}
+
+                        <div class="code-title">
+                            Código QR de acceso
+                        </div>
+
+                        <div
+                            style="
+                                background: white;
+                                padding: 14px;
+                                border-radius: 14px;
+                                margin-top: 12px;
+                                margin-bottom: 16px;
+                                display: flex;
+                                justify-content: center;
+                                align-items: center;
+                            "
+                        >
+                            <img
+                                src="{% url 'entradas_web:qr-entrada' entrada.codigo %}"
+                                alt="Código QR de la entrada"
+                                style="
+                                    display: block;
+                                    width: 190px;
+                                    max-width: 100%;
+                                    height: auto;
+                                "
+                            >
+                        </div>
+
+                        <div class="code-title">
+                            Código UUID
+                        </div>
+
+                        <div class="code-box">
+
+                            <div class="uuid">
+                                {{ entrada.codigo }}
+                            </div>
+
+                        </div>
+
+                        <p class="code-note">
+                            Presenta este código QR para validar
+                            tu entrada al evento.
+                        </p>
+
+
+                    {% elif entrada.estado == "UTILIZADA" %}
+
+                        <div class="code-title">
+                            Código de acceso
+                        </div>
+
+                        <div class="code-box">
+
+                            <div class="uuid">
+                                {{ entrada.codigo }}
+                            </div>
+
+                        </div>
+
+                        <p class="code-note">
+                            Esta entrada ya fue utilizada.
+                            El código QR ya no está disponible.
+                        </p>
+
+
+                    {% else %}
+
+                        <div class="code-title">
+                            Entrada anulada
+                        </div>
+
+                        <div class="code-box">
+
+                            <div class="uuid">
+                                {{ entrada.codigo }}
+                            </div>
+
+                        </div>
+
+                        <p class="code-note">
+                            Esta entrada fue anulada.
+                            El código QR no está disponible.
+                        </p>
+
+                    {% endif %}
+
+                </aside>
+
+            </div>
+
+        </section>
+
+    </main>
+
+
+    <!-- =====================================================
+         FOOTER
+         ===================================================== -->
+
+    <footer class="footer">
+    Venta de Entradas · Christian Cisterna · TILE22 · INACAP Temuco · 2026
+</footer>
+
+</body>
+</html>
+
+

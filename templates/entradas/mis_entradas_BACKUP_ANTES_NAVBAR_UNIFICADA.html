@@ -1,0 +1,710 @@
+﻿<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Mis entradas | Entradas</title>
+
+    <style>
+        /* =====================================================
+           CONFIGURACION GENERAL
+           ===================================================== */
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        :root {
+            --bg: #070b14;
+            --bg-soft: #0d1220;
+            --panel: #111725;
+            --panel-soft: #151c2b;
+            --border: #283144;
+            --text: #f5f7ff;
+            --muted: #96a1ba;
+            --purple: #8b5cf6;
+            --purple-light: #a78bfa;
+            --success: #42d392;
+            --warning: #f5c451;
+            --danger: #ef6b73;
+        }
+
+        body {
+            min-height: 100vh;
+
+            background:
+                radial-gradient(
+                    circle at 50% 0%,
+                    rgba(91, 65, 190, 0.13),
+                    transparent 35%
+                ),
+                var(--bg);
+
+            color: var(--text);
+
+            font-family:
+                Inter,
+                ui-sans-serif,
+                system-ui,
+                -apple-system,
+                BlinkMacSystemFont,
+                "Segoe UI",
+                sans-serif;
+        }
+
+        a {
+            color: inherit;
+            text-decoration: none;
+        }
+
+
+        /* =====================================================
+           HEADER
+           ===================================================== */
+
+        .header {
+            border-bottom: 1px solid #202738;
+            background: rgba(7, 11, 20, 0.96);
+        }
+
+        .header-inner {
+            width: min(1070px, calc(100% - 40px));
+            min-height: 112px;
+            margin: 0 auto;
+
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 30px;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+
+            font-size: 20px;
+            font-weight: 900;
+            letter-spacing: 0.3px;
+        }
+
+        .brand-icon {
+            width: 36px;
+            height: 36px;
+
+            display: grid;
+            place-items: center;
+
+            border-radius: 10px;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    #6d3df5,
+                    #a855f7
+                );
+
+            box-shadow:
+                0 10px 30px rgba(139, 92, 246, 0.25);
+
+            font-weight: 900;
+        }
+
+        .nav {
+            display: flex;
+            align-items: center;
+            gap: 30px;
+
+            color: var(--muted);
+            font-size: 14px;
+            font-weight: 700;
+        }
+
+        .nav a:hover,
+        .nav .active {
+            color: white;
+        }
+
+        .account {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+
+            font-size: 14px;
+        }
+
+        .username {
+            color: var(--muted);
+        }
+
+        .logout {
+            padding: 10px 16px;
+
+            border: 1px solid var(--border);
+            border-radius: 10px;
+
+            color: white;
+            font-weight: 700;
+        }
+
+        .logout:hover {
+            border-color: var(--purple);
+        }
+
+
+        /* =====================================================
+           CONTENIDO
+           ===================================================== */
+
+        .container {
+            width: min(1070px, calc(100% - 40px));
+            margin: 0 auto;
+            padding: 54px 0 80px;
+        }
+
+        .page-header {
+            margin-bottom: 32px;
+        }
+
+        .eyebrow {
+            margin-bottom: 10px;
+
+            color: var(--purple-light);
+            font-size: 12px;
+            font-weight: 900;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+        }
+
+        h1 {
+            margin-bottom: 10px;
+
+            font-size: clamp(30px, 5vw, 46px);
+            line-height: 1.05;
+        }
+
+        .subtitle {
+            color: var(--muted);
+            line-height: 1.7;
+        }
+
+        .summary {
+            margin-bottom: 28px;
+            padding: 18px 22px;
+
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 20px;
+
+            border: 1px solid var(--border);
+            border-radius: 16px;
+
+            background: var(--panel);
+        }
+
+        .summary-label {
+            color: var(--muted);
+            font-size: 14px;
+        }
+
+        .summary-number {
+            font-size: 26px;
+            font-weight: 900;
+        }
+
+
+        /* =====================================================
+           ENTRADAS
+           ===================================================== */
+
+        .ticket-list {
+            display: grid;
+            gap: 18px;
+        }
+
+        .ticket {
+            position: relative;
+
+            display: grid;
+            grid-template-columns: 1fr auto;
+            gap: 24px;
+
+            padding: 26px;
+
+            overflow: hidden;
+
+            border: 1px solid var(--border);
+            border-radius: 18px;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    rgba(139, 92, 246, 0.08),
+                    transparent 40%
+                ),
+                var(--panel);
+        }
+
+        .ticket::before {
+            content: "";
+
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+
+            width: 4px;
+
+            background: var(--purple);
+        }
+
+        .ticket-event {
+            margin-bottom: 8px;
+
+            font-size: 21px;
+            font-weight: 900;
+        }
+
+        .ticket-type {
+            margin-bottom: 18px;
+
+            color: var(--purple-light);
+            font-weight: 800;
+        }
+
+        .ticket-data {
+            display: grid;
+            grid-template-columns:
+                repeat(2, minmax(0, 1fr));
+            gap: 14px 24px;
+        }
+
+        .data-label {
+            margin-bottom: 4px;
+
+            color: var(--muted);
+            font-size: 11px;
+            font-weight: 800;
+            letter-spacing: 0.7px;
+            text-transform: uppercase;
+        }
+
+        .data-value {
+            font-size: 14px;
+            font-weight: 700;
+        }
+
+        .code {
+            word-break: break-all;
+
+            color: #d9d1ff;
+            font-family:
+                Consolas,
+                "Courier New",
+                monospace;
+        }
+
+        .ticket-actions {
+            min-width: 145px;
+
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            justify-content: space-between;
+            gap: 20px;
+        }
+
+        .status {
+            display: inline-flex;
+
+            padding: 7px 11px;
+
+            border-radius: 999px;
+
+            font-size: 11px;
+            font-weight: 900;
+            letter-spacing: 0.6px;
+        }
+
+        .status-valid {
+            color: var(--success);
+            background: rgba(66, 211, 146, 0.12);
+            border: 1px solid rgba(66, 211, 146, 0.30);
+        }
+
+        .status-used {
+            color: var(--warning);
+            background: rgba(245, 196, 81, 0.12);
+            border: 1px solid rgba(245, 196, 81, 0.30);
+        }
+
+        .status-cancelled {
+            color: var(--danger);
+            background: rgba(239, 107, 115, 0.12);
+            border: 1px solid rgba(239, 107, 115, 0.30);
+        }
+
+        .view-button {
+            padding: 11px 16px;
+
+            border-radius: 10px;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    #6d3df5,
+                    #8b5cf6
+                );
+
+            color: white;
+            font-size: 13px;
+            font-weight: 900;
+        }
+
+        .view-button:hover {
+            filter: brightness(1.1);
+        }
+
+
+        /* =====================================================
+           SIN ENTRADAS
+           ===================================================== */
+
+        .empty {
+            padding: 50px 30px;
+
+            border: 1px dashed var(--border);
+            border-radius: 18px;
+
+            background: var(--panel);
+
+            text-align: center;
+        }
+
+        .empty-icon {
+            margin-bottom: 18px;
+            font-size: 42px;
+        }
+
+        .empty h2 {
+            margin-bottom: 10px;
+        }
+
+        .empty p {
+            margin-bottom: 24px;
+            color: var(--muted);
+        }
+
+        .primary-button {
+            display: inline-block;
+
+            padding: 12px 20px;
+
+            border-radius: 10px;
+
+            background: var(--purple);
+
+            color: white;
+            font-weight: 900;
+        }
+
+
+        /* =====================================================
+           FOOTER
+           ===================================================== */
+
+        .footer {
+            margin-top: 60px;
+            padding-top: 24px;
+
+            border-top: 1px solid #202738;
+
+            color: var(--muted);
+            font-size: 13px;
+            text-align: center;
+        }
+
+
+        /* =====================================================
+           RESPONSIVE
+           ===================================================== */
+
+        @media (max-width: 760px) {
+
+            .header-inner {
+                padding: 22px 0;
+                flex-direction: column;
+            }
+
+            .nav {
+                gap: 18px;
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+
+            .ticket {
+                grid-template-columns: 1fr;
+            }
+
+            .ticket-actions {
+                min-width: 0;
+
+                flex-direction: row;
+                align-items: center;
+            }
+
+            .ticket-data {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- =====================================================
+         HEADER
+         ===================================================== -->
+
+    <header class="header">
+
+        <div class="header-inner">
+
+            <a
+                href="{% url 'eventos:inicio' %}"
+                class="brand"
+            >
+                <span class="brand-icon">E</span>
+                <span>Entradas</span>
+            </a>
+
+            <nav class="nav">
+
+                <a href="{% url 'eventos:inicio' %}">
+                    Eventos
+                </a>
+
+                <a href="{% url 'carrito_web:mi-carrito' %}">
+                    Mi carrito
+                </a>
+
+                <a
+                    href="{% url 'entradas_web:mis-entradas' %}"
+                    class="active"
+                >
+                    Mis entradas
+                </a>
+
+            </nav>
+
+            <div class="account">
+
+                <span class="username">
+                    {{ user.username }}
+                </span>
+
+                <a
+                    href="{% url 'accounts_web:logout' %}"
+                    class="logout"
+                >
+                    Cerrar sesión
+                </a>
+
+            </div>
+
+        </div>
+
+    </header>
+
+
+    <!-- =====================================================
+         CONTENIDO
+         ===================================================== -->
+
+    <main class="container">
+
+        <section class="page-header">
+
+            <div class="eyebrow">
+                Área del espectador
+            </div>
+
+            <h1>Mis entradas</h1>
+
+            <p class="subtitle">
+                Aquí puedes consultar las entradas generadas
+                por tus compras.
+            </p>
+
+        </section>
+
+
+        <section class="summary">
+
+            <div>
+                <div class="summary-label">
+                    Entradas asociadas a tu cuenta
+                </div>
+
+                <div class="summary-number">
+                    {{ total_entradas }}
+                </div>
+            </div>
+
+            <div class="summary-label">
+                Usuario:
+                <strong>{{ user.username }}</strong>
+            </div>
+
+        </section>
+
+
+        {% if entradas %}
+
+            <section class="ticket-list">
+
+                {% for entrada in entradas %}
+
+                    <article class="ticket">
+
+                        <div>
+
+                            <div class="ticket-event">
+                                {{ entrada.detalle_compra.tipo_entrada.evento.nombre }}
+                            </div>
+
+                            <div class="ticket-type">
+                                {{ entrada.detalle_compra.tipo_entrada.nombre }}
+                            </div>
+
+                            <div class="ticket-data">
+
+                                <div>
+                                    <div class="data-label">
+                                        Código UUID
+                                    </div>
+
+                                    <div class="data-value code">
+                                        {{ entrada.codigo }}
+                                    </div>
+                                </div>
+
+                                <div>
+                                    <div class="data-label">
+                                        Compra
+                                    </div>
+
+                                    <div class="data-value">
+                                        #{{ entrada.detalle_compra.compra.id }}
+                                    </div>
+                                </div>
+
+                                <div>
+                                    <div class="data-label">
+                                        Emitida
+                                    </div>
+
+                                    <div class="data-value">
+                                        {{ entrada.emitida_en|date:"d/m/Y H:i" }}
+                                    </div>
+                                </div>
+
+                                <div>
+                                    <div class="data-label">
+                                        Estado
+                                    </div>
+
+                                    <div class="data-value">
+                                        {{ entrada.get_estado_display }}
+                                    </div>
+                                </div>
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="ticket-actions">
+
+                            {% if entrada.estado == "VALIDA" %}
+
+                                <span class="status status-valid">
+                                    VÁLIDA
+                                </span>
+
+                            {% elif entrada.estado == "UTILIZADA" %}
+
+                                <span class="status status-used">
+                                    UTILIZADA
+                                </span>
+
+                            {% else %}
+
+                                <span class="status status-cancelled">
+                                    ANULADA
+                                </span>
+
+                            {% endif %}
+
+
+                            <a
+                                href="{% url 'entradas_web:detalle-entrada' entrada.codigo %}"
+                                class="view-button"
+                            >
+                                Ver entrada
+                            </a>
+
+                        </div>
+
+                    </article>
+
+                {% endfor %}
+
+            </section>
+
+        {% else %}
+
+            <section class="empty">
+
+                <div class="empty-icon">
+                    🎟
+                </div>
+
+                <h2>
+                    Todavía no tienes entradas
+                </h2>
+
+                <p>
+                    Las entradas aparecerán aquí después
+                    de pagar correctamente una compra.
+                </p>
+
+                <a
+                    href="{% url 'eventos:inicio' %}"
+                    class="primary-button"
+                >
+                    Ver eventos
+                </a>
+
+            </section>
+
+        {% endif %}
+
+
+        <footer class="footer">
+    Venta de Entradas · Christian Cisterna · TILE22 · INACAP Temuco · 2026
+</footer>
+
+    </main>
+
+</body>
+</html>
+

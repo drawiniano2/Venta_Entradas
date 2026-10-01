@@ -1,0 +1,654 @@
+﻿<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Iniciar sesión | Entradas</title>
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            min-height: 100vh;
+
+            font-family:
+                Inter,
+                Arial,
+                Helvetica,
+                sans-serif;
+
+            color: #f7f7fb;
+
+            background:
+                radial-gradient(
+                    circle at 50% 20%,
+                    rgba(111, 74, 255, .18),
+                    transparent 35%
+                ),
+                #070a12;
+        }
+
+
+        /* =====================================================
+           HEADER
+           ===================================================== */
+
+        .header {
+            border-bottom: 1px solid #202636;
+
+            background: rgba(7, 10, 18, .92);
+        }
+
+        .header-inner {
+            width: min(1180px, calc(100% - 40px));
+            height: 76px;
+
+            margin: auto;
+
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 11px;
+
+            color: #ffffff;
+            text-decoration: none;
+
+            font-size: 19px;
+            font-weight: 900;
+            letter-spacing: 1px;
+        }
+
+        .brand-icon {
+            width: 38px;
+            height: 38px;
+
+            display: grid;
+            place-items: center;
+
+            border-radius: 10px;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    #7c4dff,
+                    #5b35d5
+                );
+
+            box-shadow:
+                0 0 24px rgba(124, 77, 255, .25);
+        }
+
+        .volver {
+            color: #aeb5c6;
+
+            text-decoration: none;
+
+            font-size: 14px;
+            font-weight: 700;
+
+            transition: .2s;
+        }
+
+        .volver:hover {
+            color: #ffffff;
+        }
+
+
+        /* =====================================================
+           CONTENIDO
+           ===================================================== */
+
+        .page {
+            min-height: calc(100vh - 76px);
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            padding: 50px 20px;
+        }
+
+        .login-wrapper {
+            width: 100%;
+            max-width: 440px;
+        }
+
+        .intro {
+            margin-bottom: 24px;
+
+            text-align: center;
+        }
+
+        .intro-badge {
+            display: inline-block;
+
+            margin-bottom: 15px;
+            padding: 7px 12px;
+
+            border: 1px solid #5d46bd;
+            border-radius: 20px;
+
+            background: rgba(112, 75, 255, .12);
+
+            color: #bca9ff;
+
+            font-size: 11px;
+            font-weight: 900;
+            letter-spacing: 1px;
+        }
+
+        .intro h1 {
+            margin-bottom: 10px;
+
+            font-size: 34px;
+            line-height: 1.1;
+        }
+
+        .intro p {
+            color: #8f97aa;
+
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+
+        /* =====================================================
+           TARJETA LOGIN
+           ===================================================== */
+
+        .login-card {
+            padding: 30px;
+
+            border: 1px solid #272e40;
+            border-radius: 20px;
+
+            background:
+                linear-gradient(
+                    180deg,
+                    rgba(20, 24, 36, .98),
+                    rgba(12, 15, 24, .98)
+                );
+
+            box-shadow:
+                0 30px 80px rgba(0, 0, 0, .30);
+        }
+
+        .field {
+            margin-bottom: 20px;
+        }
+
+        .field label {
+            display: block;
+
+            margin-bottom: 8px;
+
+            color: #c8ceda;
+
+            font-size: 13px;
+            font-weight: 800;
+        }
+
+        .field input {
+            width: 100%;
+            height: 50px;
+
+            padding: 0 15px;
+
+            border: 1px solid #31384a;
+            border-radius: 11px;
+
+            outline: none;
+
+            background: #0b0f18;
+
+            color: #ffffff;
+
+            font-size: 15px;
+
+            transition: .2s;
+        }
+
+        .field input:focus {
+            border-color: #7655ef;
+
+            box-shadow:
+                0 0 0 3px rgba(118, 85, 239, .12);
+        }
+
+        .field input::placeholder {
+            color: #555e72;
+        }
+
+
+        /* =====================================================
+           ERRORES
+           ===================================================== */
+
+        .errors {
+            margin-bottom: 20px;
+            padding: 13px 15px;
+
+            border: 1px solid rgba(239, 68, 68, .40);
+            border-radius: 10px;
+
+            background: rgba(239, 68, 68, .08);
+
+            color: #ff9b9b;
+
+            font-size: 13px;
+            line-height: 1.5;
+        }
+
+
+        /* =====================================================
+           BOTON
+           ===================================================== */
+
+        .login-button {
+            width: 100%;
+            height: 52px;
+
+            margin-top: 4px;
+
+            border: 0;
+            border-radius: 11px;
+
+            cursor: pointer;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    #7c4dff,
+                    #6036dd
+                );
+
+            color: #ffffff;
+
+            font-size: 14px;
+            font-weight: 900;
+
+            transition:
+                transform .2s,
+                box-shadow .2s;
+        }
+
+        .login-button:hover {
+            transform: translateY(-1px);
+
+            box-shadow:
+                0 10px 30px rgba(111, 72, 255, .28);
+        }
+
+
+        /* =====================================================
+           INFORMACION INFERIOR
+           ===================================================== */
+
+        .login-help {
+            margin-top: 22px;
+
+            padding-top: 20px;
+
+            border-top: 1px solid #252b3a;
+
+            color: #737c90;
+
+            text-align: center;
+
+            font-size: 12px;
+            line-height: 1.6;
+        }
+
+        .security {
+            margin-top: 20px;
+
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+
+            color: #626b7e;
+
+            font-size: 11px;
+        }
+
+
+        /* =====================================================
+           RESPONSIVE
+           ===================================================== */
+
+        @media (max-width: 600px) {
+
+            .header-inner {
+                width: calc(100% - 28px);
+            }
+
+            .login-card {
+                padding: 23px;
+            }
+
+            .intro h1 {
+                font-size: 29px;
+            }
+        }
+
+    
+        /* =====================================================
+           MOSTRAR / OCULTAR CONTRASEÑA
+           ===================================================== */
+
+        .password-wrapper {
+            position: relative;
+            width: 100%;
+        }
+
+        .password-wrapper input {
+            width: 100%;
+            padding-right: 58px;
+            box-sizing: border-box;
+        }
+
+        .password-toggle {
+            position: absolute;
+
+            top: 50%;
+            right: 8px;
+
+            transform: translateY(-50%);
+
+            width: 42px;
+            height: 36px;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            padding: 0;
+
+            border: 1px solid transparent;
+            border-radius: 9px;
+
+            background: transparent;
+
+            color: #9b7cff;
+
+            cursor: pointer;
+
+            font-size: 18px;
+            line-height: 1;
+
+            transition:
+                background .2s,
+                border-color .2s,
+                transform .15s;
+        }
+
+        .password-toggle:hover {
+            background: rgba(124, 92, 255, .12);
+            border-color: rgba(124, 92, 255, .35);
+        }
+
+        .password-toggle:focus-visible {
+            outline: 2px solid #7c5cff;
+            outline-offset: 1px;
+        }
+
+        .password-toggle:active {
+            transform:
+                translateY(-50%)
+                scale(.94);
+        }
+
+    </style>
+</head>
+
+
+<body>
+
+<header class="header">
+
+    <div class="header-inner">
+
+        <a
+            href="{% url 'eventos:inicio' %}"
+            class="brand"
+        >
+            <span class="brand-icon">
+                E
+            </span>
+
+            <span>
+                ENTRADAS
+            </span>
+        </a>
+
+
+        <a
+            href="{% url 'eventos:inicio' %}"
+            class="volver"
+        >
+            ← Volver a eventos
+        </a>
+
+    </div>
+
+</header>
+
+
+<main class="page">
+
+    <div class="login-wrapper">
+
+        <div class="intro">
+
+            <span class="intro-badge">
+                ACCESO SEGURO
+            </span>
+
+            <h1>
+                Iniciar sesión
+            </h1>
+
+            <p>
+                Ingresa a tu cuenta para continuar con
+                la compra de entradas.
+            </p>
+
+        </div>
+
+
+        <section class="login-card">
+
+            {% if formulario.non_field_errors %}
+
+                <div class="errors">
+
+                    {% for error in formulario.non_field_errors %}
+                        {{ error }}
+                    {% endfor %}
+
+                </div>
+
+            {% endif %}
+
+
+            <form method="post">
+
+                {% csrf_token %}
+
+                {% if next %}
+
+                    <input
+                        type="hidden"
+                        name="next"
+                        value="{{ next }}"
+                    >
+
+                {% endif %}
+
+
+                <div class="field">
+
+                    <label for="id_username">
+                        Usuario
+                    </label>
+
+                    <input
+                        type="text"
+                        name="username"
+                        id="id_username"
+                        autocomplete="username"
+                        autofocus
+                        required
+                        placeholder="Ingresa tu usuario"
+                        value="{{ formulario.username.value|default:'' }}"
+                    >
+
+                    {% if formulario.username.errors %}
+
+                        <div class="errors">
+                            {{ formulario.username.errors }}
+                        </div>
+
+                    {% endif %}
+
+                </div>
+
+
+                <div class="field">
+
+                    <label for="id_password">
+                        Contraseña
+                    </label>
+
+                    <div class="password-wrapper">
+
+                        <input
+                            type="password"
+                            name="password"
+                            id="id_password"
+                            autocomplete="current-password"
+                            required
+                            placeholder="Ingresa tu contraseña"
+                        >
+
+                        <button
+                            type="button"
+                            id="password-toggle"
+                            class="password-toggle"
+                            aria-label="Mostrar contraseña"
+                            title="Mostrar contraseña"
+                        >
+                            <span id="password-eye">👁</span>
+                        </button>
+
+                    </div>
+
+                    {% if formulario.password.errors %}
+
+                        <div class="errors">
+                            {{ formulario.password.errors }}
+                        </div>
+
+                    {% endif %}
+
+                </div>
+
+
+                <button
+                    type="submit"
+                    class="login-button"
+                >
+                    INICIAR SESIÓN
+                </button>
+
+            </form>
+
+
+            <div class="login-help">
+
+                Utiliza las credenciales asociadas a tu cuenta
+                de espectador u organizador.
+
+            </div>
+
+        </section>
+
+
+        <div class="security">
+            🔒 Sesión protegida por Django
+        </div>
+
+    </div>
+
+</main>
+
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+
+            const passwordInput =
+                document.getElementById("id_password");
+
+            const passwordToggle =
+                document.getElementById("password-toggle");
+
+            const passwordEye =
+                document.getElementById("password-eye");
+
+            if (!passwordInput || !passwordToggle) {
+                return;
+            }
+
+            passwordToggle.addEventListener("click", function () {
+
+                const oculta =
+                    passwordInput.type === "password";
+
+                passwordInput.type =
+                    oculta ? "text" : "password";
+
+                passwordToggle.setAttribute(
+                    "aria-label",
+                    oculta
+                        ? "Ocultar contraseña"
+                        : "Mostrar contraseña"
+                );
+
+                passwordToggle.setAttribute(
+                    "title",
+                    oculta
+                        ? "Ocultar contraseña"
+                        : "Mostrar contraseña"
+                );
+
+                if (passwordEye) {
+                    passwordEye.textContent =
+                        oculta ? "◉" : "👁";
+                }
+
+                passwordInput.focus();
+
+            });
+
+        });
+    </script>
+
+</body>
+</html>
+

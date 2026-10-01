@@ -1,0 +1,779 @@
+﻿<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Validar entrada | Venta de Entradas</title>
+
+    <style>
+        /* =====================================================
+           CONFIGURACION GENERAL
+           ===================================================== */
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        :root {
+            --bg: #070b14;
+            --bg-soft: #0d1220;
+            --panel: #111725;
+            --panel-soft: #151c2b;
+            --border: #283144;
+            --text: #f5f7ff;
+            --muted: #96a1ba;
+            --purple: #8b5cf6;
+            --purple-light: #a78bfa;
+            --success: #42d392;
+            --danger: #ef6461;
+            --warning: #f5c451;
+        }
+
+        body {
+            min-height: 100vh;
+
+            background:
+                radial-gradient(
+                    circle at 50% 0%,
+                    rgba(91, 65, 190, 0.16),
+                    transparent 35%
+                ),
+                var(--bg);
+
+            color: var(--text);
+
+            font-family:
+                Inter,
+                ui-sans-serif,
+                system-ui,
+                -apple-system,
+                BlinkMacSystemFont,
+                "Segoe UI",
+                sans-serif;
+        }
+
+        a {
+            color: inherit;
+            text-decoration: none;
+        }
+
+
+        /* =====================================================
+           HEADER
+           ===================================================== */
+
+        .header {
+            border-bottom: 1px solid #202738;
+            background: rgba(7, 11, 20, 0.96);
+        }
+
+        .header-inner {
+            width: min(1100px, calc(100% - 40px));
+            min-height: 105px;
+            margin: 0 auto;
+
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 30px;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+
+            font-size: 20px;
+            font-weight: 900;
+        }
+
+        .brand-icon {
+            width: 38px;
+            height: 38px;
+
+            display: grid;
+            place-items: center;
+
+            border-radius: 11px;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    #6d3df5,
+                    #a855f7
+                );
+
+            box-shadow:
+                0 10px 30px rgba(139, 92, 246, 0.25);
+
+            font-weight: 900;
+        }
+
+        .nav {
+            display: flex;
+            align-items: center;
+            gap: 28px;
+
+            color: var(--muted);
+
+            font-size: 14px;
+            font-weight: 700;
+        }
+
+        .nav a:hover {
+            color: white;
+        }
+
+        .user-box {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            justify-content: flex-end;
+            gap: 12px;
+            white-space: nowrap;
+        }
+
+        .username {
+            font-size: 14px;
+            font-weight: 800;
+        }
+
+        .role {
+            color: var(--purple-light);
+            font-size: 11px;
+            font-weight: 800;
+            letter-spacing: 1px;
+        }
+
+        .logout {
+            margin-top: 0;
+            padding: 8px 14px;
+
+            border: 1px solid var(--border);
+            border-radius: 9px;
+
+            color: white;
+
+            font-size: 12px;
+            font-weight: 700;
+
+            transition:
+                border-color 0.2s ease,
+                background 0.2s ease;
+        }
+
+        .logout:hover {
+            border-color: var(--purple);
+            background: rgba(139, 92, 246, 0.10);
+        }
+
+
+        /* =====================================================
+           MAIN
+           ===================================================== */
+
+        .main {
+            width: min(820px, calc(100% - 40px));
+            margin: 0 auto;
+            padding: 70px 0 100px;
+        }
+
+        .eyebrow {
+            margin-bottom: 10px;
+
+            color: var(--purple-light);
+
+            font-size: 12px;
+            font-weight: 900;
+            letter-spacing: 2px;
+        }
+
+        h1 {
+            margin-bottom: 14px;
+
+            font-size: clamp(34px, 6vw, 52px);
+            line-height: 1;
+        }
+
+        .intro {
+            max-width: 650px;
+
+            color: var(--muted);
+
+            font-size: 16px;
+            line-height: 1.7;
+        }
+
+
+        /* =====================================================
+           MENSAJES
+           ===================================================== */
+
+        .messages {
+            margin-top: 30px;
+        }
+
+        .message {
+            margin-bottom: 12px;
+            padding: 16px 18px;
+
+            border: 1px solid var(--border);
+            border-radius: 12px;
+
+            background: var(--panel);
+
+            line-height: 1.5;
+        }
+
+        .message.success {
+            border-color: rgba(66, 211, 146, 0.45);
+            color: #7de7b7;
+        }
+
+        .message.error {
+            border-color: rgba(239, 100, 97, 0.5);
+            color: #ff9a97;
+        }
+
+        .message.warning {
+            border-color: rgba(245, 196, 81, 0.5);
+            color: #ffd978;
+        }
+
+
+        /* =====================================================
+           VALIDADOR
+           ===================================================== */
+
+        .validator {
+            margin-top: 35px;
+            padding: 32px;
+
+            border: 1px solid var(--border);
+            border-radius: 20px;
+
+            background:
+                linear-gradient(
+                    180deg,
+                    rgba(255, 255, 255, 0.025),
+                    transparent
+                ),
+                var(--panel);
+
+            box-shadow:
+                0 24px 70px rgba(0, 0, 0, 0.25);
+        }
+
+        .validator-title {
+            margin-bottom: 8px;
+
+            font-size: 21px;
+            font-weight: 900;
+        }
+
+        .validator-description {
+            margin-bottom: 26px;
+
+            color: var(--muted);
+
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        .label {
+            display: block;
+
+            margin-bottom: 9px;
+
+            color: #cbd3e7;
+
+            font-size: 12px;
+            font-weight: 900;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        .input {
+            width: 100%;
+
+            padding: 16px 17px;
+
+            border: 1px solid #313b50;
+            border-radius: 12px;
+
+            outline: none;
+
+            background: #090e18;
+            color: white;
+
+            font-family: Consolas, monospace;
+            font-size: 15px;
+
+            transition:
+                border-color 0.2s,
+                box-shadow 0.2s;
+        }
+
+        .input:focus {
+            border-color: var(--purple);
+
+            box-shadow:
+                0 0 0 3px rgba(139, 92, 246, 0.15);
+        }
+
+        .input::placeholder {
+            color: #59647b;
+        }
+
+        .button {
+            width: 100%;
+
+            margin-top: 18px;
+            padding: 16px 20px;
+
+            border: 0;
+            border-radius: 12px;
+
+            cursor: pointer;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    #6d3df5,
+                    #9333ea
+                );
+
+            color: white;
+
+            font-size: 15px;
+            font-weight: 900;
+
+            box-shadow:
+                0 14px 35px rgba(109, 61, 245, 0.25);
+        }
+
+        .button:hover {
+            filter: brightness(1.08);
+        }
+
+
+        /* =====================================================
+           RESULTADO
+           ===================================================== */
+
+        .result {
+            margin-top: 30px;
+            overflow: hidden;
+
+            border: 1px solid rgba(66, 211, 146, 0.4);
+            border-radius: 18px;
+
+            background: rgba(66, 211, 146, 0.035);
+        }
+
+        .result-header {
+            padding: 20px 24px;
+
+            border-bottom: 1px solid rgba(66, 211, 146, 0.2);
+
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .result-title {
+            font-size: 18px;
+            font-weight: 900;
+        }
+
+        .valid-badge {
+            padding: 7px 11px;
+
+            border: 1px solid rgba(66, 211, 146, 0.45);
+            border-radius: 999px;
+
+            background: rgba(66, 211, 146, 0.08);
+
+            color: #70e2ad;
+
+            font-size: 11px;
+            font-weight: 900;
+            letter-spacing: 1px;
+        }
+
+        .result-grid {
+            padding: 24px;
+
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+        }
+
+        .result-item {
+            min-width: 0;
+        }
+
+        .result-label {
+            margin-bottom: 6px;
+
+            color: var(--muted);
+
+            font-size: 11px;
+            font-weight: 800;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        .result-value {
+            overflow-wrap: anywhere;
+
+            font-size: 15px;
+            font-weight: 800;
+            line-height: 1.5;
+        }
+
+        .uuid {
+            font-family: Consolas, monospace;
+            font-size: 13px;
+        }
+
+
+        /* =====================================================
+           FOOTER
+           ===================================================== */
+
+        .footer {
+            padding: 30px 20px;
+
+            border-top: 1px solid #202738;
+
+            color: #6f7a92;
+
+            text-align: center;
+            font-size: 12px;
+        }
+
+
+        /* =====================================================
+           RESPONSIVE
+           ===================================================== */
+
+        @media (max-width: 760px) {
+
+            .header-inner {
+                padding: 22px 0;
+
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .nav {
+                flex-wrap: wrap;
+                gap: 16px;
+            }
+
+            .user-box {
+                align-items: flex-start;
+            }
+
+            .main {
+                padding-top: 45px;
+            }
+
+            .validator {
+                padding: 22px;
+            }
+
+            .result-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    
+        /* =====================================================
+           NAVBAR - BOTONES UNIFICADOS
+           ===================================================== */
+
+        .nav {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .nav a {
+            min-height: 36px;
+
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+
+            padding: 0 14px;
+
+            border: 1px solid #202738;
+            border-radius: 9px;
+
+            background: rgba(15, 23, 42, 0.38);
+
+            color: #dbeafe;
+            text-decoration: none;
+
+            font-size: 12px;
+            font-weight: 700;
+
+            white-space: nowrap;
+
+            transition:
+                border-color .18s ease,
+                background .18s ease,
+                color .18s ease,
+                transform .18s ease;
+        }
+
+        .nav a:hover {
+            color: #ffffff;
+            border-color: rgba(124, 92, 255, .70);
+            background: rgba(124, 92, 255, .10);
+            transform: translateY(-1px);
+        }
+
+        .nav a[href*="validar"] {
+            border-color: rgba(124, 92, 255, .75);
+            background: rgba(124, 92, 255, .14);
+            color: #ffffff;
+        }
+</style>
+</head>
+
+<body>
+
+    <!-- =====================================================
+         HEADER
+         ===================================================== -->
+
+    {% include "includes/navbar.html" with navbar_activa="validar" %}
+
+
+    <!-- =====================================================
+         CONTENIDO
+         ===================================================== -->
+
+    <main class="main">
+
+        <div class="eyebrow">
+            CONTROL DE ACCESO
+        </div>
+
+        <h1>
+            Validar entrada
+        </h1>
+
+        <p class="intro">
+            Ingresa el código UUID de una entrada para comprobar
+            su validez y registrar su utilización. Una entrada
+            utilizada no podrá validarse nuevamente.
+        </p>
+
+
+        <!-- =================================================
+             MENSAJES DJANGO
+             ================================================= -->
+
+        {% if messages %}
+
+            <div class="messages">
+
+                {% for message in messages %}
+
+                    <div class="message {{ message.tags }}">
+                        {{ message }}
+                    </div>
+
+                {% endfor %}
+
+            </div>
+
+        {% endif %}
+
+
+        <!-- =================================================
+             FORMULARIO
+             ================================================= -->
+
+        <section class="validator">
+
+            <div class="validator-title">
+                Código de entrada
+            </div>
+
+            <p class="validator-description">
+                Introduce el UUID asociado al ticket digital.
+                El sistema comprobará automáticamente que la
+                entrada corresponda a uno de tus eventos.
+            </p>
+
+
+            <form method="post">
+
+                {% csrf_token %}
+
+                <label
+                    for="codigo"
+                    class="label"
+                >
+                    UUID de la entrada
+                </label>
+
+                <input
+                    id="codigo"
+                    name="codigo"
+                    type="text"
+                    class="input"
+                    placeholder="xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
+                    autocomplete="off"
+                    required
+                >
+
+                <button
+                    type="submit"
+                    class="button"
+                >
+                    Validar entrada
+                </button>
+
+            </form>
+
+        </section>
+
+
+        <!-- =================================================
+             RESULTADO EXITOSO
+             ================================================= -->
+
+        {% if entrada %}
+
+            <section class="result">
+
+                <div class="result-header">
+
+                    <div class="result-title">
+                        Entrada aceptada
+                    </div>
+
+                    <span class="valid-badge">
+                        UTILIZADA
+                    </span>
+
+                </div>
+
+
+                <div class="result-grid">
+
+                    <div class="result-item">
+
+                        <div class="result-label">
+                            Evento
+                        </div>
+
+                        <div class="result-value">
+                            {{ entrada.detalle_compra.tipo_entrada.evento.nombre }}
+                        </div>
+
+                    </div>
+
+
+                    <div class="result-item">
+
+                        <div class="result-label">
+                            Tipo de entrada
+                        </div>
+
+                        <div class="result-value">
+                            {{ entrada.detalle_compra.tipo_entrada.nombre }}
+                        </div>
+
+                    </div>
+
+
+                    <div class="result-item">
+
+                        <div class="result-label">
+                            Compra
+                        </div>
+
+                        <div class="result-value">
+                            #{{ entrada.detalle_compra.compra.id }}
+                        </div>
+
+                    </div>
+
+
+                    <div class="result-item">
+
+                        <div class="result-label">
+                            Estado
+                        </div>
+
+                        <div class="result-value">
+                            {{ entrada.get_estado_display }}
+                        </div>
+
+                    </div>
+
+
+                    <div class="result-item">
+
+                        <div class="result-label">
+                            Utilizada
+                        </div>
+
+                        <div class="result-value">
+                            {{ entrada.utilizada_en|date:"d/m/Y H:i:s" }}
+                        </div>
+
+                    </div>
+
+
+                    <div class="result-item">
+
+                        <div class="result-label">
+                            UUID
+                        </div>
+
+                        <div class="result-value uuid">
+                            {{ entrada.codigo }}
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+        {% endif %}
+
+    </main>
+
+
+    <!-- =====================================================
+         FOOTER
+         ===================================================== -->
+
+    <footer class="footer">
+    Venta de Entradas · Christian Cisterna · TILE22 · INACAP Temuco · 2026
+</footer>
+
+</body>
+</html>
+
+
+
+
+
+

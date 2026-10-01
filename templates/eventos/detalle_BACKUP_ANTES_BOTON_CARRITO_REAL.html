@@ -1,0 +1,710 @@
+﻿{% load humanize moneda %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>{{ evento.nombre }} | Entradas</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            min-height: 100vh;
+            background: #0b0f18;
+            color: #f5f7ff;
+            font-family: Arial, Helvetica, sans-serif;
+        }
+
+        a {
+            color: inherit;
+            text-decoration: none;
+        }
+
+        /* ==================================================
+           CABECERA
+           ================================================== */
+
+        .header {
+            border-bottom: 1px solid #202636;
+            background: #090d14;
+        }
+
+        .header-inner {
+            width: min(1070px, calc(100% - 40px));
+            height: 105px;
+            margin: 0 auto;
+
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+
+            font-size: 18px;
+            font-weight: 800;
+        }
+
+        .brand-icon {
+            width: 35px;
+            height: 35px;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            border-radius: 10px;
+
+            background: linear-gradient(
+                135deg,
+                #7750ff,
+                #a04cff
+            );
+
+            font-weight: 900;
+        }
+
+        .nav {
+            display: flex;
+            gap: 28px;
+
+            color: #9ba5ba;
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .nav a:hover {
+            color: #ffffff;
+        }
+
+        .cart-button {
+            padding: 11px 17px;
+
+            border: 1px solid #2a3040;
+            border-radius: 10px;
+
+            background: #111620;
+
+            font-size: 13px;
+            font-weight: 700;
+        }
+
+        /* ==================================================
+           CONTENIDO
+           ================================================== */
+
+        .page {
+            width: min(1070px, calc(100% - 40px));
+            margin: 0 auto;
+            padding: 50px 0 80px;
+        }
+
+        .back {
+            display: inline-block;
+            margin-bottom: 30px;
+
+            color: #9a7cff;
+            font-size: 13px;
+            font-weight: 700;
+        }
+
+        .event-layout {
+            display: grid;
+            grid-template-columns: minmax(0, 1.35fr) minmax(320px, .65fr);
+            gap: 45px;
+            align-items: start;
+        }
+
+        /* ==================================================
+           EVENTO
+           ================================================== */
+
+        .event-visual {
+            position: relative;
+
+            min-height: 290px;
+            margin-bottom: 32px;
+
+            overflow: hidden;
+
+            border: 1px solid #292f41;
+            border-radius: 24px;
+
+            background:
+                radial-gradient(
+                    circle at 75% 25%,
+                    rgba(139, 92, 246, .30),
+                    transparent 25%
+                ),
+                radial-gradient(
+                    circle at 20% 80%,
+                    rgba(91, 65, 180, .20),
+                    transparent 30%
+                ),
+                linear-gradient(
+                    135deg,
+                    #19142f,
+                    #101522
+                );
+        }
+
+        .event-visual-content {
+            position: absolute;
+            left: 35px;
+            right: 35px;
+            bottom: 35px;
+        }
+
+        .event-tag {
+            display: inline-block;
+
+            margin-bottom: 15px;
+            padding: 8px 12px;
+
+            border: 1px solid #6046c9;
+            border-radius: 20px;
+
+            background: rgba(104, 69, 221, .16);
+
+            color: #a98cff;
+            font-size: 11px;
+            font-weight: 800;
+            letter-spacing: .7px;
+        }
+
+        .event-visual h1 {
+            max-width: 700px;
+
+            font-size: 42px;
+            line-height: 1.05;
+        }
+
+        .event-info {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+
+            margin-bottom: 40px;
+        }
+
+        .info-box {
+            min-height: 105px;
+            padding: 18px;
+
+            border: 1px solid #272e3e;
+            border-radius: 14px;
+
+            background: #111725;
+        }
+
+        .info-label {
+            display: block;
+            margin-bottom: 10px;
+
+            color: #828da4;
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+
+        .info-value {
+            font-size: 14px;
+            font-weight: 700;
+            line-height: 1.45;
+        }
+
+        .section-title {
+            margin-bottom: 13px;
+
+            font-size: 22px;
+        }
+
+        .description {
+            color: #aab4c8;
+            font-size: 14px;
+            line-height: 1.75;
+        }
+
+        /* ==================================================
+           ENTRADAS
+           ================================================== */
+
+        .ticket-panel {
+            position: sticky;
+            top: 25px;
+
+            padding: 26px;
+
+            border: 1px solid #30364a;
+            border-radius: 20px;
+
+            background: #121827;
+        }
+
+        .ticket-panel h2 {
+            margin-bottom: 7px;
+            font-size: 21px;
+        }
+
+        .ticket-intro {
+            margin-bottom: 23px;
+
+            color: #8f99ae;
+            font-size: 13px;
+            line-height: 1.5;
+        }
+
+        .ticket {
+            margin-bottom: 15px;
+            padding: 18px;
+
+            border: 1px solid #2b3245;
+            border-radius: 14px;
+
+            background: #0d1320;
+        }
+
+        .ticket:last-child {
+            margin-bottom: 0;
+        }
+
+        .ticket-top {
+            display: flex;
+            justify-content: space-between;
+            gap: 15px;
+            align-items: flex-start;
+
+            margin-bottom: 15px;
+        }
+
+        .ticket-name {
+            font-size: 16px;
+            font-weight: 800;
+        }
+
+        .ticket-description {
+            margin-top: 5px;
+
+            color: #8893a9;
+            font-size: 12px;
+            line-height: 1.4;
+        }
+
+        .price {
+            color: #a986ff;
+            font-size: 18px;
+            font-weight: 900;
+            white-space: nowrap;
+        }
+
+        .stock {
+            display: flex;
+            justify-content: space-between;
+
+            padding-top: 13px;
+
+            border-top: 1px solid #242b3b;
+
+            color: #8e99ae;
+            font-size: 12px;
+        }
+
+        .stock-number {
+            color: #39df91;
+            font-weight: 800;
+        }
+
+        .buy-button {
+            width: 100%;
+
+            margin-top: 16px;
+            padding: 13px;
+
+            border: 0;
+            border-radius: 10px;
+
+            background: linear-gradient(
+                135deg,
+                #7552ff,
+                #984cff
+            );
+
+            color: #ffffff;
+
+            font-size: 13px;
+            font-weight: 800;
+
+            cursor: pointer;
+        }
+
+        .buy-button:hover {
+            filter: brightness(1.08);
+        }
+
+        .sold-out {
+            color: #ff6c7a;
+            font-weight: 800;
+        }
+
+        .no-tickets {
+            padding: 20px;
+
+            border: 1px dashed #343b4e;
+            border-radius: 12px;
+
+            color: #909bb0;
+            font-size: 13px;
+            line-height: 1.5;
+        }
+
+        /* ==================================================
+           ORGANIZADOR
+           ================================================== */
+
+        .organizer {
+            margin-top: 35px;
+            padding-top: 25px;
+
+            border-top: 1px solid #252c3c;
+        }
+
+        .organizer-label {
+            margin-bottom: 7px;
+
+            color: #7f899e;
+            font-size: 11px;
+            text-transform: uppercase;
+        }
+
+        .organizer-name {
+            font-weight: 800;
+        }
+
+        /* ==================================================
+           FOOTER
+           ================================================== */
+
+        .footer {
+            padding: 30px;
+
+            border-top: 1px solid #202636;
+
+            background: #090d14;
+
+            color: #70809e;
+
+            text-align: center;
+            font-size: 11px;
+        }
+
+        /* ==================================================
+           RESPONSIVE
+           ================================================== */
+
+        @media (max-width: 850px) {
+            .event-layout {
+                grid-template-columns: 1fr;
+            }
+
+            .ticket-panel {
+                position: static;
+            }
+
+            .event-info {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 650px) {
+            .header-inner {
+                height: auto;
+                padding: 20px 0;
+                flex-wrap: wrap;
+                gap: 20px;
+            }
+
+            .nav {
+                order: 3;
+                width: 100%;
+            }
+
+            .event-visual h1 {
+                font-size: 31px;
+            }
+        }
+    
+        /* =====================================================
+           AFICHE REAL EN DETALLE DEL EVENTO
+           ===================================================== */
+
+        .event-visual-image {
+            position: absolute;
+            inset: 0;
+
+            width: 100%;
+            height: 100%;
+
+            object-fit: cover;
+            object-position: center;
+
+            display: block;
+
+            z-index: 1;
+        }
+
+        .event-visual-overlay {
+            position: absolute;
+            inset: 0;
+
+            background:
+                linear-gradient(
+                    to top,
+                    rgba(5, 8, 15, .94) 0%,
+                    rgba(5, 8, 15, .64) 38%,
+                    rgba(5, 8, 15, .18) 72%,
+                    rgba(5, 8, 15, .08) 100%
+                );
+
+            z-index: 2;
+            pointer-events: none;
+        }
+
+        .event-visual-content {
+            z-index: 3;
+        }
+
+    </style>
+</head>
+
+<body>
+
+<header class="header">
+    <div class="header-inner">
+
+        <a href="{% url 'eventos:inicio' %}" class="brand">
+            <span class="brand-icon">E</span>
+            <span>ENTRADAS</span>
+        </a>
+
+        <nav class="nav">
+            <a href="{% url 'eventos:inicio' %}#eventos">
+                Eventos
+            </a>
+
+            <a href="/api/docs/">
+                API
+            </a>
+
+            <a href="/admin/">
+                Administración
+            </a>
+        </nav>
+
+        <a href="/api/carrito/" class="cart-button">
+            Mi carrito
+        </a>
+
+    </div>
+</header>
+
+
+<main class="page">
+
+    <a href="{% url 'eventos:inicio' %}#eventos" class="back">
+        ← Volver a eventos
+    </a>
+
+
+    <div class="event-layout">
+
+        <section>
+
+            <div class="event-visual">
+
+                {% if evento.imagen %}
+                    <img
+                        src="{{ evento.imagen.url }}"
+                        alt="Afiche de {{ evento.nombre }}"
+                        class="event-visual-image"
+                    >
+
+                    <div class="event-visual-overlay"></div>
+                {% endif %}
+
+                <div class="event-visual-content">
+
+                    <span class="event-tag">
+                        EVENTO PUBLICADO
+                    </span>
+
+                    <h1>
+                        {{ evento.nombre }}
+                    </h1>
+
+                </div>
+
+            </div>
+
+
+            <div class="event-info">
+
+                <div class="info-box">
+                    <span class="info-label">
+                        Fecha
+                    </span>
+
+                    <div class="info-value">
+                        {{ evento.fecha_inicio|date:"d M Y" }}
+                    </div>
+                </div>
+
+
+                <div class="info-box">
+                    <span class="info-label">
+                        Hora
+                    </span>
+
+                    <div class="info-value">
+                        {{ evento.fecha_inicio|date:"H:i" }}
+                    </div>
+                </div>
+
+
+                <div class="info-box">
+                    <span class="info-label">
+                        Lugar
+                    </span>
+
+                    <div class="info-value">
+                        {{ evento.recinto.nombre }}<br>
+                        {{ evento.recinto.ciudad }}
+                    </div>
+                </div>
+
+            </div>
+
+
+            <h2 class="section-title">
+                Acerca del evento
+            </h2>
+
+            <div class="description">
+                {{ evento.descripcion|linebreaksbr }}
+            </div>
+
+
+            <div class="organizer">
+
+                <div class="organizer-label">
+                    Organizado por
+                </div>
+
+                <div class="organizer-name">
+                    {{ evento.organizador.username }}
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <aside class="ticket-panel">
+
+            <h2>
+                Entradas
+            </h2>
+
+            <p class="ticket-intro">
+                Selecciona el tipo de entrada que deseas comprar.
+            </p>
+
+
+            {% for tipo in tipos_entrada %}
+
+                <div class="ticket">
+
+                    <div class="ticket-top">
+
+                        <div>
+                            <div class="ticket-name">
+                                {{ tipo.nombre }}
+                            </div>
+
+                            {% if tipo.descripcion %}
+                                <div class="ticket-description">
+                                    {{ tipo.descripcion }}
+                                </div>
+                            {% endif %}
+                        </div>
+
+                        <div class="price">
+                            ${{ tipo.precio|clp }}
+                        </div>
+
+                    </div>
+
+
+                    <div class="stock">
+
+                        <span>
+                            Disponibilidad
+                        </span>
+
+                        {% if tipo.stock_disponible > 0 %}
+                            <span class="stock-number">
+                                {{ tipo.stock_disponible }} disponibles
+                            </span>
+                        {% else %}
+                            <span class="sold-out">
+                                Agotado
+                            </span>
+                        {% endif %}
+
+                    </div>
+
+
+                    {% if tipo.stock_disponible > 0 %}
+                        <button
+                            type="button"
+                            class="buy-button"
+                        >
+                            Agregar al carrito
+                        </button>
+                    {% endif %}
+
+                </div>
+
+            {% empty %}
+
+                <div class="no-tickets">
+                    Actualmente no existen tipos de entrada
+                    disponibles para este evento.
+                </div>
+
+            {% endfor %}
+
+        </aside>
+
+    </div>
+
+</main>
+
+
+<footer class="footer">
+    Venta de Entradas · Proyecto Backend · 2026
+</footer>
+
+</body>
+</html>
+
+
+

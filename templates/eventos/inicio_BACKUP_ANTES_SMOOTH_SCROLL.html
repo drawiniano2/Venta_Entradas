@@ -1,0 +1,2364 @@
+﻿<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Venta de Entradas | Eventos y Conciertos</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        :root {
+            --fondo: #080b12;
+            --fondo-secundario: #0f1420;
+            --tarjeta: #151b29;
+            --tarjeta-hover: #1b2334;
+            --texto: #f5f7fb;
+            --texto-suave: #9da8ba;
+            --borde: rgba(255, 255, 255, 0.08);
+            --acento: #7c5cff;
+            --acento-claro: #9d87ff;
+            --verde: #43d17d;
+        }
+
+        body {
+            min-height: 100vh;
+            background:
+                radial-gradient(
+                    circle at 70% 15%,
+                    rgba(124, 92, 255, 0.15),
+                    transparent 32%
+                ),
+                var(--fondo);
+            color: var(--texto);
+            font-family:
+                Inter,
+                system-ui,
+                -apple-system,
+                BlinkMacSystemFont,
+                "Segoe UI",
+                sans-serif;
+        }
+
+        a {
+            color: inherit;
+            text-decoration: none;
+        }
+
+        /* =====================================================
+           NAVEGACION
+           ===================================================== */
+
+        .navbar {
+            height: 76px;
+            border-bottom: 1px solid var(--borde);
+            background: rgba(8, 11, 18, 0.90);
+            backdrop-filter: blur(16px);
+
+            display: flex;
+            align-items: center;
+
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .navbar-contenido {
+            width: min(1180px, calc(100% - 40px));
+            margin: 0 auto;
+
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 30px;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-weight: 900;
+            letter-spacing: -0.5px;
+            font-size: 21px;
+        }
+
+        .logo-icono {
+            width: 38px;
+            height: 38px;
+            border-radius: 11px;
+
+            display: grid;
+            place-items: center;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    var(--acento),
+                    #b55cff
+                );
+
+            font-size: 20px;
+            box-shadow:
+                0 8px 30px rgba(124, 92, 255, 0.28);
+        }
+
+        .menu {
+            display: flex;
+            align-items: center;
+            gap: 30px;
+
+            color: var(--texto-suave);
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .menu a {
+            transition: 0.2s;
+        }
+
+        .menu a:hover {
+            color: white;
+        }
+
+        .acciones {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .boton-carrito {
+            border: 1px solid var(--borde);
+            background: rgba(255,255,255,0.04);
+            padding: 10px 16px;
+            border-radius: 10px;
+            font-size: 14px;
+            font-weight: 700;
+        }
+
+        /* =====================================================
+           HERO
+           ===================================================== */
+
+        .hero {
+            width: min(1180px, calc(100% - 40px));
+            margin: 0 auto;
+
+            min-height: 480px;
+
+            display: grid;
+            grid-template-columns: 1.1fr 0.9fr;
+            align-items: center;
+            gap: 70px;
+
+            padding: 70px 0;
+        }
+
+        .etiqueta {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+
+            color: var(--acento-claro);
+            background: rgba(124, 92, 255, 0.10);
+            border: 1px solid rgba(124, 92, 255, 0.22);
+
+            padding: 7px 12px;
+            border-radius: 999px;
+
+            font-size: 12px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+
+            margin-bottom: 24px;
+        }
+
+        .hero h1 {
+            font-size: clamp(45px, 6vw, 78px);
+            line-height: 0.98;
+            letter-spacing: -4px;
+            max-width: 720px;
+        }
+
+        .hero h1 span {
+            color: var(--acento-claro);
+        }
+
+        .hero p {
+            max-width: 580px;
+            color: var(--texto-suave);
+            line-height: 1.7;
+            font-size: 17px;
+            margin-top: 25px;
+        }
+
+        .hero-botones {
+            display: flex;
+            gap: 14px;
+            margin-top: 34px;
+        }
+
+        .boton-principal {
+            display: inline-block;
+            background:
+                linear-gradient(
+                    135deg,
+                    var(--acento),
+                    #955cff
+                );
+
+            padding: 14px 23px;
+            border-radius: 11px;
+
+            font-weight: 800;
+            font-size: 14px;
+
+            box-shadow:
+                0 12px 35px rgba(124, 92, 255, 0.24);
+        }
+
+        .boton-secundario {
+            display: inline-block;
+
+            padding: 14px 23px;
+            border-radius: 11px;
+
+            border: 1px solid var(--borde);
+            background: rgba(255,255,255,0.035);
+
+            color: #d5dae4;
+            font-weight: 700;
+            font-size: 14px;
+        }
+
+        /* =====================================================
+           PANEL HERO
+           ===================================================== */
+
+        .hero-panel {
+            position: relative;
+            min-height: 330px;
+
+            border: 1px solid var(--borde);
+            border-radius: 28px;
+
+            background:
+                linear-gradient(
+                    145deg,
+                    rgba(124,92,255,0.18),
+                    rgba(21,27,41,0.85)
+                );
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            overflow: hidden;
+        }
+
+        .hero-panel::before {
+            content: "";
+            width: 250px;
+            height: 250px;
+            border-radius: 50%;
+
+            position: absolute;
+
+            background: rgba(124, 92, 255, 0.20);
+            filter: blur(60px);
+        }
+
+        .ticket {
+            width: 76%;
+            position: relative;
+            z-index: 2;
+
+            background: rgba(8,11,18,0.88);
+            border: 1px solid rgba(255,255,255,0.12);
+
+            border-radius: 18px;
+            padding: 28px;
+
+            transform: rotate(-4deg);
+
+            box-shadow:
+                0 30px 70px rgba(0,0,0,0.45);
+        }
+
+        .ticket-superior {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 40px;
+        }
+
+        .ticket-tipo {
+            font-size: 11px;
+            color: var(--acento-claro);
+            font-weight: 900;
+            letter-spacing: 1px;
+        }
+
+        .ticket h3 {
+            font-size: 26px;
+            margin-bottom: 8px;
+        }
+
+        .ticket p {
+            margin: 0;
+            font-size: 13px;
+        }
+
+        .ticket-linea {
+            border-top: 1px dashed rgba(255,255,255,0.20);
+            margin: 25px 0;
+        }
+
+        .ticket-datos {
+            display: flex;
+            justify-content: space-between;
+            color: var(--texto-suave);
+            font-size: 12px;
+        }
+
+        /* =====================================================
+           EVENTOS
+           ===================================================== */
+
+        .seccion-eventos {
+            background: var(--fondo-secundario);
+            border-top: 1px solid var(--borde);
+            border-bottom: 1px solid var(--borde);
+
+            padding: 70px 0 85px;
+        }
+
+        .contenedor {
+            width: min(1180px, calc(100% - 40px));
+            margin: 0 auto;
+        }
+
+        .cabecera-seccion {
+            display: flex;
+            justify-content: space-between;
+            align-items: end;
+            margin-bottom: 30px;
+        }
+
+        .cabecera-seccion h2 {
+            font-size: 30px;
+            letter-spacing: -1px;
+        }
+
+        .cabecera-seccion p {
+            color: var(--texto-suave);
+            margin-top: 7px;
+            font-size: 14px;
+        }
+
+        .grid-eventos {
+            display: grid;
+            grid-template-columns:
+                repeat(3, minmax(0, 1fr));
+            gap: 22px;
+        }
+
+        .evento-card {
+            border-radius: 18px;
+            overflow: hidden;
+
+            border: 1px solid var(--borde);
+            background: var(--tarjeta);
+
+            transition:
+                transform 0.2s ease,
+                border-color 0.2s ease,
+                background 0.2s ease;
+        }
+
+        .evento-card:hover {
+            transform: translateY(-5px);
+            border-color: rgba(124,92,255,0.38);
+            background: var(--tarjeta-hover);
+        }
+
+        .evento-imagen {
+            height: 180px;
+
+            display: flex;
+            align-items: end;
+
+            padding: 20px;
+
+            background:
+                radial-gradient(
+                    circle at 70% 30%,
+                    rgba(157,135,255,0.40),
+                    transparent 25%
+                ),
+                linear-gradient(
+                    135deg,
+                    #211a45,
+                    #111522 65%
+                );
+        }
+
+        .evento-fecha {
+            display: inline-block;
+
+            background: rgba(8,11,18,0.82);
+            border: 1px solid rgba(255,255,255,0.12);
+
+            padding: 7px 11px;
+            border-radius: 8px;
+
+            font-size: 12px;
+            font-weight: 800;
+        }
+
+        .evento-contenido {
+            padding: 22px;
+        }
+
+        .evento-ciudad {
+            color: var(--acento-claro);
+            text-transform: uppercase;
+            font-size: 11px;
+            letter-spacing: 1px;
+            font-weight: 900;
+
+            margin-bottom: 9px;
+        }
+
+        .evento-card h3 {
+            font-size: 20px;
+            margin-bottom: 8px;
+        }
+
+        .evento-recinto {
+            color: var(--texto-suave);
+            font-size: 13px;
+            min-height: 20px;
+        }
+
+        .evento-pie {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+
+            margin-top: 22px;
+            padding-top: 18px;
+
+            border-top: 1px solid var(--borde);
+        }
+
+        .disponible {
+            color: var(--verde);
+            font-size: 12px;
+            font-weight: 800;
+        }
+
+        .ver-evento {
+            color: var(--acento-claro);
+            font-size: 13px;
+            font-weight: 800;
+        }
+
+        /* =====================================================
+           ESTADO SIN EVENTOS
+           ===================================================== */
+
+        .sin-eventos {
+            grid-column: 1 / -1;
+
+            border: 1px dashed rgba(255,255,255,0.14);
+            border-radius: 18px;
+
+            padding: 60px 30px;
+            text-align: center;
+
+            color: var(--texto-suave);
+        }
+
+        .sin-eventos strong {
+            display: block;
+            color: white;
+            font-size: 20px;
+            margin-bottom: 8px;
+        }
+
+        /* =====================================================
+           FOOTER
+           ===================================================== */
+
+        footer {
+            padding: 32px 20px;
+            text-align: center;
+            color: #70798b;
+            font-size: 12px;
+        }
+
+        /* =====================================================
+           RESPONSIVE
+           ===================================================== */
+
+        @media (max-width: 900px) {
+
+            .menu {
+                display: none;
+            }
+
+            .hero {
+                grid-template-columns: 1fr;
+                gap: 35px;
+            }
+
+            .hero h1 {
+                letter-spacing: -2px;
+            }
+
+            .hero-panel {
+                min-height: 280px;
+            }
+
+            .grid-eventos {
+                grid-template-columns:
+                    repeat(2, minmax(0, 1fr));
+            }
+        }
+
+        @media (max-width: 620px) {
+
+            .navbar-contenido,
+            .hero,
+            .contenedor {
+                width: min(100% - 28px, 1180px);
+            }
+
+            .logo-texto {
+                display: none;
+            }
+
+            .hero {
+                padding-top: 45px;
+            }
+
+            .hero h1 {
+                font-size: 46px;
+            }
+
+            .hero-botones {
+                flex-direction: column;
+            }
+
+            .hero-botones a {
+                text-align: center;
+            }
+
+            .grid-eventos {
+                grid-template-columns: 1fr;
+            }
+
+            .cabecera-seccion {
+                align-items: start;
+                flex-direction: column;
+                gap: 12px;
+            }
+        }
+    
+        /* =====================================================
+           IMAGEN REAL DEL EVENTO
+           ===================================================== */
+
+        .evento-imagen {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .evento-imagen-real {
+            position: absolute;
+            inset: 0;
+
+            width: 100%;
+            height: 100%;
+
+            object-fit: cover;
+            object-position: center;
+
+            display: block;
+        }
+
+        .evento-imagen::after {
+            content: "";
+            position: absolute;
+            inset: 0;
+
+            background: linear-gradient(
+                to bottom,
+                rgba(5, 8, 15, 0.04),
+                rgba(5, 8, 15, 0.18)
+            );
+
+            pointer-events: none;
+        }
+
+        .evento-fecha {
+            position: relative;
+            z-index: 2;
+        }
+
+        .ver-evento {
+            position: relative;
+            z-index: 3;
+        }
+
+/* =====================================================
+           AJUSTE FINAL BARRA SUPERIOR
+           ===================================================== */
+
+        .navbar {
+            min-height: 82px;
+            height: auto;
+        }
+
+        .navbar-contenido {
+            width: min(1180px, calc(100% - 40px));
+            min-height: 82px;
+            margin: 0 auto;
+
+            display: grid;
+            grid-template-columns:
+                minmax(220px, 1fr)
+                auto
+                minmax(320px, 1fr);
+
+            align-items: center;
+            gap: 32px;
+        }
+
+        .logo {
+            justify-self: start;
+            white-space: nowrap;
+        }
+
+        .menu {
+            justify-self: center;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 28px;
+
+            white-space: nowrap;
+        }
+
+        .menu a {
+            display: flex;
+            align-items: center;
+            min-height: 40px;
+        }
+
+        .acciones {
+            justify-self: end;
+
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            gap: 10px;
+
+            white-space: nowrap;
+        }
+
+        .usuario-sesion {
+            display: flex;
+            align-items: center;
+
+            min-height: 40px;
+
+            color: var(--texto);
+            font-size: 14px;
+            font-weight: 700;
+        }
+
+        .acciones form {
+            display: flex;
+            align-items: center;
+            margin: 0;
+        }
+
+        .boton-sesion,
+        .boton-carrito {
+            min-height: 40px;
+
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+
+            padding: 0 16px;
+
+            border: 1px solid var(--borde);
+            border-radius: 10px;
+
+            font-family: inherit;
+            font-size: 14px;
+            font-weight: 700;
+            line-height: 1;
+
+            color: var(--texto);
+            text-decoration: none;
+
+            cursor: pointer;
+
+            transition:
+                border-color 0.2s,
+                background 0.2s,
+                transform 0.2s;
+        }
+
+        .boton-sesion {
+            background: transparent;
+        }
+
+        .boton-carrito {
+            background: rgba(255,255,255,0.04);
+        }
+
+        .boton-sesion:hover,
+        .boton-carrito:hover {
+            border-color: var(--acento);
+            background: rgba(124, 92, 255, 0.10);
+        }
+
+        .boton-sesion:active,
+        .boton-carrito:active {
+            transform: translateY(1px);
+        }
+
+        @media (max-width: 980px) {
+
+            .navbar-contenido {
+                grid-template-columns: auto 1fr;
+                gap: 18px;
+                padding: 14px 0;
+            }
+
+            .menu {
+                grid-column: 1 / -1;
+                grid-row: 2;
+                justify-self: center;
+            }
+
+            .acciones {
+                grid-column: 2;
+                grid-row: 1;
+            }
+        }
+
+        @media (max-width: 700px) {
+
+            .navbar-contenido {
+                display: flex;
+                flex-wrap: wrap;
+                justify-content: space-between;
+            }
+
+            .menu {
+                width: 100%;
+                order: 3;
+                gap: 18px;
+            }
+
+            .acciones {
+                flex-wrap: wrap;
+            }
+
+            .usuario-sesion {
+                display: none;
+            }
+        }
+
+    
+        /* =====================================================
+           TARJETA DIGITAL - VERSION MEJORADA
+           ===================================================== */
+
+        .hero-panel {
+            isolation: isolate;
+
+            background:
+                radial-gradient(
+                    circle at 72% 28%,
+                    rgba(139, 92, 246, 0.24),
+                    transparent 32%
+                ),
+                linear-gradient(
+                    145deg,
+                    rgba(124, 92, 255, 0.20),
+                    rgba(21, 27, 41, 0.88)
+                );
+        }
+
+        .hero-panel::after {
+            content: "";
+
+            position: absolute;
+            inset: 18px;
+
+            border: 1px solid rgba(167, 139, 250, 0.08);
+            border-radius: 22px;
+
+            pointer-events: none;
+        }
+
+        .ticket {
+            width: 78%;
+
+            position: relative;
+            z-index: 2;
+
+            padding: 30px;
+
+            border:
+                1px solid rgba(167, 139, 250, 0.32);
+
+            border-radius: 20px;
+
+            background:
+                linear-gradient(
+                    145deg,
+                    rgba(13, 17, 29, 0.98),
+                    rgba(7, 10, 18, 0.96)
+                );
+
+            transform:
+                rotate(-4deg)
+                translateY(-2px);
+
+            box-shadow:
+                0 32px 70px rgba(0, 0, 0, 0.48),
+                0 0 35px rgba(124, 92, 255, 0.10),
+                inset 0 1px 0 rgba(255, 255, 255, 0.05);
+
+            transition:
+                transform 0.25s ease,
+                border-color 0.25s ease,
+                box-shadow 0.25s ease;
+        }
+
+        .ticket:hover {
+            transform:
+                rotate(-2deg)
+                translateY(-5px);
+
+            border-color:
+                rgba(167, 139, 250, 0.55);
+
+            box-shadow:
+                0 38px 80px rgba(0, 0, 0, 0.52),
+                0 0 45px rgba(124, 92, 255, 0.16),
+                inset 0 1px 0 rgba(255, 255, 255, 0.07);
+        }
+
+        .ticket::before {
+            content: "";
+
+            position: absolute;
+            top: 0;
+            left: 24px;
+            right: 24px;
+
+            height: 2px;
+
+            background:
+                linear-gradient(
+                    90deg,
+                    transparent,
+                    var(--acento),
+                    var(--acento-claro),
+                    transparent
+                );
+
+            opacity: 0.75;
+        }
+
+        .ticket-superior {
+            margin-bottom: 34px;
+        }
+
+        .ticket-tipo {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+
+            color: var(--acento-claro);
+
+            font-size: 11px;
+            font-weight: 900;
+            letter-spacing: 1.4px;
+        }
+
+        .ticket-tipo::before {
+            content: "";
+
+            width: 7px;
+            height: 7px;
+
+            border-radius: 50%;
+
+            background: var(--acento-claro);
+
+            box-shadow:
+                0 0 12px rgba(167, 139, 250, 0.75);
+        }
+
+        .ticket h3 {
+            margin-bottom: 10px;
+
+            font-size: 27px;
+            line-height: 1.1;
+            letter-spacing: -0.5px;
+        }
+
+        .ticket p {
+            margin: 0;
+
+            color: var(--texto-suave);
+
+            font-size: 13px;
+            font-weight: 600;
+            letter-spacing: 0.15px;
+        }
+
+        .ticket p::first-letter {
+            color: var(--acento-claro);
+        }
+
+        .ticket-linea {
+            margin: 27px 0;
+
+            border-top:
+                1px dashed rgba(167, 139, 250, 0.30);
+        }
+
+        .ticket-datos {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 20px;
+
+            color: var(--texto-suave);
+
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 0.35px;
+        }
+
+        .ticket-datos span:last-child {
+            color: var(--acento-claro);
+        }
+
+        @media (max-width: 620px) {
+
+            .ticket {
+                width: 88%;
+                padding: 24px;
+
+                transform: rotate(-2deg);
+            }
+
+            .ticket:hover {
+                transform:
+                    rotate(-1deg)
+                    translateY(-3px);
+            }
+
+            .ticket h3 {
+                font-size: 23px;
+            }
+        }
+
+    
+        /* =====================================================
+           ZONA TECNICA - MENU DESPLEGABLE
+           ===================================================== */
+
+        .menu-tecnico {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+
+        .menu-tecnico-boton {
+            min-height: 40px;
+
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+
+            padding: 0 13px;
+
+            border: 1px solid transparent;
+            border-radius: 10px;
+
+            background: transparent;
+
+            color: var(--texto-suave);
+
+            font-family: inherit;
+            font-size: 14px;
+            font-weight: 700;
+
+            cursor: pointer;
+
+            transition:
+                color 0.2s ease,
+                background 0.2s ease,
+                border-color 0.2s ease;
+        }
+
+        .menu-tecnico-boton:hover,
+        .menu-tecnico.abierto .menu-tecnico-boton {
+            color: var(--texto);
+            border-color: rgba(139, 92, 246, 0.35);
+            background: rgba(124, 92, 255, 0.08);
+        }
+
+        .menu-tecnico-icono {
+            color: var(--acento-claro);
+            font-size: 12px;
+            font-weight: 900;
+        }
+
+        .menu-tecnico-flecha {
+            color: var(--texto-suave);
+            font-size: 11px;
+
+            transition: transform 0.2s ease;
+        }
+
+        .menu-tecnico.abierto .menu-tecnico-flecha {
+            transform: rotate(180deg);
+        }
+
+        .menu-tecnico-panel {
+            width: 290px;
+
+            position: absolute;
+            top: calc(100% + 12px);
+            left: 50%;
+
+            z-index: 300;
+
+            padding: 10px;
+
+            border: 1px solid rgba(139, 92, 246, 0.28);
+            border-radius: 16px;
+
+            background:
+                linear-gradient(
+                    145deg,
+                    rgba(20, 20, 35, 0.98),
+                    rgba(8, 11, 18, 0.99)
+                );
+
+            box-shadow:
+                0 22px 55px rgba(0, 0, 0, 0.45),
+                0 0 35px rgba(124, 92, 255, 0.08);
+
+            opacity: 0;
+            visibility: hidden;
+
+            transform:
+                translate(-50%, -6px);
+
+            pointer-events: none;
+
+            transition:
+                opacity 0.18s ease,
+                visibility 0.18s ease,
+                transform 0.18s ease;
+        }
+
+        .menu-tecnico.abierto .menu-tecnico-panel {
+            opacity: 1;
+            visibility: visible;
+
+            transform:
+                translate(-50%, 0);
+
+            pointer-events: auto;
+        }
+
+        .menu-tecnico-titulo {
+            padding: 8px 10px 10px;
+
+            color: var(--acento-claro);
+
+            font-size: 10px;
+            font-weight: 900;
+
+            letter-spacing: 1.2px;
+        }
+
+        .menu-tecnico-panel a {
+            min-height: 64px;
+
+            display: grid;
+            grid-template-columns: 44px 1fr;
+            align-items: center;
+            gap: 12px;
+
+            padding: 9px 10px;
+
+            border: 1px solid transparent;
+            border-radius: 11px;
+
+            color: var(--texto);
+            text-decoration: none;
+
+            transition:
+                background 0.18s ease,
+                border-color 0.18s ease,
+                transform 0.18s ease;
+        }
+
+        .menu-tecnico-panel a:hover {
+            background: rgba(124, 92, 255, 0.10);
+            border-color: rgba(139, 92, 246, 0.22);
+
+            transform: translateX(2px);
+        }
+
+        .tecnico-icono {
+            width: 40px;
+            height: 40px;
+
+            display: grid;
+            place-items: center;
+
+            border: 1px solid rgba(139, 92, 246, 0.30);
+            border-radius: 10px;
+
+            background: rgba(124, 92, 255, 0.10);
+
+            color: var(--acento-claro);
+
+            font-size: 10px;
+            font-weight: 900;
+
+            letter-spacing: 0.5px;
+        }
+
+        .menu-tecnico-panel strong {
+            display: block;
+
+            margin-bottom: 4px;
+
+            color: var(--texto);
+
+            font-size: 13px;
+            font-weight: 800;
+        }
+
+        .menu-tecnico-panel small {
+            display: block;
+
+            color: var(--texto-suave);
+
+            font-size: 11px;
+            font-weight: 500;
+        }
+
+        @media (max-width: 700px) {
+
+            .menu-tecnico-panel {
+                left: auto;
+                right: 0;
+
+                transform: translateY(-6px);
+            }
+
+            .menu-tecnico.abierto .menu-tecnico-panel {
+                transform: translateY(0);
+            }
+        }
+
+    
+        /* =====================================================
+           IDENTIFICACION DEL TIPO DE ACCESO
+           ===================================================== */
+
+        .usuario-sesion {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            justify-content: center;
+
+            min-height: 40px;
+
+            line-height: 1.1;
+        }
+
+        .usuario-nombre {
+            color: var(--texto);
+
+            font-size: 14px;
+            font-weight: 800;
+        }
+
+        .usuario-rol {
+            display: inline-flex;
+            align-items: center;
+
+            margin-top: 4px;
+
+            padding: 3px 7px;
+
+            border-radius: 999px;
+
+            font-size: 9px;
+            font-weight: 900;
+
+            letter-spacing: .8px;
+        }
+
+        .usuario-rol-espectador {
+            color: #b9c4d8;
+
+            background: rgba(148, 163, 184, .10);
+            border: 1px solid rgba(148, 163, 184, .20);
+        }
+
+        .usuario-rol-organizador {
+            color: #bba8ff;
+
+            background: rgba(124, 92, 255, .12);
+            border: 1px solid rgba(124, 92, 255, .28);
+        }
+
+        .usuario-rol-admin {
+            color: #8ee8c0;
+
+            background: rgba(46, 204, 145, .10);
+            border: 1px solid rgba(46, 204, 145, .25);
+        }
+
+    
+        /* =====================================================
+           USUARIO + TIPO DE ACCESO - VERSION HORIZONTAL
+           ===================================================== */
+
+        .acciones {
+            gap: 14px;
+        }
+
+        .usuario-sesion {
+            display: inline-flex;
+            flex-direction: row;
+            align-items: center;
+            justify-content: flex-end;
+
+            gap: 8px;
+
+            min-height: 40px;
+
+            line-height: 1;
+
+            white-space: nowrap;
+        }
+
+        .usuario-nombre {
+            display: inline-flex;
+            align-items: center;
+
+            color: var(--texto);
+
+            font-size: 13px;
+            font-weight: 800;
+
+            line-height: 1;
+        }
+
+        .usuario-rol {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+
+            margin-top: 0;
+
+            padding: 4px 8px;
+
+            border-radius: 999px;
+
+            font-size: 8px;
+            font-weight: 900;
+
+            line-height: 1;
+
+            letter-spacing: .7px;
+
+            white-space: nowrap;
+        }
+
+        .usuario-rol-espectador {
+            color: #b9c4d8;
+
+            background: rgba(148, 163, 184, .10);
+
+            border: 1px solid rgba(148, 163, 184, .22);
+        }
+
+        .usuario-rol-organizador {
+            color: #bba8ff;
+
+            background: rgba(124, 92, 255, .12);
+
+            border: 1px solid rgba(124, 92, 255, .30);
+        }
+
+        .usuario-rol-admin {
+            color: #8ee8c0;
+
+            background: rgba(46, 204, 145, .10);
+
+            border: 1px solid rgba(46, 204, 145, .28);
+        }
+
+    
+        /* =====================================================
+           BARRA DE ACCIONES PRINCIPAL
+           ===================================================== */
+
+        .menu {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            white-space: nowrap;
+        }
+
+        .menu-accion {
+            min-height: 38px;
+
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+
+            padding: 8px 13px;
+
+            border:
+                1px solid
+                rgba(255, 255, 255, 0.075);
+
+            border-radius: 9px;
+
+            background:
+                rgba(255, 255, 255, 0.025);
+
+            color: #aeb6c6;
+
+            font-family: inherit;
+            font-size: 13px;
+            font-weight: 700;
+
+            cursor: pointer;
+
+            transition:
+                background .20s ease,
+                border-color .20s ease,
+                color .20s ease,
+                box-shadow .20s ease,
+                transform .20s ease;
+        }
+
+        .menu-accion:hover {
+            background:
+                rgba(124, 92, 255, 0.10);
+
+            border-color:
+                rgba(157, 135, 255, 0.28);
+
+            color: #ffffff;
+
+            box-shadow:
+                0 6px 20px
+                rgba(124, 92, 255, 0.08);
+
+            transform:
+                translateY(-1px);
+        }
+
+        .menu-accion-activa {
+            background:
+                rgba(124, 92, 255, 0.12);
+
+            border-color:
+                rgba(157, 135, 255, 0.28);
+
+            color: #ffffff;
+        }
+
+        .menu-form {
+            margin: 0;
+            padding: 0;
+
+            display: inline-flex;
+            align-items: center;
+        }
+
+        .menu-accion-boton {
+            appearance: none;
+            -webkit-appearance: none;
+        }
+
+        .menu-tecnico {
+            margin: 0;
+        }
+
+        .menu-tecnico-boton {
+            min-height: 38px;
+        }
+
+        .acciones {
+            margin-left: auto;
+
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+
+            gap: 10px;
+
+            white-space: nowrap;
+        }
+
+        .usuario-sesion {
+            background: transparent;
+            border-color: rgba(255, 255, 255, 0.055);
+        }
+
+    
+        /* =====================================================
+           BUSCADOR PRINCIPAL
+           ===================================================== */
+
+        .buscador-zona {
+            width: min(1180px, calc(100% - 40px));
+            margin: 0 auto;
+            padding-top: 28px;
+        }
+
+        .buscador-contenedor {
+            padding: 10px;
+
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 16px;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    rgba(255, 255, 255, 0.045),
+                    rgba(124, 92, 255, 0.035)
+                );
+
+            box-shadow:
+                0 16px 45px rgba(0, 0, 0, 0.18);
+        }
+
+        .buscador-form {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .buscador-campo {
+            position: relative;
+            flex: 1;
+            min-width: 0;
+        }
+
+        .buscador-icono {
+            position: absolute;
+            left: 18px;
+            top: 50%;
+
+            transform: translateY(-50%);
+
+            color: #8f99aa;
+            font-size: 17px;
+
+            pointer-events: none;
+        }
+
+        .buscador-input {
+            width: 100%;
+            height: 48px;
+
+            padding:
+                0
+                18px
+                0
+                48px;
+
+            border:
+                1px solid
+                rgba(255, 255, 255, 0.08);
+
+            border-radius: 11px;
+
+            background:
+                rgba(8, 11, 18, 0.72);
+
+            color: #f5f7fb;
+
+            font-family: inherit;
+            font-size: 14px;
+
+            outline: none;
+
+            transition:
+                border-color .2s,
+                background .2s,
+                box-shadow .2s;
+        }
+
+        .buscador-input::placeholder {
+            color: #737e90;
+        }
+
+        .buscador-input:hover {
+            border-color:
+                rgba(157, 135, 255, 0.28);
+        }
+
+        .buscador-input:focus {
+            background:
+                rgba(12, 16, 26, 0.92);
+
+            border-color:
+                rgba(157, 135, 255, 0.65);
+
+            box-shadow:
+                0 0 0 3px
+                rgba(124, 92, 255, 0.10);
+        }
+
+        .buscador-boton {
+            height: 48px;
+
+            padding: 0 25px;
+
+            border:
+                1px solid
+                rgba(157, 135, 255, 0.35);
+
+            border-radius: 11px;
+
+            background:
+                rgba(124, 92, 255, 0.16);
+
+            color: #d8ceff;
+
+            font-family: inherit;
+            font-size: 13px;
+            font-weight: 800;
+
+            cursor: pointer;
+
+            transition:
+                background .2s,
+                border-color .2s,
+                color .2s,
+                transform .2s,
+                box-shadow .2s;
+        }
+
+        .buscador-boton:hover {
+            background:
+                rgba(124, 92, 255, 0.28);
+
+            border-color:
+                rgba(157, 135, 255, 0.60);
+
+            color: #ffffff;
+
+            box-shadow:
+                0 8px 25px
+                rgba(124, 92, 255, 0.16);
+
+            transform:
+                translateY(-1px);
+        }
+
+        .buscador-boton:active {
+            transform:
+                translateY(0);
+        }
+
+        .buscador-estado {
+            margin-top: 9px;
+            padding-left: 4px;
+
+            color: #929cad;
+            font-size: 12px;
+        }
+
+        .buscador-estado strong {
+            color: #cfc5ff;
+        }
+
+        .buscador-limpiar {
+            margin-left: 7px;
+
+            color: #a994ff;
+            font-weight: 700;
+        }
+
+        .buscador-limpiar:hover {
+            color: #ffffff;
+        }
+
+        @media (max-width: 700px) {
+
+            .buscador-zona {
+                width:
+                    min(
+                        100% - 28px,
+                        1180px
+                    );
+
+                padding-top: 18px;
+            }
+
+            .buscador-form {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .buscador-boton {
+                width: 100%;
+            }
+        }
+
+    
+        /* =====================================================
+           CHIPS / ACCESOS RAPIDOS DEL BUSCADOR
+           ===================================================== */
+
+        .buscador-chips {
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 10px;
+        }
+
+        .buscador-chip {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+
+            min-height: 28px;
+            padding: 5px 12px;
+
+            border-radius: 999px;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+
+            background: rgba(255, 255, 255, 0.025);
+            color: var(--texto-suave);
+
+            font-size: 11px;
+            font-weight: 700;
+
+            transition:
+                color 0.18s ease,
+                background 0.18s ease,
+                border-color 0.18s ease,
+                transform 0.18s ease;
+        }
+
+        .buscador-chip:hover {
+            color: #ffffff;
+
+            background: rgba(124, 92, 255, 0.12);
+            border-color: rgba(157, 135, 255, 0.38);
+
+            transform: translateY(-1px);
+        }
+
+        .buscador-chip-activo {
+            color: var(--acento-claro);
+
+            background: rgba(124, 92, 255, 0.10);
+            border-color: rgba(157, 135, 255, 0.30);
+        }
+
+
+        /* =====================================================
+           BOTON PARA BAJAR A LOS RESULTADOS
+           ===================================================== */
+
+        .buscador-ver-resultados {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 7px;
+
+            margin-left: 8px;
+            padding: 6px 12px;
+
+            border-radius: 999px;
+            border: 1px solid rgba(157, 135, 255, 0.30);
+
+            background: rgba(124, 92, 255, 0.10);
+            color: #b9a8ff;
+
+            font-size: 11px;
+            font-weight: 800;
+            line-height: 1;
+
+            text-decoration: none;
+
+            transition:
+                background 0.18s ease,
+                border-color 0.18s ease,
+                color 0.18s ease,
+                transform 0.18s ease,
+                box-shadow 0.18s ease;
+        }
+
+        .buscador-ver-resultados:hover {
+            color: #ffffff;
+            background: rgba(124, 92, 255, 0.20);
+            border-color: rgba(157, 135, 255, 0.55);
+
+            transform: translateY(-1px);
+
+            box-shadow:
+                0 5px 18px rgba(92, 65, 210, 0.18);
+        }
+
+        .flecha-resultados {
+            display: inline-block;
+
+            font-size: 18px;
+            font-weight: 900;
+            line-height: 0.65;
+
+            margin-left: 2px;
+
+            transition: transform 0.18s ease;
+        }
+
+        .buscador-ver-resultados:hover .flecha-resultados {
+            transform: translateY(3px);
+        }
+
+    </style>
+</head>
+
+<body>
+
+    <!-- =====================================================
+         NAVEGACION
+         ===================================================== -->
+
+    <header class="navbar">
+        <div class="navbar-contenido">
+
+            <a href="/" class="logo">
+                <span class="logo-icono">E</span>
+                <span class="logo-texto">
+                    ENTRADAS
+                </span>
+            </a>
+
+            <nav class="menu">
+
+                <a
+                    href="#eventos"
+                    class="menu-accion menu-accion-activa"
+                >
+                    Eventos
+                </a>
+
+                {% if user.is_authenticated and user.rol == "ORGANIZADOR" and not user.is_staff %}
+
+                    <a
+                        href="{% url 'eventos:panel_organizador' %}"
+                        class="menu-accion"
+                    >
+                        Panel organizador
+                    </a>
+
+                {% endif %}
+
+                {% if user.is_authenticated and user.is_staff %}
+
+                <div class="menu-tecnico">
+
+                    <button
+                        type="button"
+                        class="menu-tecnico-boton"
+                        aria-expanded="false"
+                    >
+                        <span class="menu-tecnico-icono">
+                            &lt;/&gt;
+                        </span>
+
+                        <span>
+                            Zona técnica
+                        </span>
+
+                        <span class="menu-tecnico-flecha">
+                            ▾
+                        </span>
+                    </button>
+
+                    <div class="menu-tecnico-panel">
+
+                        <div class="menu-tecnico-titulo">
+                            HERRAMIENTAS BACKEND
+                        </div>
+
+                        <a href="/api/docs/">
+                            <span class="tecnico-icono">
+                                API
+                            </span>
+
+                            <span>
+                                <strong>Documentación API</strong>
+                                <small>Swagger / OpenAPI</small>
+                            </span>
+                        </a>
+
+                        <a href="/admin/">
+                            <span class="tecnico-icono">
+                                ADM
+                            </span>
+
+                            <span>
+                                <strong>Administración</strong>
+                                <small>Panel de Django</small>
+                            </span>
+                        </a>
+
+                    </div>
+
+                </div>
+
+                {% endif %}
+
+                <a
+                    href="/api/carrito/"
+                    class="menu-accion"
+                >
+                    Mi carrito
+                </a>
+
+                {% if user.is_authenticated %}
+
+                    <form
+                        method="post"
+                        action="{% url 'accounts_web:logout' %}"
+                        class="menu-form"
+                    >
+                        {% csrf_token %}
+
+                        <button
+                            type="submit"
+                            class="menu-accion menu-accion-boton"
+                        >
+                            Cerrar sesión
+                        </button>
+                    </form>
+
+                {% endif %}
+
+            </nav>
+
+            <div class="acciones">
+
+                {% if user.is_authenticated %}
+
+                    <div class="usuario-sesion">
+
+                        <span class="usuario-nombre">
+                            {{ user.username }}
+                        </span>
+
+                        {% if user.is_staff %}
+
+                            <span class="usuario-rol usuario-rol-admin">
+                                ADMINISTRADOR
+                            </span>
+
+                        {% elif user.rol == "ORGANIZADOR" %}
+
+                            <span class="usuario-rol usuario-rol-organizador">
+                                ORGANIZADOR
+                            </span>
+
+                        {% else %}
+
+                            <span class="usuario-rol usuario-rol-espectador">
+                                ESPECTADOR
+                            </span>
+
+                        {% endif %}
+
+                    </div>
+
+                {% else %}
+
+                    <a
+                        href="{% url 'accounts_web:login' %}"
+                        class="boton-sesion"
+                    >
+                        Iniciar sesión
+                    </a>
+
+                {% endif %}
+
+            </div>
+
+        </div>
+    </header>
+
+
+    <!-- =====================================================
+         BUSCADOR DE EVENTOS
+         ===================================================== -->
+
+    <section class="buscador-zona">
+
+        <div class="buscador-contenedor">
+
+            <form
+                method="get"
+                action="{% url 'eventos:inicio' %}"
+                class="buscador-form"
+                role="search"
+            >
+
+                <div class="buscador-campo">
+
+                    <span
+                        class="buscador-icono"
+                        aria-hidden="true"
+                    >
+                        &#128269;
+                    </span>
+
+                    <input
+                        type="search"
+                        name="q"
+                        value="{{ consulta }}"
+                        class="buscador-input"
+                        placeholder="Buscar eventos, recintos o ciudades..."
+                        aria-label="Buscar eventos, recintos o ciudades"
+                    >
+
+                </div>
+
+                <button
+                    type="submit"
+                    class="buscador-boton"
+                >
+                    Buscar
+                </button>
+
+            </form>
+
+            <!-- ================================================
+                 ACCESOS RAPIDOS DEL BUSCADOR
+                 ================================================ -->
+
+            <div class="buscador-chips">
+
+                <a
+                    href="{% url 'eventos:inicio' %}#eventos"
+                    class="buscador-chip {% if not consulta %}buscador-chip-activo{% endif %}"
+                >
+                    Todos
+                </a>
+
+                <a
+                    href="{% url 'eventos:inicio' %}?q=Temuco#eventos"
+                    class="buscador-chip {% if consulta|lower == 'temuco' %}buscador-chip-activo{% endif %}"
+                >
+                    Temuco
+                </a>
+
+                <a
+                    href="{% url 'eventos:inicio' %}?q=Santiago#eventos"
+                    class="buscador-chip {% if consulta|lower == 'santiago' %}buscador-chip-activo{% endif %}"
+                >
+                    Santiago
+                </a>
+
+                <a
+                    href="{% url 'eventos:inicio' %}?q=Concepción#eventos"
+                    class="buscador-chip {% if consulta|lower == 'concepción' %}buscador-chip-activo{% endif %}"
+                >
+                    Concepción
+                </a>
+
+                <a
+                    href="{% url 'eventos:inicio' %}?q=Valdivia#eventos"
+                    class="buscador-chip {% if consulta|lower == 'valdivia' %}buscador-chip-activo{% endif %}"
+                >
+                    Valdivia
+                </a>
+
+
+                <a
+                    href="{% url 'eventos:inicio' %}#eventos"
+                    class="buscador-chip"
+                >
+                    Próximos eventos
+                </a>
+
+            </div>
+
+            {% if consulta %}
+
+                <div class="buscador-estado">
+
+                    {% if cantidad_resultados == 0 %}
+
+                        <span class="buscador-resultado">
+                            <span class="buscador-punto"></span>
+                            No encontramos eventos para
+                            <strong>“{{ consulta }}”</strong>
+                        </span>
+
+                    {% else %}
+
+                        <span class="buscador-resultado">
+                            <span class="buscador-punto"></span>
+
+                            <strong>
+                                {{ cantidad_resultados }}
+                                {% if cantidad_resultados == 1 %}
+                                    evento encontrado
+                                {% else %}
+                                    eventos encontrados
+                                {% endif %}
+                            </strong>
+
+                            para “{{ consulta }}”
+                        </span>
+
+                        <a
+                            href="#eventos"
+                            class="buscador-ver-resultados"
+                        >
+                            {% if cantidad_resultados == 1 %}
+                                Ver resultado <span class="flecha-resultados">↓</span>
+                            {% else %}
+                                Ver resultados <span class="flecha-resultados">↓</span>
+                            {% endif %}
+                        </a>
+
+                    {% endif %}
+
+                    <a
+                        href="{% url 'eventos:inicio' %}#eventos"
+                        class="buscador-limpiar"
+                    >
+                        Limpiar búsqueda
+                    </a>
+
+                </div>
+
+            {% endif %}
+
+        </div>
+
+    </section>
+
+
+    <!-- =====================================================
+         HERO
+         ===================================================== -->
+
+    <main>
+
+        <section class="hero">
+
+            <div class="hero-texto">
+
+                <div class="etiqueta">
+                    ● MÚSICA Y EXPERIENCIAS
+                </div>
+
+                <h1>
+                    Vive el momento.
+                    <span>
+                        Nosotros tenemos tu entrada.
+                    </span>
+                </h1>
+
+                <p>
+                    Descubre la cartelera, revisa sus fechas,
+                    selecciona el tipo de entrada que quieres
+                    y gestiona tu compra desde un solo lugar.
+                </p>
+
+                <div class="hero-botones">
+
+                    <a
+                        href="#eventos"
+                        class="boton-principal"
+                    >
+                        Explorar cartelera
+                    </a>
+
+                </div>
+
+            </div>
+
+
+            <div class="hero-panel">
+
+                <div class="ticket">
+
+                    <div class="ticket-superior">
+
+                        <span class="ticket-tipo">
+                            ENTRADA DIGITAL
+                        </span>
+
+                        <span>
+                            ●
+                        </span>
+
+                    </div>
+
+                    <h3>
+                        Tu próxima experiencia
+                    </h3>
+
+                    <p>
+                        Confianza · Experiencia
+                    </p>
+
+                    <div class="ticket-linea"></div>
+
+                    <div class="ticket-datos">
+
+                        <span>
+                            TEMPORADA 2026
+                        </span>
+
+                        <span>
+                            ACCESO DIGITAL
+                        </span>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- =================================================
+             EVENTOS
+             ================================================= -->
+
+        <section
+            class="seccion-eventos"
+            id="eventos"
+        >
+
+            <div class="contenedor">
+
+                <div class="cabecera-seccion">
+
+                    <div>
+                        <h2>
+                            Próximos eventos
+                        </h2>
+
+                        <p>
+                            Eventos actualmente publicados
+                            en la plataforma.
+                        </p>
+                    </div>
+
+                </div>
+
+
+                <div class="grid-eventos">
+
+                    {% for evento in eventos %}
+
+                        <article class="evento-card">
+
+                            <div class="evento-imagen">
+
+                                {% if evento.imagen %}
+                                    <img
+                                        src="{{ evento.imagen.url }}"
+                                        alt="Afiche de {{ evento.nombre }}"
+                                        class="evento-imagen-real"
+                                    >
+                                {% endif %}
+
+                                <span class="evento-fecha">
+                                    {{ evento.fecha_inicio|date:"d M Y · H:i" }}
+                                </span>
+
+                            </div>
+
+                            <div class="evento-contenido">
+
+                                <div class="evento-ciudad">
+                                    {{ evento.recinto.ciudad }}
+                                </div>
+
+                                <h3>
+                                    {{ evento.nombre }}
+                                </h3>
+
+                                <div class="evento-recinto">
+                                    {{ evento.recinto.nombre }}
+                                </div>
+
+                                <div class="evento-pie">
+
+                                    <span class="disponible">
+                                        ● Disponible
+                                    </span>
+
+                                    <a
+                                        href="{% url 'eventos:detalle' evento.pk %}"
+                                        class="ver-evento"
+                                    >
+                                        Ver evento →
+                                    </a>
+
+                                </div>
+
+                            </div>
+
+                        </article>
+
+                    {% empty %}
+
+                        <div class="sin-eventos">
+
+                            <strong>
+                                Aún no hay eventos publicados.
+                            </strong>
+
+                            Cuando un organizador publique un
+                            evento aparecerá automáticamente
+                            en esta sección.
+
+                        </div>
+
+                    {% endfor %}
+
+                </div>
+
+            </div>
+
+        </section>
+
+    </main>
+
+
+    <!-- =====================================================
+         FOOTER
+         ===================================================== -->
+
+    <footer class="footer">
+    Venta de Entradas · Christian Cisterna · TILE22 · INACAP Temuco · 2026
+</footer>
+
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+
+            const menuTecnico =
+                document.querySelector(".menu-tecnico");
+
+            const botonTecnico =
+                document.querySelector(".menu-tecnico-boton");
+
+            if (!menuTecnico || !botonTecnico) {
+                return;
+            }
+
+            botonTecnico.addEventListener("click", function (event) {
+
+                event.stopPropagation();
+
+                const estaAbierto =
+                    menuTecnico.classList.toggle("abierto");
+
+                botonTecnico.setAttribute(
+                    "aria-expanded",
+                    estaAbierto ? "true" : "false"
+                );
+            });
+
+            document.addEventListener("click", function (event) {
+
+                if (!menuTecnico.contains(event.target)) {
+
+                    menuTecnico.classList.remove("abierto");
+
+                    botonTecnico.setAttribute(
+                        "aria-expanded",
+                        "false"
+                    );
+                }
+            });
+
+            document.addEventListener("keydown", function (event) {
+
+                if (event.key === "Escape") {
+
+                    menuTecnico.classList.remove("abierto");
+
+                    botonTecnico.setAttribute(
+                        "aria-expanded",
+                        "false"
+                    );
+
+                    botonTecnico.focus();
+                }
+            });
+
+        });
+    </script>
+
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
