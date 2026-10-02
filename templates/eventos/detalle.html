@@ -1,4 +1,4 @@
-﻿{% load humanize moneda %}
+{% load humanize moneda %}
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -324,7 +324,9 @@
         }
 
         .buy-button {
+            display: block;
             width: 100%;
+            box-sizing: border-box;
 
             margin-top: 16px;
             padding: 13px;
@@ -342,6 +344,8 @@
 
             font-size: 13px;
             font-weight: 800;
+            text-align: center;
+            text-decoration: none;
 
             cursor: pointer;
         }
@@ -441,7 +445,7 @@
                 font-size: 31px;
             }
         }
-    
+
         /* =====================================================
            AFICHE REAL EN DETALLE DEL EVENTO
            ===================================================== */
@@ -482,7 +486,7 @@
             z-index: 3;
         }
 
-    
+
         /* =====================================================
            AJUSTE FINAL - SESION Y CARRITO EN CABECERA
            ===================================================== */
@@ -543,74 +547,597 @@
             white-space: nowrap;
         }
 
+
+        /* =====================================================
+           NAVBAR UNIFICADA - DETALLE EVENTO
+           ===================================================== */
+
+        .navbar {
+            min-height: 82px;
+            height: auto;
+            background: #090d14;
+            border-bottom: 1px solid #202636;
+        }
+
+        .navbar-contenido {
+            width: min(1180px, calc(100% - 40px));
+            min-height: 82px;
+            margin: 0 auto;
+
+            display: grid;
+            grid-template-columns:
+                minmax(220px, 1fr)
+                auto
+                minmax(220px, 1fr);
+
+            align-items: center;
+            gap: 24px;
+        }
+
+        .logo {
+            justify-self: start;
+
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+
+            color: #ffffff;
+            text-decoration: none;
+            font-weight: 900;
+
+            white-space: nowrap;
+        }
+
+        .logo-icono {
+            width: 42px;
+            height: 42px;
+
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+
+            border-radius: 12px;
+
+            background: #7c5cff;
+            color: #ffffff;
+
+            font-size: 20px;
+            font-weight: 900;
+        }
+
+        .logo-texto {
+            font-size: 18px;
+            font-weight: 900;
+            letter-spacing: .4px;
+        }
+
+        .menu {
+            justify-self: center;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            gap: 8px;
+            white-space: nowrap;
+        }
+
+        .menu-accion {
+            min-height: 38px;
+
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+
+            padding: 8px 13px;
+
+            border: 1px solid rgba(255,255,255,.075);
+            border-radius: 9px;
+
+            background: rgba(255,255,255,.025);
+
+            color: #aeb6c6;
+            text-decoration: none;
+
+            font-family: inherit;
+            font-size: 13px;
+            font-weight: 700;
+
+            cursor: pointer;
+        }
+
+        .menu-accion:hover {
+            color: #ffffff;
+
+            background: rgba(124,92,255,.10);
+            border-color: rgba(157,135,255,.28);
+        }
+
+        .menu-accion-activa {
+            color: #ffffff;
+
+            background: rgba(124,92,255,.12);
+            border-color: rgba(157,135,255,.28);
+        }
+
+        .menu-form {
+            margin: 0;
+            padding: 0;
+
+            display: inline-flex;
+            align-items: center;
+        }
+
+        .menu-accion-boton {
+            appearance: none;
+            -webkit-appearance: none;
+        }
+
+        .acciones {
+            justify-self: end;
+
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+
+            white-space: nowrap;
+        }
+
+        .usuario-sesion {
+            display: inline-flex;
+            flex-direction: row;
+            align-items: center;
+
+            gap: 8px;
+
+            white-space: nowrap;
+        }
+
+        .usuario-nombre {
+            color: #ffffff;
+
+            font-size: 13px;
+            font-weight: 800;
+        }
+
+        .usuario-rol {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+
+            padding: 4px 8px;
+
+            border-radius: 999px;
+
+            font-size: 8px;
+            font-weight: 900;
+            letter-spacing: .7px;
+        }
+
+        .usuario-rol-espectador {
+            color: #b9c4d8;
+
+            background: rgba(148,163,184,.10);
+            border: 1px solid rgba(148,163,184,.22);
+        }
+
+        .usuario-rol-organizador {
+            color: #bba8ff;
+
+            background: rgba(124,92,255,.12);
+            border: 1px solid rgba(124,92,255,.30);
+        }
+
+        .usuario-rol-admin {
+            color: #8ee8c0;
+
+            background: rgba(46,204,145,.10);
+            border: 1px solid rgba(46,204,145,.28);
+        }
+
+        .boton-sesion {
+            min-height: 38px;
+
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+
+            padding: 8px 13px;
+
+            border: 1px solid rgba(255,255,255,.075);
+            border-radius: 9px;
+
+            color: #ffffff;
+            text-decoration: none;
+
+            background: rgba(255,255,255,.025);
+        }
+
+        @media (max-width: 1280px) {
+
+            .navbar-contenido {
+                display: flex;
+                flex-wrap: wrap;
+
+                padding: 14px 0;
+            }
+
+            .menu {
+                order: 3;
+                width: 100%;
+
+                flex-wrap: wrap;
+            }
+
+            .acciones {
+                margin-left: auto;
+            }
+        }
+
+
+        /* ==================================================
+           ZONA TECNICA - MENU DESPLEGABLE
+           ================================================== */
+
+        .menu-tecnico {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+
+        .menu-tecnico-boton {
+            min-height: 40px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 0 13px;
+
+            border: 1px solid transparent;
+            border-radius: 10px;
+            background: transparent;
+
+            color: #9ba5ba;
+
+            font-family: inherit;
+            font-size: 13px;
+            font-weight: 600;
+
+            cursor: pointer;
+
+            transition:
+                color 0.2s ease,
+                background 0.2s ease,
+                border-color 0.2s ease;
+        }
+
+        .menu-tecnico-boton:hover,
+        .menu-tecnico.abierto .menu-tecnico-boton {
+            color: #ffffff;
+            border-color: rgba(139, 92, 246, 0.35);
+            background: rgba(124, 92, 255, 0.08);
+        }
+
+        .menu-tecnico-icono {
+            color: #a98cff;
+            font-size: 12px;
+            font-weight: 900;
+        }
+
+        .menu-tecnico-flecha {
+            color: #9ba5ba;
+            font-size: 11px;
+            transition: transform 0.2s ease;
+        }
+
+        .menu-tecnico.abierto .menu-tecnico-flecha {
+            transform: rotate(180deg);
+        }
+
+        .menu-tecnico-panel {
+            width: 290px;
+
+            position: absolute;
+            top: calc(100% + 12px);
+            left: 50%;
+            z-index: 300;
+
+            padding: 10px;
+
+            border: 1px solid rgba(139, 92, 246, 0.28);
+            border-radius: 16px;
+
+            background:
+                linear-gradient(
+                    145deg,
+                    rgba(20, 20, 35, 0.98),
+                    rgba(8, 11, 18, 0.99)
+                );
+
+            box-shadow:
+                0 22px 55px rgba(0, 0, 0, 0.45),
+                0 0 35px rgba(124, 92, 255, 0.08);
+
+            opacity: 0;
+            visibility: hidden;
+
+            transform: translate(-50%, -6px);
+            pointer-events: none;
+
+            transition:
+                opacity 0.18s ease,
+                visibility 0.18s ease,
+                transform 0.18s ease;
+        }
+
+        .menu-tecnico.abierto .menu-tecnico-panel {
+            opacity: 1;
+            visibility: visible;
+            transform: translate(-50%, 0);
+            pointer-events: auto;
+        }
+
+        .menu-tecnico-titulo {
+            padding: 8px 10px 10px;
+
+            color: #a98cff;
+
+            font-size: 10px;
+            font-weight: 900;
+            letter-spacing: 1.2px;
+        }
+
+        .menu-tecnico-panel a {
+            min-height: 64px;
+
+            display: grid;
+            grid-template-columns: 44px 1fr;
+            align-items: center;
+            gap: 12px;
+
+            padding: 9px 10px;
+
+            border: 1px solid transparent;
+            border-radius: 11px;
+
+            color: #f5f7ff;
+            text-decoration: none;
+
+            transition:
+                background 0.18s ease,
+                border-color 0.18s ease,
+                transform 0.18s ease;
+        }
+
+        .menu-tecnico-panel a:hover {
+            background: rgba(124, 92, 255, 0.10);
+            border-color: rgba(139, 92, 246, 0.22);
+            transform: translateX(2px);
+        }
+
+        .tecnico-icono {
+            width: 40px;
+            height: 40px;
+
+            display: grid;
+            place-items: center;
+
+            border: 1px solid rgba(139, 92, 246, 0.30);
+            border-radius: 10px;
+
+            background: rgba(124, 92, 255, 0.10);
+
+            color: #a98cff;
+
+            font-size: 10px;
+            font-weight: 900;
+            letter-spacing: 0.5px;
+        }
+
+        .menu-tecnico-panel strong {
+            display: block;
+            margin-bottom: 4px;
+
+            color: #f5f7ff;
+
+            font-size: 13px;
+            font-weight: 800;
+        }
+
+        .menu-tecnico-panel small {
+            display: block;
+
+            color: #9ba5ba;
+
+            font-size: 11px;
+            font-weight: 500;
+        }
+
+        @media (max-width: 700px) {
+
+            .menu-tecnico-panel {
+                left: auto;
+                right: 0;
+                transform: translateY(-6px);
+            }
+
+            .menu-tecnico.abierto .menu-tecnico-panel {
+                transform: translateY(0);
+            }
+        }
+
     </style>
 </head>
 
 <body>
 
-<header class="header">
-    <div class="header-inner">
+<header class="navbar">
+    <div class="navbar-contenido">
 
-        <a href="{% url 'eventos:inicio' %}" class="brand">
-            <span class="brand-icon">E</span>
-            <span>ENTRADAS</span>
+        <a href="{% url 'eventos:inicio' %}" class="logo">
+            <span class="logo-icono">E</span>
+            <span class="logo-texto">ENTRADAS</span>
         </a>
 
-        <nav class="nav">
-            <a href="{% url 'eventos:inicio' %}#eventos">
+                <nav class="menu">
+
+            <a href="{% url 'eventos:inicio' %}#eventos"
+               class="menu-accion menu-accion-activa">
                 Eventos
             </a>
 
-            {% if user.is_authenticated and user.is_staff %}
+            {% if user.is_authenticated and user.rol == "ORGANIZADOR" %}
 
-                <a href="/api/docs/">
-                    API
+                <a href="{% url 'eventos:panel_organizador' %}"
+                   class="menu-accion">
+                    Panel organizador
                 </a>
 
-                <a href="/admin/">
-                    Administración
+                <a href="{% url 'entradas_web:validar-entrada' %}"
+                   class="menu-accion">
+                    Validar entrada
                 </a>
 
             {% endif %}
-        </nav>
 
-        <div class="session-actions">
+            {% if user.is_authenticated and user.is_staff %}
+
+                <div class="menu-tecnico">
+
+                    <button
+                        type="button"
+                        class="menu-tecnico-boton"
+                        aria-expanded="false"
+                    >
+                        <span class="menu-tecnico-icono">
+                            &lt;/&gt;
+                        </span>
+
+                        <span>
+                            Zona t&eacute;cnica
+                        </span>
+
+                        <span class="menu-tecnico-flecha">
+                            &#9662;
+                        </span>
+                    </button>
+
+                    <div class="menu-tecnico-panel">
+
+                        <div class="menu-tecnico-titulo">
+                            HERRAMIENTAS BACKEND
+                        </div>
+
+                        <a href="/api/docs/">
+                            <span class="tecnico-icono">
+                                API
+                            </span>
+
+                            <span>
+                                <strong>Documentaci&oacute;n API</strong>
+                                <small>Swagger / OpenAPI</small>
+                            </span>
+                        </a>
+
+                        <a href="/admin/">
+                            <span class="tecnico-icono">
+                                ADM
+                            </span>
+
+                            <span>
+                                <strong>Administraci&oacute;n</strong>
+                                <small>Panel de Django</small>
+                            </span>
+                        </a>
+
+                    </div>
+
+                </div>
+
+            {% endif %}
 
             {% if user.is_authenticated %}
 
-                <span class="session-user">
-                    {{ user.username }}
-                </span>
+                <a href="{% url 'compras_web:mis-compras' %}"
+                   class="menu-accion">
+                    Mis compras
+                </a>
 
-                <form
-                    method="post"
-                    action="{% url 'accounts_web:logout' %}"
-                    style="margin: 0;"
-                >
-                    {% csrf_token %}
-
-                    <button
-                        type="submit"
-                        class="session-button"
-                    >
-                        Cerrar sesión
-                    </button>
-                </form>
-
-            {% else %}
-
-                <a
-                    href="{% url 'accounts_web:login' %}"
-                    class="session-button"
-                >
-                    Iniciar sesión
+                <a href="{% url 'entradas_web:mis-entradas' %}"
+                   class="menu-accion">
+                    Mis entradas
                 </a>
 
             {% endif %}
 
-            <a href="{% url 'carrito_web:mi-carrito' %}" class="cart-button">
+            <a href="{% url 'carrito_web:mi-carrito' %}"
+               class="menu-accion">
                 Mi carrito
             </a>
+
+            {% if user.is_authenticated %}
+
+                <form method="post"
+                      action="{% url 'accounts_web:logout' %}"
+                      class="menu-form">
+
+                    {% csrf_token %}
+
+                    <button type="submit"
+                            class="menu-accion menu-accion-boton">
+                        Cerrar sesi&oacute;n</button>
+
+                </form>
+
+            {% endif %}
+
+        </nav>
+
+        <div class="acciones">
+
+            {% if user.is_authenticated %}
+
+                <div class="usuario-sesion">
+
+                    <span class="usuario-nombre">
+                        {{ user.username }}
+                    </span>
+
+                    {% if user.is_staff %}
+
+                        <span class="usuario-rol usuario-rol-admin">
+                            ADMINISTRADOR
+                        </span>
+
+                    {% elif user.rol == "ORGANIZADOR" %}
+
+                        <span class="usuario-rol usuario-rol-organizador">
+                            ORGANIZADOR
+                        </span>
+
+                    {% else %}
+
+                        <span class="usuario-rol usuario-rol-espectador">
+                            ESPECTADOR
+                        </span>
+
+                    {% endif %}
+
+                </div>
+
+            {% else %}
+
+                <a href="{% url 'accounts_web:registro' %}"
+                   class="boton-sesion">
+                    Registrarme
+                </a>
+
+                <a href="{% url 'accounts_web:login' %}"
+                   class="boton-sesion">
+                    Iniciar sesi&oacute;n
+                </a>
+
+            {% endif %}
 
         </div>
 
@@ -621,7 +1148,7 @@
 <main class="page">
 
     <a href="{% url 'eventos:inicio' %}#eventos" class="back">
-        ← Volver a eventos
+        &larr; Volver a eventos
     </a>
 
 
@@ -797,8 +1324,7 @@
                                 href="{% url 'accounts_web:login' %}?next={% url 'eventos:detalle' evento.pk %}"
                                 class="buy-button"
                             >
-                                Iniciar sesión para comprar
-                            </a>
+                                Iniciar sesi&oacute;n</a>
 
                         {% endif %}
 
@@ -823,17 +1349,66 @@
 
 
 <footer class="footer">
-    Venta de Entradas · Christian Cisterna · TILE22 · INACAP Temuco · 2026
+    Venta de Entradas &middot; Christian Cisterna &middot; TILE22 &middot; INACAP Temuco &middot; 2026
 </footer>
+
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+
+    const menuTecnico =
+        document.querySelector(".menu-tecnico");
+
+    const botonTecnico =
+        document.querySelector(".menu-tecnico-boton");
+
+    if (!menuTecnico || !botonTecnico) {
+        return;
+    }
+
+    botonTecnico.addEventListener("click", function (event) {
+
+        event.stopPropagation();
+
+        const estaAbierto =
+            menuTecnico.classList.toggle("abierto");
+
+        botonTecnico.setAttribute(
+            "aria-expanded",
+            estaAbierto ? "true" : "false"
+        );
+    });
+
+    document.addEventListener("click", function (event) {
+
+        if (!menuTecnico.contains(event.target)) {
+
+            menuTecnico.classList.remove("abierto");
+
+            botonTecnico.setAttribute(
+                "aria-expanded",
+                "false"
+            );
+        }
+    });
+
+    document.addEventListener("keydown", function (event) {
+
+        if (event.key === "Escape") {
+
+            menuTecnico.classList.remove("abierto");
+
+            botonTecnico.setAttribute(
+                "aria-expanded",
+                "false"
+            );
+
+            botonTecnico.focus();
+        }
+    });
+
+});
+</script>
 
 </body>
 </html>
-
-
-
-
-
-
-
-
-

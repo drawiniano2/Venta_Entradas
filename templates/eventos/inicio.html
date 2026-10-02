@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
@@ -2268,13 +2268,19 @@
                     Eventos
                 </a>
 
-                {% if user.is_authenticated and user.rol == "ORGANIZADOR" and not user.is_staff %}
+                {% if user.is_authenticated and user.rol == "ORGANIZADOR" %}
 
                     <a
                         href="{% url 'eventos:panel_organizador' %}"
                         class="menu-accion"
                     >
                         Panel organizador
+                    </a>
+                    <a
+                        href="{% url 'entradas_web:validar-entrada' %}"
+                        class="menu-accion"
+                    >
+                        Validar entrada
                     </a>
 
                 {% endif %}
@@ -2396,6 +2402,13 @@
                     </div>
 
                 {% else %}
+                    <a
+                        href="{% url 'accounts_web:registro' %}"
+                        class="boton-sesion"
+                    >
+                        Registrarme
+                    </a>
+
 
                     <a
                         href="{% url 'accounts_web:login' %}"
@@ -2468,34 +2481,16 @@
                 >
                     Todos
                 </a>
+                {% for ciudad in ciudades %}
 
-                <a
-                    href="{% url 'eventos:inicio' %}?q=Temuco#eventos"
-                    class="buscador-chip {% if consulta|lower == 'temuco' %}buscador-chip-activo{% endif %}"
-                >
-                    Temuco
-                </a>
+                    <a
+                        href="{% url 'eventos:inicio' %}?q={{ ciudad|urlencode }}#eventos"
+                        class="buscador-chip {% if consulta|lower == ciudad|lower %}buscador-chip-activo{% endif %}"
+                    >
+                        {{ ciudad }}
+                    </a>
 
-                <a
-                    href="{% url 'eventos:inicio' %}?q=Santiago#eventos"
-                    class="buscador-chip {% if consulta|lower == 'santiago' %}buscador-chip-activo{% endif %}"
-                >
-                    Santiago
-                </a>
-
-                <a
-                    href="{% url 'eventos:inicio' %}?q=Concepción#eventos"
-                    class="buscador-chip {% if consulta|lower == 'concepción' %}buscador-chip-activo{% endif %}"
-                >
-                    Concepción
-                </a>
-
-                <a
-                    href="{% url 'eventos:inicio' %}?q=Valdivia#eventos"
-                    class="buscador-chip {% if consulta|lower == 'valdivia' %}buscador-chip-activo{% endif %}"
-                >
-                    Valdivia
-                </a>
+                {% endfor %}
 
 
                 <a
@@ -2836,35 +2831,3 @@
     </script>
 </body>
 </html>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

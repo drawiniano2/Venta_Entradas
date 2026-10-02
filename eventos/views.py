@@ -1,4 +1,4 @@
-﻿from django.contrib import messages
+from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.db.models import Q
 from django.shortcuts import get_object_or_404, redirect, render
@@ -55,17 +55,41 @@ def inicio(request):
             | Q(recinto__direccion__icontains=consulta)
         )
 
-    # Cantidad total encontrada antes de limitar a 6 eventos.
+    # Cantidad total de eventos encontrados.
     cantidad_resultados = eventos.count()
 
     eventos = eventos.order_by(
         "fecha_inicio"
-    )[:6]
+    )
 
+    # Ciudades disponibles obtenidas automaticamente desde
+    # los eventos publicados y activos.
+    ciudades = (
+        Evento.objects
+        .filter(
+            estado=Evento.Estado.PUBLICADO,
+            activo=True,
+        )
+        .exclude(
+            recinto__ciudad__isnull=True,
+        )
+        .exclude(
+            recinto__ciudad="",
+        )
+        .values_list(
+            "recinto__ciudad",
+            flat=True,
+        )
+        .distinct()
+        .order_by(
+            "recinto__ciudad"
+        )
+    )
     contexto = {
         "eventos": eventos,
         "consulta": consulta,
         "cantidad_resultados": cantidad_resultados,
+        "ciudades": ciudades,
     }
 
     return render(
@@ -77,10 +101,10 @@ def inicio(request):
 
 def detalle_evento(request, pk):
     """
-    Muestra la ficha pÃºblica de un evento.
+    Muestra la ficha pública de un evento.
 
-    Solo permite visualizar eventos que estÃ©n publicados
-    y activos. TambiÃ©n carga el recinto, organizador y
+    Solo permite visualizar eventos que estén publicados
+    y activos. También carga el recinto, organizador y
     tipos de entrada asociados al evento.
     """
 
@@ -120,10 +144,10 @@ def agregar_al_carrito_web(request, tipo_entrada_id):
     """
     Agrega una entrada al carrito desde la interfaz web.
 
-    Esta operaciÃ³n:
+    Esta operación:
     - requiere un usuario autenticado;
     - utiliza el carrito persistente del usuario;
-    - valida que el tipo de entrada estÃ© activo;
+    - valida que el tipo de entrada esté activo;
     - valida que exista stock disponible;
     - NO descuenta stock;
     - si el tipo ya existe en el carrito, aumenta su cantidad.
@@ -164,7 +188,7 @@ def agregar_al_carrito_web(request, tipo_entrada_id):
         if nueva_cantidad > tipo_entrada.stock_disponible:
             messages.warning(
                 request,
-                "No puedes agregar mÃ¡s unidades. "
+                "No puedes agregar más unidades. "
                 "Has alcanzado el stock disponible.",
             )
 
