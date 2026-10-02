@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
@@ -845,6 +845,79 @@
         }
 
 
+
+        /* =====================================================
+           ZONA TECNICA - MENU DESPLEGABLE
+           ===================================================== */
+
+        .menu-tecnico {
+            position: relative;
+            display: inline-flex;
+            align-items: center;
+        }
+
+        .menu-tecnico-boton {
+            cursor: pointer;
+            font-family: inherit;
+        }
+
+        .menu-flecha {
+            margin-left: 6px;
+            font-size: 11px;
+            transition: transform .2s ease;
+        }
+
+        .menu-tecnico.abierto .menu-flecha {
+            transform: rotate(180deg);
+        }
+
+        .menu-tecnico-lista {
+            position: absolute;
+            top: calc(100% + 8px);
+            left: 0;
+
+            z-index: 1000;
+
+            min-width: 190px;
+            padding: 8px;
+
+            display: none;
+
+            background: #101521;
+            border: 1px solid rgba(157, 135, 255, 0.25);
+            border-radius: 10px;
+
+            box-shadow:
+                0 18px 40px rgba(0, 0, 0, 0.35);
+        }
+
+        .menu-tecnico.abierto .menu-tecnico-lista {
+            display: block;
+        }
+
+        .menu-tecnico-lista a {
+            display: block;
+
+            padding: 10px 12px;
+
+            border-radius: 7px;
+
+            color: #c9d1e3;
+            font-size: 13px;
+            font-weight: 700;
+            text-decoration: none;
+
+            white-space: nowrap;
+
+            transition:
+                background .2s,
+                color .2s;
+        }
+
+        .menu-tecnico-lista a:hover {
+            background: rgba(124, 92, 255, 0.12);
+            color: #ffffff;
+        }
         /* =====================================================
            USUARIO + ROL
            ===================================================== */
@@ -1395,6 +1468,54 @@
 
 
 
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+
+    const menuTecnico =
+        document.querySelector(".menu-tecnico");
+
+    const botonTecnico =
+        document.querySelector(".menu-tecnico-boton");
+
+    if (!menuTecnico || !botonTecnico) {
+        return;
+    }
+
+    botonTecnico.addEventListener(
+        "click",
+        function (event) {
+
+            event.stopPropagation();
+
+            const abierto =
+                menuTecnico.classList.toggle("abierto");
+
+            botonTecnico.setAttribute(
+                "aria-expanded",
+                abierto ? "true" : "false"
+            );
+        }
+    );
+
+    document.addEventListener(
+        "click",
+        function (event) {
+
+            if (!menuTecnico.contains(event.target)) {
+
+                menuTecnico.classList.remove("abierto");
+
+                botonTecnico.setAttribute(
+                    "aria-expanded",
+                    "false"
+                );
+            }
+        }
+    );
+
+});
+</script>
 <!-- ============================================================
      CONSERVAR POSICION DEL CARRITO AL CAMBIAR CANTIDAD
      ============================================================ -->
