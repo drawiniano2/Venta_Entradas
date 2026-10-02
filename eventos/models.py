@@ -1,4 +1,4 @@
-﻿from django.conf import settings
+from django.conf import settings
 from django.core.exceptions import ValidationError
 from django.db import models
 
@@ -206,7 +206,11 @@ class TipoEntrada(models.Model):
         al stock total configurado.
         """
 
-        if self.stock_disponible > self.stock_total:
+        if (
+            self.stock_disponible is not None
+            and self.stock_total is not None
+            and self.stock_disponible > self.stock_total
+        ):
             raise ValidationError(
                 {
                     "stock_disponible": (

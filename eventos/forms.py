@@ -1,4 +1,4 @@
-﻿from django import forms
+from django import forms
 
 from .models import Evento, Recinto, TipoEntrada
 
@@ -185,3 +185,71 @@ class TipoEntradaForm(forms.ModelForm):
             )
 
         return cleaned_data
+
+# ============================================================
+# FORMULARIO DE RECINTO
+# ============================================================
+
+class RecintoForm(forms.ModelForm):
+    """
+    Formulario web para crear recintos desde
+    el panel del organizador.
+    """
+
+    class Meta:
+        model = Recinto
+
+        fields = [
+            "nombre",
+            "direccion",
+            "ciudad",
+            "capacidad",
+            "activo",
+        ]
+
+        widgets = {
+            "nombre": forms.TextInput(
+                attrs={
+                    "class": "campo",
+                    "placeholder": "Nombre del recinto",
+                }
+            ),
+
+            "direccion": forms.TextInput(
+                attrs={
+                    "class": "campo",
+                    "placeholder": "Dirección del recinto",
+                }
+            ),
+
+            "ciudad": forms.TextInput(
+                attrs={
+                    "class": "campo",
+                    "placeholder": "Ciudad",
+                }
+            ),
+
+            "capacidad": forms.NumberInput(
+                attrs={
+                    "class": "campo",
+                    "min": "1",
+                    "placeholder": "Capacidad máxima",
+                }
+            ),
+
+            "activo": forms.CheckboxInput(
+                attrs={
+                    "class": "check",
+                }
+            ),
+        }
+
+    def clean_capacidad(self):
+        capacidad = self.cleaned_data.get("capacidad")
+
+        if capacidad is not None and capacidad < 1:
+            raise forms.ValidationError(
+                "La capacidad debe ser mayor que cero."
+            )
+
+        return capacidad

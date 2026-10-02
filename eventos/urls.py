@@ -1,12 +1,15 @@
-﻿from django.urls import path
+from django.urls import path
 
 from .views import (
     agregar_al_carrito_web,
     detalle_evento,
     editar_evento,
     editar_tipo_entrada,
+    eliminar_evento,
+    eliminar_tipo_entrada,
     inicio,
     nuevo_evento,
+    nuevo_recinto,
     nuevo_tipo_entrada,
     panel_organizador,
 )
@@ -49,6 +52,22 @@ urlpatterns = [
         name="editar_evento",
     ),
 
+    path(
+        "organizador/eventos/<int:pk>/eliminar/",
+        eliminar_evento,
+        name="eliminar_evento",
+    ),
+
+    # ========================================================
+    # GESTION DE RECINTOS - ORGANIZADOR
+    # ========================================================
+
+    path(
+        "organizador/recintos/nuevo/",
+        nuevo_recinto,
+        name="nuevo_recinto",
+    ),
+
     # ========================================================
     # GESTION DE TIPOS DE ENTRADA - ORGANIZADOR
     # ========================================================
@@ -62,6 +81,12 @@ urlpatterns = [
         "organizador/entradas/<int:pk>/editar/",
         editar_tipo_entrada,
         name="editar_tipo_entrada",
+    ),
+
+    path(
+        "organizador/entradas/<int:pk>/eliminar/",
+        eliminar_tipo_entrada,
+        name="eliminar_tipo_entrada",
     ),
 
     # ========================================================

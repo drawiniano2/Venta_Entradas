@@ -678,6 +678,27 @@
                 1px solid var(--borde);
         }
 
+        .form-eliminar-evento {
+            margin: 0;
+            padding: 0;
+            display: inline-flex;
+            align-items: center;
+        }
+
+        .accion-eliminar {
+            font-family: inherit;
+            cursor: pointer;
+            background: rgba(255, 77, 90, .08);
+            border-color: rgba(255, 77, 90, .45);
+            color: #ff7b85;
+        }
+
+        .accion-eliminar:hover {
+            background: rgba(255, 77, 90, .16);
+            border-color: #ff5c68;
+            color: #ffffff;
+        }
+
         .accion {
             min-height: 40px;
 
@@ -867,7 +888,12 @@
             align-items: center;
             justify-content: flex-end;
             gap: 12px;
-            flex-wrap: wrap;
+            flex-wrap: nowrap;
+        }
+
+        .acciones-panel .boton-nuevo {
+            white-space: nowrap;
+            min-width: 0;
         }
 
         .boton-validar {
@@ -1058,6 +1084,14 @@ a.boton-validar:active {
                     title="Crear un nuevo evento"
                 >
                     + NUEVO EVENTO
+                </a>
+
+                <a
+                    href="{% url 'eventos:nuevo_recinto' %}"
+                    class="boton-nuevo"
+                    title="Registrar un nuevo recinto"
+                >
+                    + NUEVO RECINTO
                 </a>
 
                 <a
@@ -1261,6 +1295,23 @@ a.boton-validar:active {
                             >
                                 Gestionar
                             </a>
+
+                            <form
+                                method="POST"
+                                action="{% url 'eventos:eliminar_evento' evento.pk %}"
+                                class="form-eliminar-evento"
+                                onsubmit="return confirm('?Seguro que deseas eliminar este evento? Esta acci?n no se puede deshacer.');"
+                            >
+                                {% csrf_token %}
+
+                                <button
+                                    type="submit"
+                                    class="accion accion-eliminar"
+                                    title="Eliminar este evento"
+                                >
+                                    Eliminar
+                                </button>
+                            </form>
 
                         </div>
 

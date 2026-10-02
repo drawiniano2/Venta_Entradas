@@ -6,7 +6,7 @@ from django.views.decorators.http import require_POST
 
 from carrito.models import Carrito, ItemCarrito
 
-from .forms import EventoForm, TipoEntradaForm
+from .forms import EventoForm, RecintoForm, TipoEntradaForm
 from .models import Evento, TipoEntrada
 
 
@@ -457,6 +457,62 @@ def nuevo_tipo_entrada(request, evento_pk):
 # ============================================================
 
 @login_required
+@require_POST
+def eliminar_evento(request, pk):
+    """
+    Permite al ORGANIZADOR eliminar uno de sus eventos
+    solamente cuando no posee compras asociadas.
+
+    Si existe historial de compras, el evento se conserva
+    para proteger la integridad de los datos.
+    """
+
+    if request.user.rol != "ORGANIZADOR":
+        messages.error(
+            request,
+            "No tienes permisos para eliminar eventos.",
+        )
+        return redirect("eventos:inicio")
+
+    evento = get_object_or_404(
+        Evento,
+        pk=pk,
+        organizador=request.user,
+    )
+
+    tiene_compras = TipoEntrada.objects.filter(
+        evento=evento,
+        detalles_compra__isnull=False,
+    ).exists()
+
+    if tiene_compras:
+        messages.error(
+            request,
+            (
+                "No se puede eliminar este evento porque posee "
+                "compras asociadas. Puedes cancelarlo o dejarlo "
+                "inactivo para conservar el historial."
+            ),
+        )
+
+        return redirect(
+            "eventos:editar_evento",
+            pk=evento.pk,
+        )
+
+    nombre_evento = evento.nombre
+
+    evento.delete()
+
+    messages.success(
+        request,
+        f'Evento "{nombre_evento}" eliminado correctamente.',
+    )
+
+    return redirect("eventos:panel_organizador")
+
+
+@login_required
 def editar_tipo_entrada(request, pk):
     """
     Permite al ORGANIZADOR editar un tipo de entrada
@@ -519,3 +575,109 @@ def editar_tipo_entrada(request, pk):
         },
     )
 
+# ============================================================
+# ELIMINAR TIPO DE ENTRADA - ORGANIZADOR
+# ============================================================
+
+@login_required
+@require_POST
+def eliminar_tipo_entrada(request, pk):
+    """
+    Permite al ORGANIZADOR eliminar un tipo de entrada
+    únicamente si pertenece a uno de sus eventos y no
+    posee compras asociadas.
+
+    Si existe historial de compra, el registro se conserva
+    para mantener la integridad de los datos.
+    """
+
+    if request.user.rol != "ORGANIZADOR":
+        messages.error(
+            request,
+            "No tienes permisos para eliminar entradas.",
+        )
+        return redirect("eventos:inicio")
+
+    tipo_entrada = get_object_or_404(
+        TipoEntrada.objects.select_related("evento"),
+        pk=pk,
+        evento__organizador=request.user,
+    )
+
+    evento = tipo_entrada.evento
+
+    if tipo_entrada.detalles_compra.exists():
+        messages.error(
+            request,
+            (
+                "No se puede eliminar este tipo de entrada "
+                "porque posee compras asociadas. "
+                "Puedes dejarlo inactivo para impedir nuevas ventas."
+            ),
+        )
+
+        return redirect(
+            "eventos:editar_evento",
+            pk=evento.pk,
+        )
+
+    nombre_tipo = tipo_entrada.nombre
+
+    tipo_entrada.delete()
+
+    messages.success(
+        request,
+        f'Tipo de entrada "{nombre_tipo}" eliminado correctamente.',
+    )
+
+    return redirect(
+        "eventos:editar_evento",
+        pk=evento.pk,
+    )
+
+
+# ============================================================
+# CREAR RECINTO - PANEL ORGANIZADOR
+# ============================================================
+
+@login_required
+def nuevo_recinto(request):
+    """
+    Permite al ORGANIZADOR crear un recinto desde
+    su panel privado.
+    """
+
+    if request.user.rol != "ORGANIZADOR":
+        messages.error(
+            request,
+            "No tienes permisos para crear recintos.",
+        )
+        return redirect("eventos:inicio")
+
+    if request.method == "POST":
+        form = RecintoForm(request.POST)
+
+        if form.is_valid():
+            recinto = form.save()
+
+            messages.success(
+                request,
+                f'Recinto "{recinto.nombre}" creado correctamente.',
+            )
+
+            return redirect(
+                "eventos:panel_organizador"
+            )
+
+    else:
+        form = RecintoForm()
+
+    return render(
+        request,
+        "eventos/recinto_form.html",
+        {
+            "form": form,
+            "titulo": "Nuevo recinto",
+            "texto_boton": "CREAR RECINTO",
+        },
+    )

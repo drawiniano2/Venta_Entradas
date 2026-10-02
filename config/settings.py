@@ -1,4 +1,4 @@
-﻿import os
+import os
 from datetime import timedelta
 from pathlib import Path
 from dotenv import load_dotenv
@@ -20,7 +20,7 @@ load_dotenv(BASE_DIR / '.env')
 
 SECRET_KEY = 'django-insecure-s$_=2++#&k+aj^xk#$rqm5cx9vlq_4&8ln56gzk$p%6+-!ib62'
 
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = [
     "127.0.0.1",

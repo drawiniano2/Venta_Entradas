@@ -1,4 +1,4 @@
-﻿{% load static %}
+{% load static %}
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -327,6 +327,17 @@
     color: #ff8c95;
 }
 
+.acciones-entrada {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 8px;
+}
+
+.acciones-entrada form {
+    margin: 0;
+}
+
 .editar-entrada {
     padding: 9px 14px;
 
@@ -342,6 +353,28 @@
 .editar-entrada:hover {
     border-color: #7c5cff;
     color: #fff;
+}
+
+.eliminar-entrada {
+    padding: 9px 14px;
+
+    border: 1px solid rgba(255, 100, 110, .55);
+    border-radius: 9px;
+
+    background: rgba(255, 100, 110, .08);
+    color: #ff8c95;
+
+    font-family: inherit;
+    font-weight: 800;
+    font-size: .78rem;
+
+    cursor: pointer;
+}
+
+.eliminar-entrada:hover {
+    border-color: #ff646e;
+    background: rgba(255, 100, 110, .16);
+    color: #ffffff;
 }
 
 .sin-tipos {
@@ -558,12 +591,31 @@
                     {% endif %}
                 </div>
 
-                <a
-                    href="{% url 'eventos:editar_tipo_entrada' tipo.pk %}"
-                    class="editar-entrada"
-                >
-                    EDITAR
-                </a>
+                <div class="acciones-entrada">
+
+                    <a
+                        href="{% url 'eventos:editar_tipo_entrada' tipo.pk %}"
+                        class="editar-entrada"
+                    >
+                        EDITAR
+                    </a>
+
+                    <form
+                        method="post"
+                        action="{% url 'eventos:eliminar_tipo_entrada' tipo.pk %}"
+                        onsubmit="return confirm('¿Seguro que deseas eliminar este tipo de entrada?');"
+                    >
+                        {% csrf_token %}
+
+                        <button
+                            type="submit"
+                            class="eliminar-entrada"
+                        >
+                            ELIMINAR
+                        </button>
+                    </form>
+
+                </div>
 
             </div>
 
