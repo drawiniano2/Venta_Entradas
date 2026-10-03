@@ -385,6 +385,39 @@
             font-weight: 900;
         }
 
+        .asiento-carrito {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+
+            margin-bottom: 4px;
+        }
+
+        .asiento-carrito-sector {
+            color: #e9e5ff;
+            font-size: 14px;
+            font-weight: 800;
+        }
+
+        .asiento-carrito-codigo {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+
+            padding: 7px 11px;
+
+            border: 1px solid rgba(139, 92, 246, 0.55);
+            border-radius: 9px;
+
+            background: rgba(139, 92, 246, 0.12);
+
+            color: var(--purple-light);
+
+            font-size: 13px;
+            font-weight: 900;
+        }
+
         .stock-info {
             margin-left: 9px;
 
@@ -1232,82 +1265,123 @@
 
                                 <div>
 
-                                    <span class="quantity-label">
-                                        Cantidad
-                                    </span>
+                                    {% if item.asiento %}
 
-                                    <div class="quantity-zone">
+                                        <span class="quantity-label">
+                                            Ubicaci?n seleccionada
+                                        </span>
 
-                                        <div class="quantity-controls">
+                                        <div class="asiento-carrito">
 
-                                            <form
-                                                method="post"
-                                                action="{% url 'carrito_web:actualizar-item' item.id %}"
-                                                class="quantity-form"
-                                            >
-                                                {% csrf_token %}
+                                            <div class="asiento-carrito-sector">
+                                                {{ item.asiento.locacion.nombre }}
+                                            </div>
 
-                                                <input
-                                                    type="hidden"
-                                                    name="accion"
-                                                    value="disminuir"
-                                                >
+                                            <div class="asiento-carrito-codigo">
+                                                Asiento {{ item.asiento.codigo }}
+                                            </div>
 
-                                                <button
-                                                    type="submit"
-                                                    class="quantity-button"
-                                                    aria-label="Disminuir cantidad"
-                                                    title="Disminuir cantidad"
-                                                >
-                                                    &minus;
-                                                </button>
-                                            </form>
+                                        </div>
 
-                                            <span class="quantity-number">
-                                                {{ item.cantidad }}
-                                            </span>
+                                        <div class="quantity-zone">
 
                                             <form
                                                 method="post"
-                                                action="{% url 'carrito_web:actualizar-item' item.id %}"
-                                                class="quantity-form"
+                                                action="{% url 'carrito_web:eliminar-item' item.id %}"
+                                                class="remove-form"
                                             >
                                                 {% csrf_token %}
 
-                                                <input
-                                                    type="hidden"
-                                                    name="accion"
-                                                    value="aumentar"
-                                                >
-
                                                 <button
                                                     type="submit"
-                                                    class="quantity-button"
-                                                    aria-label="Aumentar cantidad"
-                                                    title="Aumentar cantidad"
+                                                    class="remove-button"
                                                 >
-                                                    +
+                                                    Eliminar
                                                 </button>
                                             </form>
 
                                         </div>
 
-                                        <form
-                                            method="post"
-                                            action="{% url 'carrito_web:eliminar-item' item.id %}"
-                                            class="remove-form"
-                                        >
-                                            {% csrf_token %}
+                                    {% else %}
 
-                                            <button
-                                                type="submit"
-                                                class="remove-button"
+                                        <span class="quantity-label">
+                                            Cantidad
+                                        </span>
+
+                                        <div class="quantity-zone">
+
+                                            <div class="quantity-controls">
+
+                                                <form
+                                                    method="post"
+                                                    action="{% url 'carrito_web:actualizar-item' item.id %}"
+                                                    class="quantity-form"
+                                                >
+                                                    {% csrf_token %}
+
+                                                    <input
+                                                        type="hidden"
+                                                        name="accion"
+                                                        value="disminuir"
+                                                    >
+
+                                                    <button
+                                                        type="submit"
+                                                        class="quantity-button"
+                                                        aria-label="Disminuir cantidad"
+                                                        title="Disminuir cantidad"
+                                                    >
+                                                        &minus;
+                                                    </button>
+                                                </form>
+
+                                                <span class="quantity-number">
+                                                    {{ item.cantidad }}
+                                                </span>
+
+                                                <form
+                                                    method="post"
+                                                    action="{% url 'carrito_web:actualizar-item' item.id %}"
+                                                    class="quantity-form"
+                                                >
+                                                    {% csrf_token %}
+
+                                                    <input
+                                                        type="hidden"
+                                                        name="accion"
+                                                        value="aumentar"
+                                                    >
+
+                                                    <button
+                                                        type="submit"
+                                                        class="quantity-button"
+                                                        aria-label="Aumentar cantidad"
+                                                        title="Aumentar cantidad"
+                                                    >
+                                                        +
+                                                    </button>
+                                                </form>
+
+                                            </div>
+
+                                            <form
+                                                method="post"
+                                                action="{% url 'carrito_web:eliminar-item' item.id %}"
+                                                class="remove-form"
                                             >
-                                                Eliminar
-                                            </button>
-                                        </form>
+                                                {% csrf_token %}
 
-                                    </div>
+                                                <button
+                                                    type="submit"
+                                                    class="remove-button"
+                                                >
+                                                    Eliminar
+                                                </button>
+                                            </form>
+
+                                        </div>
+
+                                    {% endif %}
 
                                     <span class="stock-info">
                                         Stock disponible:

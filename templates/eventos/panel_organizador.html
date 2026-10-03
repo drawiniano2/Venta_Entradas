@@ -964,6 +964,199 @@ a.boton-nuevo:active,
 a.boton-validar:active {
     transform: translateY(0);
 }
+
+
+/* ==================================================
+   ZONA TECNICA - MENU DESPLEGABLE
+   ================================================== */
+
+.menu-tecnico {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.menu-tecnico-boton {
+    min-height: 40px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 0 13px;
+
+    border: 1px solid transparent;
+    border-radius: 10px;
+    background: transparent;
+
+    color: #9ba5ba;
+
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: 600;
+
+    cursor: pointer;
+
+    transition:
+        color 0.2s ease,
+        background 0.2s ease,
+        border-color 0.2s ease;
+}
+
+.menu-tecnico-boton:hover,
+.menu-tecnico.abierto .menu-tecnico-boton {
+    color: #ffffff;
+    border-color: rgba(139, 92, 246, 0.35);
+    background: rgba(124, 92, 255, 0.08);
+}
+
+.menu-tecnico-icono {
+    color: #a98cff;
+    font-size: 12px;
+    font-weight: 900;
+}
+
+.menu-tecnico-flecha {
+    color: #9ba5ba;
+    font-size: 11px;
+    transition: transform 0.2s ease;
+}
+
+.menu-tecnico.abierto .menu-tecnico-flecha {
+    transform: rotate(180deg);
+}
+
+.menu-tecnico-panel {
+    width: 290px;
+
+    position: absolute;
+    top: calc(100% + 12px);
+    left: 50%;
+    z-index: 300;
+
+    padding: 10px;
+
+    border: 1px solid rgba(139, 92, 246, 0.28);
+    border-radius: 16px;
+
+    background:
+        linear-gradient(
+            145deg,
+            rgba(20, 20, 35, 0.98),
+            rgba(8, 11, 18, 0.99)
+        );
+
+    box-shadow:
+        0 22px 55px rgba(0, 0, 0, 0.45),
+        0 0 35px rgba(124, 92, 255, 0.08);
+
+    opacity: 0;
+    visibility: hidden;
+
+    transform: translate(-50%, -6px);
+    pointer-events: none;
+
+    transition:
+        opacity 0.18s ease,
+        visibility 0.18s ease,
+        transform 0.18s ease;
+}
+
+.menu-tecnico.abierto .menu-tecnico-panel {
+    opacity: 1;
+    visibility: visible;
+    transform: translate(-50%, 0);
+    pointer-events: auto;
+}
+
+.menu-tecnico-titulo {
+    padding: 8px 10px 10px;
+
+    color: #a98cff;
+
+    font-size: 10px;
+    font-weight: 900;
+    letter-spacing: 1.2px;
+}
+
+.menu-tecnico-panel a {
+    min-height: 64px;
+
+    display: grid;
+    grid-template-columns: 44px 1fr;
+    align-items: center;
+    gap: 12px;
+
+    padding: 9px 10px;
+
+    border: 1px solid transparent;
+    border-radius: 11px;
+
+    color: #f5f7ff;
+    text-decoration: none;
+
+    transition:
+        background 0.18s ease,
+        border-color 0.18s ease,
+        transform 0.18s ease;
+}
+
+.menu-tecnico-panel a:hover {
+    background: rgba(124, 92, 255, 0.10);
+    border-color: rgba(139, 92, 246, 0.22);
+    transform: translateX(2px);
+}
+
+.tecnico-icono {
+    width: 40px;
+    height: 40px;
+
+    display: grid;
+    place-items: center;
+
+    border: 1px solid rgba(139, 92, 246, 0.30);
+    border-radius: 10px;
+
+    background: rgba(124, 92, 255, 0.10);
+
+    color: #a98cff;
+
+    font-size: 10px;
+    font-weight: 900;
+    letter-spacing: 0.5px;
+}
+
+.menu-tecnico-panel strong {
+    display: block;
+    margin-bottom: 4px;
+
+    color: #f5f7ff;
+
+    font-size: 13px;
+    font-weight: 800;
+}
+
+.menu-tecnico-panel small {
+    display: block;
+
+    color: #9ba5ba;
+
+    font-size: 11px;
+    font-weight: 500;
+}
+
+@media (max-width: 700px) {
+
+    .menu-tecnico-panel {
+        left: auto;
+        right: 0;
+        transform: translateY(-6px);
+    }
+
+    .menu-tecnico.abierto .menu-tecnico-panel {
+        transform: translateY(0);
+    }
+}
+
 </style>
 
 </head>
@@ -1008,6 +1201,99 @@ a.boton-validar:active {
                 >
                     Panel organizador
                 </a>
+
+
+                <div class="menu-tecnico">
+
+                    <button
+                        type="button"
+                        class="menu-tecnico-boton"
+                        id="menuTecnicoBoton"
+                        aria-expanded="false"
+                    >
+                        <span class="menu-tecnico-icono">
+                            DEV
+                        </span>
+
+                        <span>
+                            Zona t&eacute;cnica
+                        </span>
+
+                        <span class="menu-tecnico-flecha">
+                            &#9662;
+                        </span>
+                    </button>
+
+
+                    <div
+                        class="menu-tecnico-panel"
+                        id="menuTecnicoPanel"
+                    >
+
+                        <div class="menu-tecnico-titulo">
+                            HERRAMIENTAS BACKEND
+                        </div>
+
+
+                        <a href="/api/docs/">
+
+                            <span class="tecnico-icono">
+                                API
+                            </span>
+
+                            <span>
+                                <strong>
+                                    Documentaci&oacute;n API
+                                </strong>
+
+                                <small>
+                                    Swagger / OpenAPI
+                                </small>
+                            </span>
+
+                        </a>
+
+
+                        <a href="/admin/">
+
+                            <span class="tecnico-icono">
+                                ADM
+                            </span>
+
+                            <span>
+                                <strong>
+                                    Administraci&oacute;n
+                                </strong>
+
+                                <small>
+                                    Panel de Django
+                                </small>
+                            </span>
+
+                        </a>
+
+
+                        <a href="{% url 'accounts_web:gestion_usuarios' %}">
+
+                            <span class="tecnico-icono">
+                                USR
+                            </span>
+
+                            <span>
+                                <strong>
+                                    Gesti&oacute;n de usuarios
+                                </strong>
+
+                                <small>
+                                    Roles y permisos
+                                </small>
+                            </span>
+
+                        </a>
+
+                    </div>
+
+                </div>
 
             </nav>
 
@@ -1357,6 +1643,68 @@ a.boton-validar:active {
     <footer class="footer">
         Venta de Entradas · Christian Cisterna · TILE22 · INACAP Temuco · 2026
     </footer>
+
+
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+
+    const boton = document.getElementById("menuTecnicoBoton");
+
+    if (!boton) {
+        return;
+    }
+
+    const menu = boton.closest(".menu-tecnico");
+
+    if (!menu) {
+        return;
+    }
+
+    boton.addEventListener("click", function (event) {
+
+        event.stopPropagation();
+
+        const abierto = menu.classList.toggle("abierto");
+
+        boton.setAttribute(
+            "aria-expanded",
+            abierto ? "true" : "false"
+        );
+    });
+
+
+    document.addEventListener("click", function (event) {
+
+        if (!menu.contains(event.target)) {
+
+            menu.classList.remove("abierto");
+
+            boton.setAttribute(
+                "aria-expanded",
+                "false"
+            );
+        }
+    });
+
+
+    document.addEventListener("keydown", function (event) {
+
+        if (event.key === "Escape") {
+
+            menu.classList.remove("abierto");
+
+            boton.setAttribute(
+                "aria-expanded",
+                "false"
+            );
+
+            boton.focus();
+        }
+    });
+
+});
+</script>
 
 
 </body>

@@ -1,8 +1,8 @@
-﻿from django.conf import settings
+from django.conf import settings
 from django.core.exceptions import ValidationError
 from django.db import models
 
-from eventos.models import TipoEntrada
+from eventos.models import Asiento, TipoEntrada
 
 
 class Carrito(models.Model):
@@ -52,6 +52,14 @@ class ItemCarrito(models.Model):
         related_name="items_carrito",
     )
 
+    asiento = models.ForeignKey(
+        Asiento,
+        on_delete=models.PROTECT,
+        related_name="items_carrito",
+        null=True,
+        blank=True,
+    )
+
     cantidad = models.PositiveIntegerField()
 
     agregado_en = models.DateTimeField(
@@ -66,9 +74,22 @@ class ItemCarrito(models.Model):
         verbose_name = "ítem de carrito"
         verbose_name_plural = "ítems de carrito"
         constraints = [
+            # Para eventos con entrada GENERAL:
+            # un tipo de entrada aparece una sola vez por carrito
+            # y la cantidad se acumula en ese mismo item.
             models.UniqueConstraint(
                 fields=("carrito", "tipo_entrada"),
-                name="item_unico_tipo_entrada_por_carrito",
+                condition=models.Q(asiento__isnull=True),
+                name="item_general_unico_por_carrito",
+            ),
+
+            # Para eventos con UBICACION:
+            # un asiento concreto solo puede aparecer una vez
+            # dentro del mismo carrito.
+            models.UniqueConstraint(
+                fields=("carrito", "asiento"),
+                condition=models.Q(asiento__isnull=False),
+                name="asiento_unico_por_carrito",
             ),
         ]
 

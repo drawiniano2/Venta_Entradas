@@ -1,8 +1,8 @@
-﻿from django.conf import settings
+from django.conf import settings
 from django.core.validators import MinValueValidator
 from django.db import models
 
-from eventos.models import TipoEntrada
+from eventos.models import Asiento, TipoEntrada
 
 
 class Compra(models.Model):
@@ -105,6 +105,14 @@ class DetalleCompra(models.Model):
         TipoEntrada,
         on_delete=models.PROTECT,
         related_name="detalles_compra",
+    )
+
+    asiento = models.ForeignKey(
+        Asiento,
+        on_delete=models.PROTECT,
+        related_name="detalles_compra",
+        null=True,
+        blank=True,
     )
 
     cantidad = models.PositiveIntegerField(

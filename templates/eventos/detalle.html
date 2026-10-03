@@ -560,18 +560,18 @@
         }
 
         .navbar-contenido {
-            width: min(1180px, calc(100% - 40px));
+            width: min(1280px, calc(100% - 32px));
             min-height: 82px;
             margin: 0 auto;
 
             display: grid;
             grid-template-columns:
-                minmax(220px, 1fr)
                 auto
-                minmax(220px, 1fr);
+                minmax(0, 1fr)
+                auto;
 
             align-items: center;
-            gap: 24px;
+            gap: 16px;
         }
 
         .logo {
@@ -966,7 +966,199 @@
             }
         }
 
-    </style>
+    
+        /* =====================================================
+           UBICACIONES Y ASIENTOS
+           ===================================================== */
+
+        .ubicaciones-demo {
+            display: grid;
+            gap: 18px;
+        }
+
+        .ubicaciones-aviso {
+            padding: 16px 18px;
+            border: 1px solid rgba(124, 92, 255, 0.35);
+            border-radius: 14px;
+            background: rgba(124, 92, 255, 0.08);
+        }
+
+        .ubicaciones-aviso strong,
+        .ubicaciones-aviso span {
+            display: block;
+        }
+
+        .ubicaciones-aviso strong {
+            margin-bottom: 5px;
+            font-size: 15px;
+        }
+
+        .ubicaciones-aviso span {
+            color: #98a3bb;
+            font-size: 13px;
+        }
+
+        .ubicacion-card {
+            margin-bottom: 0;
+        }
+
+        .asientos-titulo {
+            margin-top: 16px;
+            margin-bottom: 10px;
+            color: #98a3bb;
+            font-size: 12px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+        }
+
+        .asientos-grid {
+            display: grid;
+            grid-template-columns: repeat(5, minmax(42px, 1fr));
+            gap: 8px;
+        }
+
+        .asiento-form {
+            margin: 0;
+            padding: 0;
+        }
+
+        .asiento-vendido {
+            cursor: not-allowed !important;
+            opacity: 0.72;
+            border-color: rgba(239, 68, 68, 0.55) !important;
+            background: rgba(239, 68, 68, 0.12) !important;
+            color: #fca5a5 !important;
+            box-shadow: none !important;
+            pointer-events: none;
+        }
+
+        .asiento-vendido span {
+            display: block;
+            font-weight: 900;
+        }
+
+        .asiento-vendido small {
+            display: block;
+            margin-top: 3px;
+            font-size: 7px;
+            font-weight: 900;
+            letter-spacing: 0.5px;
+        }
+
+        .asiento-demo {
+            min-height: 42px;
+            border: 1px solid #3c4862;
+            border-radius: 9px;
+            background: #151c2b;
+            color: #f5f7ff;
+            font: inherit;
+            font-size: 13px;
+            font-weight: 800;
+            cursor: pointer;
+            transition:
+                transform 0.15s ease,
+                border-color 0.15s ease,
+                background 0.15s ease;
+        }
+
+        .asiento-demo:hover {
+            transform: translateY(-2px);
+            border-color: #7c5cff;
+            background: rgba(124, 92, 255, 0.18);
+        }
+
+        .sin-asientos {
+            grid-column: 1 / -1;
+            color: #98a3bb;
+            font-size: 13px;
+        }
+
+
+        /* =====================================================
+           AJUSTE FINAL NAVBAR - EVITA TRASLAPES
+           ===================================================== */
+
+        .navbar-contenido {
+            width: min(1320px, calc(100% - 24px));
+            grid-template-columns: auto minmax(0, 1fr) auto;
+            gap: 10px;
+        }
+
+        .logo {
+            gap: 8px;
+            flex-shrink: 0;
+        }
+
+        .logo-icono {
+            width: 38px;
+            height: 38px;
+            flex-shrink: 0;
+        }
+
+        .logo-texto {
+            font-size: 17px;
+        }
+
+        .menu {
+            min-width: 0;
+            gap: 6px;
+        }
+
+        .menu-accion {
+            padding-left: 10px;
+            padding-right: 10px;
+            font-size: 12px;
+        }
+
+        .menu-tecnico-boton {
+            padding-left: 10px;
+            padding-right: 10px;
+            font-size: 12px;
+        }
+
+        .acciones {
+            gap: 7px;
+            flex-shrink: 0;
+        }
+
+        .usuario-sesion {
+            gap: 6px;
+        }
+
+        .usuario-nombre {
+            font-size: 12px;
+        }
+
+        .usuario-rol {
+            font-size: 8px;
+            padding: 4px 7px;
+        }
+
+        @media (max-width: 1180px) {
+            .navbar-contenido {
+                display: flex;
+                flex-wrap: wrap;
+                padding: 12px 0;
+            }
+
+            .logo {
+                margin-right: auto;
+            }
+
+            .acciones {
+                margin-left: auto;
+            }
+
+            .menu {
+                order: 3;
+                width: 100%;
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+        }
+
+</style>
 </head>
 
 <body>
@@ -1047,6 +1239,17 @@
                             <span>
                                 <strong>Administraci&oacute;n</strong>
                                 <small>Panel de Django</small>
+                            </span>
+                        </a>
+
+                        <a href="{% url 'accounts_web:gestion_usuarios' %}">
+                            <span class="tecnico-icono">
+                                USR
+                            </span>
+
+                            <span>
+                                <strong>Gesti&oacute;n de usuarios</strong>
+                                <small>Roles y permisos</small>
                             </span>
                         </a>
 
@@ -1256,6 +1459,129 @@
             </p>
 
 
+            {% if evento.modalidad_entrada == "UBICACION" %}
+
+                <div class="ubicaciones-demo">
+
+                    <div class="ubicaciones-aviso">
+                        <strong>Selecciona tu ubicación</strong>
+                        <span>
+                            Evento con sectores y asientos numerados.
+                        </span>
+                    </div>
+
+                    {% for locacion in locaciones %}
+
+                        <div class="ticket ubicacion-card">
+
+                            <div class="ticket-top">
+
+                                <div>
+                                    <div class="ticket-name">
+                                        {{ locacion.nombre }}
+                                    </div>
+
+                                    {% if locacion.descripcion %}
+                                        <div class="ticket-description">
+                                            {{ locacion.descripcion }}
+                                        </div>
+                                    {% endif %}
+                                </div>
+
+                                {% if locacion.tipo_entrada %}
+                                    <div class="price">
+                                        ${{ locacion.tipo_entrada.precio|clp }}
+                                    </div>
+                                {% endif %}
+
+                            </div>
+
+                            <div class="asientos-titulo">
+                                Asientos disponibles
+                            </div>
+
+                            <div class="asientos-grid">
+
+                                {% for asiento in locacion.asientos.all %}
+
+                                    {% if asiento.activo %}
+
+                                        {% if asiento.vendido %}
+
+                                            <div
+                                                class="asiento-demo asiento-vendido"
+                                                title="{{ locacion.nombre }} - {{ asiento.codigo }} - Vendido"
+                                            >
+                                                <span>{{ asiento.codigo }}</span>
+                                                <small>VENDIDO</small>
+                                            </div>
+
+                                        {% elif locacion.tipo_entrada %}
+
+                                            {% if user.is_authenticated %}
+
+                                                <form
+                                                    method="post"
+                                                    action="{% url 'eventos:agregar_al_carrito' locacion.tipo_entrada.id %}"
+                                                    class="asiento-form"
+                                                >
+                                                    {% csrf_token %}
+
+                                                    <input
+                                                        type="hidden"
+                                                        name="asiento_id"
+                                                        value="{{ asiento.id }}"
+                                                    >
+
+                                                    <button
+                                                        type="submit"
+                                                        class="asiento-demo"
+                                                        title="{{ locacion.nombre }} - {{ asiento.codigo }}"
+                                                    >
+                                                        {{ asiento.codigo }}
+                                                    </button>
+                                                </form>
+
+                                            {% else %}
+
+                                                <a
+                                                    href="{% url 'accounts_web:login' %}?next={% url 'eventos:detalle' evento.pk %}"
+                                                    class="asiento-demo"
+                                                    title="Inicia sesi?n para seleccionar {{ asiento.codigo }}"
+                                                >
+                                                    {{ asiento.codigo }}
+                                                </a>
+
+                                            {% endif %}
+
+                                        {% endif %}
+
+                                    {% endif %}
+
+                                {% empty %}
+
+                                    <span class="sin-asientos">
+                                        No hay asientos configurados.
+                                    </span>
+
+                                {% endfor %}
+
+                            </div>
+
+                        </div>
+
+                    {% empty %}
+
+                        <div class="no-tickets">
+                            Este evento todavía no tiene ubicaciones configuradas.
+                        </div>
+
+                    {% endfor %}
+
+                </div>
+
+            {% else %}
+
             {% for tipo in tipos_entrada %}
 
                 <div class="ticket">
@@ -1340,6 +1666,8 @@
                 </div>
 
             {% endfor %}
+
+            {% endif %}
 
         </aside>
 

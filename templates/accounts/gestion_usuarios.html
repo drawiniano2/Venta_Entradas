@@ -1,0 +1,765 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Gestión de usuarios | Venta de Entradas</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        :root {
+            --bg: #070b14;
+            --panel: #101624;
+            --panel-soft: #151c2b;
+            --border: #283144;
+            --text: #f5f7ff;
+            --muted: #98a3bb;
+            --purple: #7c5cff;
+            --purple-light: #a78bfa;
+            --danger: #ef6461;
+            --success: #42d392;
+            --warning: #f6c85f;
+        }
+
+        body {
+            min-height: 100vh;
+
+            background:
+                radial-gradient(
+                    circle at 50% 0%,
+                    rgba(124, 92, 255, 0.17),
+                    transparent 34%
+                ),
+                var(--bg);
+
+            color: var(--text);
+
+            font-family:
+                Inter,
+                ui-sans-serif,
+                system-ui,
+                -apple-system,
+                BlinkMacSystemFont,
+                "Segoe UI",
+                sans-serif;
+        }
+
+        a {
+            color: inherit;
+            text-decoration: none;
+        }
+
+        /* =====================================================
+           HEADER
+           ===================================================== */
+
+        .header {
+            min-height: 82px;
+
+            display: flex;
+            align-items: center;
+
+            border-bottom: 1px solid #202738;
+
+            background: rgba(7, 11, 20, 0.94);
+        }
+
+        .header-inner {
+            width: min(1200px, calc(100% - 40px));
+            margin: 0 auto;
+
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+
+            gap: 30px;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+
+            font-size: 20px;
+            font-weight: 900;
+        }
+
+        .brand-icon {
+            width: 38px;
+            height: 38px;
+
+            display: grid;
+            place-items: center;
+
+            border-radius: 11px;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    #6d3df5,
+                    #a855f7
+                );
+
+            box-shadow:
+                0 8px 28px rgba(139, 92, 246, 0.28);
+
+            font-weight: 900;
+        }
+
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .admin-badge {
+            padding: 8px 12px;
+
+            border: 1px solid rgba(167, 139, 250, 0.35);
+            border-radius: 999px;
+
+            background: rgba(124, 92, 255, 0.10);
+
+            color: var(--purple-light);
+
+            font-size: 12px;
+            font-weight: 900;
+        }
+
+        .volver {
+            min-height: 40px;
+
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+
+            padding: 0 16px;
+
+            border: 1px solid var(--border);
+            border-radius: 10px;
+
+            background: rgba(255,255,255,.03);
+
+            font-size: 13px;
+            font-weight: 800;
+        }
+
+        .volver:hover {
+            border-color: var(--purple);
+        }
+
+        /* =====================================================
+           CONTENIDO
+           ===================================================== */
+
+        .main {
+            width: min(1200px, calc(100% - 40px));
+            margin: 0 auto;
+
+            padding: 55px 0 80px;
+        }
+
+        .cabecera {
+            margin-bottom: 30px;
+        }
+
+        .eyebrow {
+            margin-bottom: 8px;
+
+            color: var(--purple-light);
+
+            font-size: 12px;
+            font-weight: 900;
+
+            letter-spacing: 1.5px;
+        }
+
+        h1 {
+            margin-bottom: 10px;
+
+            font-size: clamp(30px, 5vw, 46px);
+            line-height: 1.05;
+        }
+
+        .descripcion {
+            max-width: 760px;
+
+            color: var(--muted);
+
+            font-size: 15px;
+            line-height: 1.7;
+        }
+
+        /* =====================================================
+           MENSAJES DJANGO
+           ===================================================== */
+
+        .mensajes {
+            display: grid;
+            gap: 10px;
+
+            margin-bottom: 24px;
+        }
+
+        .mensaje {
+            padding: 14px 16px;
+
+            border: 1px solid var(--border);
+            border-radius: 12px;
+
+            background: var(--panel);
+
+            font-size: 14px;
+            font-weight: 700;
+        }
+
+        .mensaje.success {
+            border-color: rgba(66, 211, 146, .35);
+            color: var(--success);
+        }
+
+        .mensaje.error {
+            border-color: rgba(239, 100, 97, .35);
+            color: var(--danger);
+        }
+
+        .mensaje.info {
+            border-color: rgba(167, 139, 250, .35);
+            color: var(--purple-light);
+        }
+
+        /* =====================================================
+           PANEL
+           ===================================================== */
+
+        .panel {
+            overflow: hidden;
+
+            border: 1px solid var(--border);
+            border-radius: 18px;
+
+            background: rgba(16, 22, 36, .92);
+
+            box-shadow:
+                0 20px 60px rgba(0,0,0,.20);
+        }
+
+        .panel-superior {
+            padding: 20px 22px;
+
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 20px;
+
+            border-bottom: 1px solid var(--border);
+        }
+
+        .panel-titulo {
+            font-size: 16px;
+            font-weight: 900;
+        }
+
+        .contador {
+            color: var(--muted);
+
+            font-size: 13px;
+            font-weight: 700;
+        }
+
+        .tabla-contenedor {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+
+            border-collapse: collapse;
+        }
+
+        th,
+        td {
+            padding: 17px 20px;
+
+            text-align: left;
+
+            border-bottom: 1px solid rgba(40, 49, 68, .72);
+        }
+
+        th {
+            background: rgba(255,255,255,.018);
+
+            color: var(--muted);
+
+            font-size: 11px;
+            font-weight: 900;
+
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        td {
+            font-size: 14px;
+        }
+
+        tbody tr:hover {
+            background: rgba(124, 92, 255, .035);
+        }
+
+        tbody tr:last-child td {
+            border-bottom: 0;
+        }
+
+        .usuario {
+            font-weight: 900;
+        }
+
+        .correo {
+            color: var(--muted);
+        }
+
+        /* =====================================================
+           ROLES
+           ===================================================== */
+
+        .rol {
+            display: inline-flex;
+            align-items: center;
+
+            padding: 7px 10px;
+
+            border-radius: 999px;
+
+            font-size: 11px;
+            font-weight: 900;
+        }
+
+        .rol-admin {
+            background: rgba(246, 200, 95, .10);
+            color: var(--warning);
+
+            border: 1px solid rgba(246, 200, 95, .25);
+        }
+
+        .rol-organizador {
+            background: rgba(124, 92, 255, .10);
+            color: var(--purple-light);
+
+            border: 1px solid rgba(124, 92, 255, .28);
+        }
+
+        .rol-espectador {
+            background: rgba(66, 211, 146, .08);
+            color: var(--success);
+
+            border: 1px solid rgba(66, 211, 146, .22);
+        }
+
+        /* =====================================================
+           ACCIONES
+           ===================================================== */
+
+        .form-rol {
+            margin: 0;
+        }
+
+        .boton-rol {
+            min-height: 38px;
+
+            padding: 0 14px;
+
+            border: 1px solid var(--purple);
+            border-radius: 9px;
+
+            background: rgba(124, 92, 255, .12);
+
+            color: var(--text);
+
+            font-family: inherit;
+            font-size: 12px;
+            font-weight: 900;
+
+            cursor: pointer;
+        }
+
+        .boton-rol:hover {
+            background: rgba(124, 92, 255, .22);
+        }
+
+        .boton-bajar {
+            border-color: rgba(239, 100, 97, .45);
+
+            background: rgba(239, 100, 97, .08);
+        }
+
+        .boton-bajar:hover {
+            background: rgba(239, 100, 97, .16);
+        }
+
+        .acciones-usuario {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .boton-eliminar {
+            min-height: 38px;
+            padding: 0 14px;
+
+            border: 1px solid rgba(239, 68, 68, .65);
+            border-radius: 9px;
+
+            background: rgba(239, 68, 68, .12);
+            color: #ff8b8b;
+
+            font-family: inherit;
+            font-size: 12px;
+            font-weight: 900;
+
+            cursor: pointer;
+
+            transition:
+                background .18s ease,
+                border-color .18s ease,
+                transform .18s ease;
+        }
+
+        .boton-eliminar:hover {
+            background: rgba(239, 68, 68, .22);
+            border-color: rgba(239, 68, 68, .90);
+            transform: translateY(-1px);
+        }
+
+        .protegido {
+            color: var(--muted);
+
+            font-size: 12px;
+            font-weight: 800;
+        }
+
+        .sin-usuarios {
+            padding: 45px 20px;
+
+            text-align: center;
+
+            color: var(--muted);
+        }
+
+        /* =====================================================
+           RESPONSIVE
+           ===================================================== */
+
+        @media (max-width: 700px) {
+            .header-inner {
+                align-items: flex-start;
+                flex-direction: column;
+
+                padding: 18px 0;
+            }
+
+            .header-actions {
+                width: 100%;
+
+                justify-content: space-between;
+            }
+
+            .main {
+                padding-top: 35px;
+            }
+
+            th,
+            td {
+                padding: 14px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <header class="header">
+
+        <div class="header-inner">
+
+            <a
+                href="{% url 'eventos:inicio' %}"
+                class="brand"
+            >
+                <span class="brand-icon">
+                    VE
+                </span>
+
+                <span>
+                    Venta de Entradas
+                </span>
+            </a>
+
+            <div class="header-actions">
+
+                <span class="admin-badge">
+                    ADMINISTRADOR
+                </span>
+
+                <a
+                    href="{% url 'eventos:inicio' %}"
+                    class="volver"
+                >
+                    Volver al inicio
+                </a>
+
+            </div>
+
+        </div>
+
+    </header>
+
+
+    <main class="main">
+
+        <section class="cabecera">
+
+            <div class="eyebrow">
+                ADMINISTRACIÓN
+            </div>
+
+            <h1>
+                Gestión de usuarios
+            </h1>
+
+            <p class="descripcion">
+                Administra los roles de los usuarios registrados.
+                Las cuentas nuevas se registran como ESPECTADOR y
+                desde esta pantalla un administrador puede promoverlas
+                a ORGANIZADOR o devolverlas a ESPECTADOR.
+            </p>
+
+        </section>
+
+
+        {% if messages %}
+
+            <div class="mensajes">
+
+                {% for message in messages %}
+
+                    <div class="mensaje {{ message.tags }}">
+                        {{ message }}
+                    </div>
+
+                {% endfor %}
+
+            </div>
+
+        {% endif %}
+
+
+        <section class="panel">
+
+            <div class="panel-superior">
+
+                <div class="panel-titulo">
+                    Usuarios registrados
+                </div>
+
+                <div class="contador">
+                    Total: {{ usuarios|length }}
+                </div>
+
+            </div>
+
+
+            <div class="tabla-contenedor">
+
+                <table>
+
+                    <thead>
+
+                        <tr>
+                            <th>Usuario</th>
+                            <th>Correo</th>
+                            <th>Rol</th>
+                            <th>Estado</th>
+                            <th>Acción</th>
+                        </tr>
+
+                    </thead>
+
+                    <tbody>
+
+                        {% for usuario in usuarios %}
+
+                            <tr>
+
+                                <td>
+                                    <span class="usuario">
+                                        {{ usuario.username }}
+                                    </span>
+                                </td>
+
+                                <td>
+                                    <span class="correo">
+                                        {{ usuario.email|default:"Sin correo" }}
+                                    </span>
+                                </td>
+
+                                <td>
+
+                                    {% if usuario.is_staff or usuario.is_superuser %}
+
+                                        <span class="rol rol-admin">
+                                            ADMINISTRADOR
+                                        </span>
+
+                                    {% elif usuario.rol == "ORGANIZADOR" %}
+
+                                        <span class="rol rol-organizador">
+                                            ORGANIZADOR
+                                        </span>
+
+                                    {% else %}
+
+                                        <span class="rol rol-espectador">
+                                            ESPECTADOR
+                                        </span>
+
+                                    {% endif %}
+
+                                </td>
+
+                                <td>
+
+                                    {% if usuario.is_active %}
+                                        Activo
+                                    {% else %}
+                                        Inactivo
+                                    {% endif %}
+
+                                </td>
+
+                                <td>
+
+                                    {% if usuario.is_staff or usuario.is_superuser %}
+
+                                        <span class="protegido">
+                                            Cuenta protegida
+                                        </span>
+
+                                    {% else %}
+
+                                        <div class="acciones-usuario">
+
+                                            {% if usuario.rol == "ESPECTADOR" %}
+
+                                        <form
+                                            method="POST"
+                                            action="{% url 'accounts_web:cambiar_rol_usuario' usuario.pk %}"
+                                            class="form-rol"
+                                            onsubmit="return confirm('¿Promover a este usuario a ORGANIZADOR?');"
+                                        >
+                                            {% csrf_token %}
+
+                                            <input
+                                                type="hidden"
+                                                name="rol"
+                                                value="ORGANIZADOR"
+                                            >
+
+                                            <button
+                                                type="submit"
+                                                class="boton-rol"
+                                            >
+                                                HACER ORGANIZADOR
+                                            </button>
+
+                                        </form>
+
+                                    {% else %}
+
+                                        <form
+                                            method="POST"
+                                            action="{% url 'accounts_web:cambiar_rol_usuario' usuario.pk %}"
+                                            class="form-rol"
+                                            onsubmit="return confirm('¿Cambiar a este usuario nuevamente a ESPECTADOR?');"
+                                        >
+                                            {% csrf_token %}
+
+                                            <input
+                                                type="hidden"
+                                                name="rol"
+                                                value="ESPECTADOR"
+                                            >
+
+                                            <button
+                                                type="submit"
+                                                class="boton-rol boton-bajar"
+                                            >
+                                                HACER ESPECTADOR
+                                            </button>
+
+                                        </form>
+
+                                            {% endif %}
+
+                                            <form
+                                                method="POST"
+                                                action="{% url 'accounts_web:eliminar_usuario' usuario.pk %}"
+                                                class="form-rol"
+                                                onsubmit="return confirm(&quot;&iquest;Eliminar definitivamente al usuario {{ usuario.username|escapejs }}? Esta acci&oacute;n no se puede deshacer.&quot;);"
+                                            >
+                                                {% csrf_token %}
+
+                                                <button
+                                                    type="submit"
+                                                    class="boton-eliminar"
+                                                >
+                                                    ELIMINAR
+                                                </button>
+
+                                            </form>
+
+                                        </div>
+
+                                    {% endif %}
+
+                                </td>
+
+                            </tr>
+
+                        {% empty %}
+
+                            <tr>
+                                <td
+                                    colspan="5"
+                                    class="sin-usuarios"
+                                >
+                                    No existen usuarios registrados.
+                                </td>
+                            </tr>
+
+                        {% endfor %}
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </section>
+
+    </main>
+
+</body>
+
+</html>

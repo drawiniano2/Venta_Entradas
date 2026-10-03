@@ -1076,6 +1076,32 @@
                         </div>
 
 
+                        {% if entrada.detalle_compra.asiento %}
+
+                            <div class="info-item">
+                                <span class="label">
+                                    Ubicaci&oacute;n
+                                </span>
+
+                                <div class="value">
+                                    {{ entrada.detalle_compra.asiento.locacion.nombre }}
+                                </div>
+                            </div>
+
+
+                            <div class="info-item">
+                                <span class="label">
+                                    Asiento
+                                </span>
+
+                                <div class="value">
+                                    {{ entrada.detalle_compra.asiento.codigo }}
+                                </div>
+                            </div>
+
+                        {% endif %}
+
+
                         <div class="info-item">
                             <span class="label">
                                 Estado

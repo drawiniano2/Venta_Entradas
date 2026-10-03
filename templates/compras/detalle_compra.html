@@ -881,6 +881,26 @@
                         {{ detalle.tipo_entrada.nombre }}
                     </span>
 
+                    {% if detalle.asiento %}
+
+                        <div class="detail-row">
+                            <span>Ubicaci&oacute;n</span>
+
+                            <strong>
+                                {{ detalle.asiento.locacion.nombre }}
+                            </strong>
+                        </div>
+
+                        <div class="detail-row">
+                            <span>Asiento</span>
+
+                            <strong>
+                                {{ detalle.asiento.codigo }}
+                            </strong>
+                        </div>
+
+                    {% endif %}
+
 
                     <div class="detail-row">
                         <span>Cantidad</span>

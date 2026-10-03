@@ -5,9 +5,10 @@ from django.shortcuts import get_object_or_404, redirect, render
 from django.views.decorators.http import require_POST
 
 from carrito.models import Carrito, ItemCarrito
+from compras.models import Compra
 
 from .forms import EventoForm, RecintoForm, TipoEntradaForm
-from .models import Evento, TipoEntrada
+from .models import Asiento, Evento, TipoEntrada
 
 
 def inicio(request):
@@ -116,6 +117,8 @@ def detalle_evento(request, pk):
         )
         .prefetch_related(
             "tipos_entrada",
+            "locaciones__tipo_entrada",
+            "locaciones__asientos",
         ),
         pk=pk,
         estado=Evento.Estado.PUBLICADO,
@@ -126,9 +129,47 @@ def detalle_evento(request, pk):
         activo=True,
     ).order_by("precio")
 
+    locaciones = evento.locaciones.filter(
+        activo=True,
+    ).select_related(
+        "tipo_entrada",
+    ).prefetch_related(
+        "asientos",
+    ).order_by(
+        "orden",
+        "nombre",
+    )
+
+    # --------------------------------------------------------
+    # Asientos que ya pertenecen a una compra PAGADA.
+    #
+    # No modificamos f?sicamente el modelo Asiento.
+    # La ocupaci?n se obtiene desde la compra real, por lo que
+    # una compra cancelada deja de considerar ocupado el asiento.
+    # --------------------------------------------------------
+
+    asientos_vendidos = set(
+        Asiento.objects.filter(
+            locacion__evento=evento,
+            detalles_compra__compra__estado=Compra.Estado.PAGADO,
+        ).values_list(
+            "pk",
+            flat=True,
+        )
+    )
+
+    # Marcamos cada asiento para simplificar la plantilla.
+    # Este atributo existe solamente durante esta respuesta web;
+    # no modifica la base de datos.
+    for locacion in locaciones:
+        for asiento in locacion.asientos.all():
+            asiento.vendido = asiento.pk in asientos_vendidos
+
     contexto = {
         "evento": evento,
         "tipos_entrada": tipos_entrada,
+        "locaciones": locaciones,
+        "asientos_vendidos": asientos_vendidos,
     }
 
     return render(
@@ -144,13 +185,18 @@ def agregar_al_carrito_web(request, tipo_entrada_id):
     """
     Agrega una entrada al carrito desde la interfaz web.
 
-    Esta operación:
-    - requiere un usuario autenticado;
-    - utiliza el carrito persistente del usuario;
-    - valida que el tipo de entrada esté activo;
-    - valida que exista stock disponible;
-    - NO descuenta stock;
-    - si el tipo ya existe en el carrito, aumenta su cantidad.
+    EVENTO GENERAL:
+    - agrega el tipo de entrada;
+    - si ya existe, aumenta la cantidad.
+
+    EVENTO CON UBICACION:
+    - exige un asiento;
+    - valida que el asiento pertenezca al mismo evento;
+    - valida que corresponda al tipo de entrada seleccionado;
+    - cada asiento se guarda como un item independiente;
+    - la cantidad siempre es 1.
+
+    Agregar al carrito NO descuenta stock.
     """
 
     tipo_entrada = get_object_or_404(
@@ -161,24 +207,117 @@ def agregar_al_carrito_web(request, tipo_entrada_id):
         evento__activo=True,
     )
 
+    evento = tipo_entrada.evento
+
     if tipo_entrada.stock_disponible < 1:
         messages.error(
             request,
             "Esta entrada se encuentra agotada.",
         )
-
         return redirect(
             "eventos:detalle",
-            pk=tipo_entrada.evento_id,
+            pk=evento.pk,
         )
 
     carrito, _ = Carrito.objects.get_or_create(
         usuario=request.user,
     )
 
+    # ========================================================
+    # EVENTO CON UBICACION / ASIENTO
+    # ========================================================
+
+    if evento.modalidad_entrada == Evento.ModalidadEntrada.UBICACION:
+
+        asiento_id = request.POST.get("asiento_id")
+
+        if not asiento_id:
+            messages.error(
+                request,
+                "Debes seleccionar un asiento.",
+            )
+            return redirect(
+                "eventos:detalle",
+                pk=evento.pk,
+            )
+
+        asiento = get_object_or_404(
+            Asiento.objects.select_related(
+                "locacion",
+                "locacion__evento",
+                "locacion__tipo_entrada",
+            ),
+            pk=asiento_id,
+            activo=True,
+            locacion__activo=True,
+            locacion__evento=evento,
+            locacion__tipo_entrada=tipo_entrada,
+        )
+
+        # --------------------------------------------------------
+        # BLOQUEO DE ASIENTO YA VENDIDO
+        #
+        # La interfaz ya marca visualmente los asientos vendidos,
+        # pero esta comprobacion protege tambien el backend frente
+        # a una peticion POST manual o una pagina desactualizada.
+        # --------------------------------------------------------
+
+        asiento_vendido = asiento.detalles_compra.filter(
+            compra__estado=Compra.Estado.PAGADO,
+        ).exists()
+
+        if asiento_vendido:
+            messages.error(
+                request,
+                f"El asiento {asiento.codigo} ya fue vendido.",
+            )
+            return redirect(
+                "eventos:detalle",
+                pk=evento.pk,
+            )
+
+        if ItemCarrito.objects.filter(
+            carrito=carrito,
+            asiento=asiento,
+        ).exists():
+            messages.warning(
+                request,
+                f"El asiento {asiento.codigo} ya esta en tu carrito.",
+            )
+            return redirect(
+                "carrito_web:mi-carrito"
+            )
+
+        item = ItemCarrito(
+            carrito=carrito,
+            tipo_entrada=tipo_entrada,
+            asiento=asiento,
+            cantidad=1,
+        )
+
+        item.full_clean()
+        item.save()
+
+        messages.success(
+            request,
+            (
+                f"{tipo_entrada.nombre} - asiento "
+                f"{asiento.codigo} fue agregado al carrito."
+            ),
+        )
+
+        return redirect(
+            "carrito_web:mi-carrito"
+        )
+
+    # ========================================================
+    # EVENTO GENERAL / LIBRE
+    # ========================================================
+
     item = ItemCarrito.objects.filter(
         carrito=carrito,
         tipo_entrada=tipo_entrada,
+        asiento__isnull=True,
     ).first()
 
     if item is not None:
@@ -188,24 +327,29 @@ def agregar_al_carrito_web(request, tipo_entrada_id):
         if nueva_cantidad > tipo_entrada.stock_disponible:
             messages.warning(
                 request,
-                "No puedes agregar más unidades. "
+                "No puedes agregar mas unidades. "
                 "Has alcanzado el stock disponible.",
             )
-
             return redirect(
                 "eventos:detalle",
-                pk=tipo_entrada.evento_id,
+                pk=evento.pk,
             )
 
         item.cantidad = nueva_cantidad
         item.full_clean()
-        item.save()
+        item.save(
+            update_fields=[
+                "cantidad",
+                "actualizado_en",
+            ]
+        )
 
     else:
 
         item = ItemCarrito(
             carrito=carrito,
             tipo_entrada=tipo_entrada,
+            asiento=None,
             cantidad=1,
         )
 
@@ -220,7 +364,6 @@ def agregar_al_carrito_web(request, tipo_entrada_id):
     return redirect(
         "carrito_web:mi-carrito"
     )
-
 
 
 # ============================================================

@@ -1,4 +1,4 @@
-﻿from django.core.exceptions import ValidationError
+from django.core.exceptions import ValidationError
 from django.db import transaction
 
 from compras.models import Compra, DetalleCompra
@@ -30,7 +30,8 @@ def confirmar_carrito(usuario):
             Carrito.objects
             .select_for_update()
             .prefetch_related(
-                "items__tipo_entrada"
+                "items__tipo_entrada",
+                "items__asiento__locacion",
             )
             .get(usuario=usuario)
         )
@@ -92,6 +93,7 @@ def confirmar_carrito(usuario):
             DetalleCompra(
                 compra=compra,
                 tipo_entrada=item.tipo_entrada,
+                asiento=item.asiento,
                 cantidad=item.cantidad,
                 precio_unitario=item.tipo_entrada.precio,
             )

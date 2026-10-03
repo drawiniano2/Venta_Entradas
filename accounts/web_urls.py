@@ -1,6 +1,9 @@
-﻿from django.urls import path
+from django.urls import path
 
 from .views import (
+    cambiar_rol_usuario,
+    eliminar_usuario,
+    gestion_usuarios,
     login_web,
     logout_web,
     registro_web,
@@ -27,6 +30,27 @@ urlpatterns = [
         "login/",
         login_web,
         name="login",
+    ),
+
+    # ========================================================
+    # GESTION DE USUARIOS - ADMINISTRADOR
+    # ========================================================
+    path(
+        "administracion/usuarios/",
+        gestion_usuarios,
+        name="gestion_usuarios",
+    ),
+
+    path(
+        "administracion/usuarios/<int:pk>/rol/",
+        cambiar_rol_usuario,
+        name="cambiar_rol_usuario",
+    ),
+
+    path(
+        "administracion/usuarios/<int:pk>/eliminar/",
+        eliminar_usuario,
+        name="eliminar_usuario",
     ),
 
     # ========================================================

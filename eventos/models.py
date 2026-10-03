@@ -5,10 +5,10 @@ from django.db import models
 
 class Recinto(models.Model):
     """
-    Lugar físico donde se realiza un evento.
+    Lugar fisico donde se realiza un evento.
 
     El recinto se mantiene separado de Evento para evitar
-    duplicar información como dirección, ciudad y capacidad.
+    duplicar informacion como direccion, ciudad y capacidad.
     """
 
     nombre = models.CharField(
@@ -53,6 +53,9 @@ class Evento(models.Model):
 
     Cada evento pertenece a un recinto y a un usuario
     organizador.
+
+    La modalidad determina si las entradas son generales
+    o si requieren seleccionar una ubicacion/asiento.
     """
 
     class Estado(models.TextChoices):
@@ -61,14 +64,16 @@ class Evento(models.Model):
         CANCELADO = "CANCELADO", "Cancelado"
         FINALIZADO = "FINALIZADO", "Finalizado"
 
+    class ModalidadEntrada(models.TextChoices):
+        GENERAL = "GENERAL", "Entrada general / libre"
+        UBICACION = "UBICACION", "Entrada con ubicacion"
+
     nombre = models.CharField(
         max_length=200,
     )
 
     descripcion = models.TextField()
 
-    # Imagen o afiche principal del evento.
-    # Es opcional para mantener compatibles los eventos existentes.
     imagen = models.ImageField(
         upload_to="eventos/",
         blank=True,
@@ -95,6 +100,12 @@ class Evento(models.Model):
         max_length=20,
         choices=Estado.choices,
         default=Estado.BORRADOR,
+    )
+
+    modalidad_entrada = models.CharField(
+        max_length=20,
+        choices=ModalidadEntrada.choices,
+        default=ModalidadEntrada.GENERAL,
     )
 
     activo = models.BooleanField(
@@ -124,7 +135,7 @@ class Evento(models.Model):
                 raise ValidationError(
                     {
                         "fecha_fin": (
-                            "La fecha de término debe ser posterior "
+                            "La fecha de termino debe ser posterior "
                             "a la fecha de inicio."
                         )
                     }
@@ -147,7 +158,7 @@ class Evento(models.Model):
 
 class TipoEntrada(models.Model):
     """
-    Categoría de entrada disponible para un evento.
+    Categoria de entrada disponible para un evento.
 
     El stock pertenece al tipo de entrada y no al evento.
     Agregar una entrada al carro NO modifica stock_disponible.
@@ -223,3 +234,138 @@ class TipoEntrada(models.Model):
     def __str__(self):
         return f"{self.evento.nombre} - {self.nombre}"
 
+
+class Locacion(models.Model):
+    """
+    Sector o ubicacion disponible dentro de un evento
+    que utiliza entradas con asiento.
+    """
+
+    evento = models.ForeignKey(
+        Evento,
+        on_delete=models.CASCADE,
+        related_name="locaciones",
+    )
+
+    tipo_entrada = models.ForeignKey(
+        TipoEntrada,
+        on_delete=models.PROTECT,
+        related_name="locaciones",
+        null=True,
+        blank=True,
+    )
+
+    nombre = models.CharField(
+        max_length=100,
+    )
+
+    descripcion = models.CharField(
+        max_length=250,
+        blank=True,
+    )
+
+    orden = models.PositiveIntegerField(
+        default=1,
+    )
+
+    activo = models.BooleanField(
+        default=True,
+    )
+
+    creado_en = models.DateTimeField(
+        auto_now_add=True,
+    )
+
+    actualizado_en = models.DateTimeField(
+        auto_now=True,
+    )
+
+    class Meta:
+        ordering = ("evento", "orden", "nombre")
+        verbose_name = "locacion"
+        verbose_name_plural = "locaciones"
+        constraints = [
+            models.UniqueConstraint(
+                fields=("evento", "nombre"),
+                name="locacion_nombre_unico_por_evento",
+            ),
+        ]
+
+    def clean(self):
+        """
+        Una locacion solamente puede pertenecer a un evento
+        configurado con modalidad de entrada con ubicacion.
+        """
+
+        if (
+            self.evento_id
+            and self.evento.modalidad_entrada
+            != Evento.ModalidadEntrada.UBICACION
+        ):
+            raise ValidationError(
+                {
+                    "evento": (
+                        "Las locaciones solo pueden utilizarse "
+                        "en eventos con entrada con ubicacion."
+                    )
+                }
+            )
+
+    def __str__(self):
+        return f"{self.evento.nombre} - {self.nombre}"
+
+
+class Asiento(models.Model):
+    """
+    Asiento fisico perteneciente a una locacion.
+    """
+
+    locacion = models.ForeignKey(
+        Locacion,
+        on_delete=models.CASCADE,
+        related_name="asientos",
+    )
+
+    codigo = models.CharField(
+        max_length=20,
+    )
+
+    fila = models.CharField(
+        max_length=10,
+        blank=True,
+    )
+
+    numero = models.PositiveIntegerField(
+        null=True,
+        blank=True,
+    )
+
+    activo = models.BooleanField(
+        default=True,
+    )
+
+    creado_en = models.DateTimeField(
+        auto_now_add=True,
+    )
+
+    actualizado_en = models.DateTimeField(
+        auto_now=True,
+    )
+
+    class Meta:
+        ordering = ("locacion", "fila", "numero", "codigo")
+        verbose_name = "asiento"
+        verbose_name_plural = "asientos"
+        constraints = [
+            models.UniqueConstraint(
+                fields=("locacion", "codigo"),
+                name="asiento_codigo_unico_por_locacion",
+            ),
+        ]
+
+    def __str__(self):
+        return (
+            f"{self.locacion.evento.nombre} - "
+            f"{self.locacion.nombre} - "
+            f"{self.codigo}"
+        )
