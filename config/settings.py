@@ -20,7 +20,10 @@ load_dotenv(BASE_DIR / '.env')
 
 SECRET_KEY = 'django-insecure-s$_=2++#&k+aj^xk#$rqm5cx9vlq_4&8ln56gzk$p%6+-!ib62'
 
-DEBUG = True
+DEBUG = os.getenv(
+    "DJANGO_DEBUG",
+    "True",
+).lower() in ("1", "true", "yes", "on")
 
 ALLOWED_HOSTS = [
     "127.0.0.1",

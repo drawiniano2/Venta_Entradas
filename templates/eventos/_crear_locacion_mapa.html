@@ -1,0 +1,361 @@
+<div class="crear-locacion-mapa">
+
+    <div class="crear-locacion-titulo">
+        CREAR LOCACI&Oacute;N
+    </div>
+
+    <div class="crear-locacion-posicion">
+        {{ etiqueta_posicion }}
+    </div>
+
+    {% if tipos_entrada %}
+
+        <form
+            method="post"
+            action="{% url 'eventos:generar_locacion_asientos' evento.pk %}"
+            class="crear-locacion-form"
+        >
+            {% csrf_token %}
+
+            <input
+                type="hidden"
+                name="posicion"
+                value="{{ posicion_nueva }}"
+            >
+
+            <input
+                type="hidden"
+                name="volver_al_mapa"
+                value="1"
+            >
+
+            <div class="crear-locacion-grid">
+
+                <div class="crear-locacion-campo">
+
+                    <label>
+                        Nombre
+                    </label>
+
+                    <input
+                        type="text"
+                        name="nombre_locacion"
+                        placeholder="Ej: Platea posterior"
+                        maxlength="100"
+                        required
+                    >
+
+                </div>
+
+
+                <div class="crear-locacion-campo">
+
+                    <label>
+                        Tipo de entrada
+                    </label>
+
+                    <select
+                        name="tipo_entrada"
+                        class="selector-tipo-entrada-mapa"
+                        required
+                    >
+                        <option value="">
+                            Seleccionar
+                        </option>
+
+                        {% for tipo in tipos_entrada %}
+
+                            <option
+                                value="{{ tipo.pk }}"
+                                data-total="{{ tipo.stock_total }}"
+                                data-asignados="{{ tipo.asientos_asignados_mapa }}"
+                                data-restantes="{{ tipo.capacidad_restante_mapa }}"
+                            >
+                                {{ tipo.nombre }}
+                            </option>
+
+                        {% endfor %}
+
+                    </select>
+
+                </div>
+
+
+                <div class="crear-locacion-campo">
+
+                    <label>
+                        Fila inicial
+                    </label>
+
+                    <input
+                        type="text"
+                        name="fila_inicial"
+                        value="A"
+                        maxlength="1"
+                        required
+                    >
+
+                </div>
+
+
+                <div class="crear-locacion-campo">
+
+                    <label>
+                        Cantidad de filas
+                    </label>
+
+                    <input
+                        type="number"
+                        name="cantidad_filas"
+                        class="cantidad-filas-mapa"
+                        value="5"
+                        min="1"
+                        max="26"
+                        required
+                    >
+
+                </div>
+
+
+                <div class="crear-locacion-campo">
+
+                    <label>
+                        Asientos / fila
+                    </label>
+
+                    <input
+                        type="number"
+                        name="asientos_por_fila"
+                        class="asientos-fila-mapa"
+                        value="10"
+                        min="1"
+                        max="200"
+                        required
+                    >
+
+                </div>
+
+            </div>
+
+
+            <!-- ==========================================
+                 CAPACIDAD AUTOMATICA DEL MAPA
+                 ========================================== -->
+
+            <div
+                class="capacidad-mapa"
+                style="
+                    margin-top: 14px;
+                    padding: 12px;
+                    border: 1px solid #31425b;
+                    border-radius: 9px;
+                    background: rgba(9, 21, 36, .75);
+                    font-size: .72rem;
+                    line-height: 1.6;
+                "
+            >
+                <div class="capacidad-detalle">
+                    Selecciona un tipo de entrada para consultar
+                    la capacidad disponible.
+                </div>
+
+                <div
+                    class="capacidad-calculo"
+                    style="
+                        margin-top: 5px;
+                        font-weight: 900;
+                    "
+                ></div>
+            </div>
+
+
+            <button
+                type="submit"
+                class="boton-crear-locacion-mapa"
+                onclick="return confirm('&iquest;Crear esta locaci&oacute;n y generar sus asientos?');"
+            >
+                + CREAR LOCACI&Oacute;N
+            </button>
+
+        </form>
+
+    {% else %}
+
+        <div class="sin-locaciones">
+            Debes crear primero un tipo de entrada activo.
+        </div>
+
+    {% endif %}
+
+</div>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+
+    const formularios = document.querySelectorAll(
+        ".crear-locacion-form"
+    );
+
+    formularios.forEach(function (formulario) {
+
+        const selector = formulario.querySelector(
+            ".selector-tipo-entrada-mapa"
+        );
+
+        const campoFilas = formulario.querySelector(
+            ".cantidad-filas-mapa"
+        );
+
+        const campoAsientos = formulario.querySelector(
+            ".asientos-fila-mapa"
+        );
+
+        const detalle = formulario.querySelector(
+            ".capacidad-detalle"
+        );
+
+        const calculo = formulario.querySelector(
+            ".capacidad-calculo"
+        );
+
+        const boton = formulario.querySelector(
+            ".boton-crear-locacion-mapa"
+        );
+
+        if (
+            !selector ||
+            !campoFilas ||
+            !campoAsientos ||
+            !detalle ||
+            !calculo ||
+            !boton
+        ) {
+            return;
+        }
+
+
+        function actualizarCapacidad() {
+
+            const opcion =
+                selector.options[selector.selectedIndex];
+
+            if (!selector.value) {
+
+                detalle.textContent =
+                    "Selecciona un tipo de entrada para consultar " +
+                    "la capacidad disponible.";
+
+                calculo.textContent = "";
+
+                boton.disabled = false;
+                boton.style.opacity = "1";
+                boton.style.cursor = "pointer";
+
+                return;
+            }
+
+
+            const total = Number(
+                opcion.dataset.total || 0
+            );
+
+            const asignados = Number(
+                opcion.dataset.asignados || 0
+            );
+
+            const restantes = Number(
+                opcion.dataset.restantes || 0
+            );
+
+            const filas = Number(
+                campoFilas.value || 0
+            );
+
+            const asientosFila = Number(
+                campoAsientos.value || 0
+            );
+
+            const solicitados =
+                filas * asientosFila;
+
+
+            detalle.textContent =
+                "CAPACIDAD TOTAL: " + total +
+                " | DISTRIBUIDOS: " + asignados +
+                " | RESTANTES: " + restantes;
+
+
+            if (filas < 1 || asientosFila < 1) {
+
+                calculo.textContent =
+                    "Indica una cantidad valida de filas y asientos.";
+
+                boton.disabled = true;
+                boton.style.opacity = ".45";
+                boton.style.cursor = "not-allowed";
+
+                return;
+            }
+
+
+            calculo.textContent =
+                "ESTA LOCACION CREARA " +
+                solicitados +
+                " ASIENTOS";
+
+
+            if (solicitados > restantes) {
+
+                calculo.textContent +=
+                    " | SUPERA LA CAPACIDAD POR " +
+                    (solicitados - restantes);
+
+                boton.disabled = true;
+                boton.style.opacity = ".45";
+                boton.style.cursor = "not-allowed";
+
+            } else if (restantes <= 0) {
+
+                calculo.textContent =
+                    "NO QUEDA CAPACIDAD POR DISTRIBUIR";
+
+                boton.disabled = true;
+                boton.style.opacity = ".45";
+                boton.style.cursor = "not-allowed";
+
+            } else {
+
+                calculo.textContent +=
+                    " | QUEDARAN " +
+                    (restantes - solicitados) +
+                    " POR DISTRIBUIR";
+
+                boton.disabled = false;
+                boton.style.opacity = "1";
+                boton.style.cursor = "pointer";
+            }
+        }
+
+
+        selector.addEventListener(
+            "change",
+            actualizarCapacidad
+        );
+
+        campoFilas.addEventListener(
+            "input",
+            actualizarCapacidad
+        );
+
+        campoAsientos.addEventListener(
+            "input",
+            actualizarCapacidad
+        );
+
+        actualizarCapacidad();
+
+    });
+
+});
+</script>
+

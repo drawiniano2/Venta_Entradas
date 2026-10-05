@@ -1,0 +1,183 @@
+<section class="locacion-mapa">
+
+    <div class="locacion-cabecera">
+
+        <div>
+
+            <h2>
+                {{ item.locacion.nombre }}
+            </h2>
+
+            <div class="posicion-locacion">
+                {{ item.locacion.get_posicion_display }}
+            </div>
+
+            <div class="tipo-entrada">
+
+                {% if item.locacion.tipo_entrada %}
+
+                    Tipo:
+                    {{ item.locacion.tipo_entrada.nombre }}
+
+                    &middot;
+                    ${{ item.locacion.tipo_entrada.precio|floatformat:0 }}
+
+                {% else %}
+
+                    Sin tipo de entrada asociado
+
+                {% endif %}
+
+            </div>
+
+        </div>
+
+
+        <div class="resumen">
+
+            <span class="contador">
+                TOTAL {{ item.total }}
+            </span>
+
+            <span class="contador disponibles">
+                DISPONIBLES {{ item.disponibles }}
+            </span>
+
+            <span class="contador vendidos">
+                VENDIDOS {{ item.vendidos }}
+            </span>
+
+            {% if item.inactivos %}
+
+                <span class="contador">
+                    INACTIVOS {{ item.inactivos }}
+                </span>
+
+            {% endif %}
+
+            <a
+                href="{% url 'eventos:editar_locacion' item.locacion.pk %}"
+                class="boton-editar-locacion"
+            >
+                EDITAR LOCACI&Oacute;N
+            </a>
+
+        </div>
+
+    </div>
+
+
+    <div class="mapa-asientos">
+
+        {% for fila in item.filas %}
+
+            <div class="fila-asientos">
+
+                <div class="numero-fila">
+                    FILA {{ fila.nombre }}
+                </div>
+
+
+                <div class="contenido-fila">
+
+                    <form
+                        method="post"
+                        action="{% url 'eventos:modificar_fila_asientos' item.locacion.pk fila.nombre %}"
+                        class="control-fila"
+                    >
+
+                        {% csrf_token %}
+
+                        <button
+                            type="submit"
+                            name="accion"
+                            value="quitar"
+                            class="boton-fila quitar"
+                            title="Quitar ultimo asiento de la fila {{ fila.nombre }}"
+                            onclick="return confirm('&iquest;Quitar el &uacute;ltimo asiento disponible de la fila {{ fila.nombre }}?');"
+                        >
+                            &minus;
+                        </button>
+
+                    </form>
+
+
+                    <div class="asientos-fila">
+
+                        {% for dato in fila.asientos %}
+
+                            {% if dato.estado == "VENDIDO" %}
+
+                                <div class="asiento vendido">
+                                    {{ dato.asiento.codigo }}
+                                    <small>VENDIDO</small>
+                                </div>
+
+                            {% elif dato.estado == "INACTIVO" %}
+
+                                <div class="asiento inactivo">
+                                    {{ dato.asiento.codigo }}
+                                    <small>INACTIVO</small>
+                                </div>
+
+                            {% else %}
+
+                                <div class="asiento disponible">
+                                    {{ dato.asiento.codigo }}
+                                    <small>LIBRE</small>
+                                </div>
+
+                            {% endif %}
+
+                        {% endfor %}
+
+                    </div>
+
+
+                    <form
+                        method="post"
+                        action="{% url 'eventos:modificar_fila_asientos' item.locacion.pk fila.nombre %}"
+                        class="control-fila"
+                    >
+
+                        {% csrf_token %}
+
+                        <button
+                            type="submit"
+                            name="accion"
+                            value="agregar"
+                            class="boton-fila agregar"
+                            title="Agregar asiento a la fila {{ fila.nombre }}"
+                        >
+                            +
+                        </button>
+
+                    </form>
+
+                </div>
+
+
+                <div class="resumen-fila">
+
+                    {{ fila.total }} ASIENTOS
+
+                    {% if fila.vendidos %}
+                        &middot;
+                        {{ fila.vendidos }} VENDIDOS
+                    {% endif %}
+
+                </div>
+
+            </div>
+
+        {% empty %}
+
+            <div class="sin-locaciones">
+                Esta locaci&oacute;n todav&iacute;a no posee asientos.
+            </div>
+
+        {% endfor %}
+
+    </div>
+
+</section>

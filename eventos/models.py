@@ -68,6 +68,24 @@ class Evento(models.Model):
         GENERAL = "GENERAL", "Entrada general / libre"
         UBICACION = "UBICACION", "Entrada con ubicacion"
 
+    class TipoEscenario(models.TextChoices):
+        FRONTAL_SIMPLE = (
+            "FRONTAL_SIMPLE",
+            "Frontal simple",
+        )
+        FRONTAL_TRIBUNAS = (
+            "FRONTAL_TRIBUNAS",
+            "Frontal con tribunas",
+        )
+        CENTRAL = (
+            "CENTRAL",
+            "Central",
+        )
+        LIBRE = (
+            "LIBRE",
+            "Escenario frontal + zona libre",
+        )
+
     nombre = models.CharField(
         max_length=200,
     )
@@ -106,6 +124,12 @@ class Evento(models.Model):
         max_length=20,
         choices=ModalidadEntrada.choices,
         default=ModalidadEntrada.GENERAL,
+    )
+
+    tipo_escenario = models.CharField(
+        max_length=30,
+        choices=TipoEscenario.choices,
+        default=TipoEscenario.FRONTAL_SIMPLE,
     )
 
     activo = models.BooleanField(
@@ -241,6 +265,28 @@ class Locacion(models.Model):
     que utiliza entradas con asiento.
     """
 
+    class Posicion(models.TextChoices):
+        FRONTAL = (
+            "FRONTAL",
+            "Frontal",
+        )
+        POSTERIOR = (
+            "POSTERIOR",
+            "Posterior",
+        )
+        IZQUIERDA = (
+            "IZQUIERDA",
+            "Lateral izquierda",
+        )
+        DERECHA = (
+            "DERECHA",
+            "Lateral derecha",
+        )
+        LIBRE = (
+            "LIBRE",
+            "Libre",
+        )
+
     evento = models.ForeignKey(
         Evento,
         on_delete=models.CASCADE,
@@ -262,6 +308,12 @@ class Locacion(models.Model):
     descripcion = models.CharField(
         max_length=250,
         blank=True,
+    )
+
+    posicion = models.CharField(
+        max_length=20,
+        choices=Posicion.choices,
+        default=Posicion.FRONTAL,
     )
 
     orden = models.PositiveIntegerField(

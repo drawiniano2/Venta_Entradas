@@ -1,0 +1,990 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Editar locaci&oacute;n | Venta de Entradas</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+
+            background:
+                radial-gradient(
+                    circle at top right,
+                    rgba(99, 60, 255, .15),
+                    transparent 32%
+                ),
+                #07101d;
+
+            color: #f4f7fb;
+
+            font-family:
+                Inter,
+                Arial,
+                Helvetica,
+                sans-serif;
+        }
+
+        .contenedor {
+            width: min(850px, 92%);
+            margin: 0 auto;
+            padding: 55px 0 80px;
+        }
+
+        .volver {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+
+            margin-bottom: 24px;
+            padding: 12px 20px;
+
+            border: 1px solid #7c4dff;
+            border-radius: 10px;
+
+            background: #6d3df5;
+            color: #ffffff;
+
+            text-decoration: none;
+            font-size: .85rem;
+            font-weight: 900;
+
+            transition: .18s ease;
+        }
+
+        .volver:hover {
+            background: #8258ff;
+            transform: translateY(-2px);
+        }
+
+        .volver-flecha {
+            font-size: 1.55rem;
+            line-height: .7;
+            font-weight: 900;
+        }
+
+        .tarjeta {
+            overflow: hidden;
+
+            border: 1px solid #27364d;
+            border-radius: 18px;
+
+            background:
+                linear-gradient(
+                    145deg,
+                    rgba(18, 27, 48, .98),
+                    rgba(10, 18, 33, .98)
+                );
+
+            box-shadow: 0 20px 55px rgba(0, 0, 0, .22);
+        }
+
+        .cabecera {
+            padding: 28px 30px;
+
+            border-bottom: 1px solid #27364d;
+        }
+
+        .etiqueta {
+            display: inline-block;
+
+            margin-bottom: 10px;
+            padding: 6px 10px;
+
+            border: 1px solid rgba(124, 92, 255, .35);
+            border-radius: 999px;
+
+            background: rgba(124, 92, 255, .10);
+            color: #a993ff;
+
+            font-size: .70rem;
+            font-weight: 900;
+            letter-spacing: .08em;
+        }
+
+        h1 {
+            margin: 0 0 8px;
+
+            font-size: clamp(1.8rem, 4vw, 2.6rem);
+        }
+
+        .subtitulo {
+            margin: 0;
+
+            color: #8999ae;
+            line-height: 1.6;
+        }
+
+        .mensajes-sistema {
+            margin: 0 28px 24px;
+        }
+
+        .mensaje-sistema {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+
+            padding: 18px 20px;
+
+            border-radius: 12px;
+
+            font-size: .88rem;
+            line-height: 1.5;
+        }
+
+        .mensaje-sistema strong {
+            font-size: .76rem;
+            font-weight: 900;
+            letter-spacing: .04em;
+        }
+
+        .mensaje-sistema.error {
+            border: 1px solid rgba(255, 86, 105, .55);
+            background: rgba(255, 86, 105, .10);
+            color: #ff9aa6;
+        }
+
+        .mensaje-sistema.error strong {
+            color: #ff596c;
+        }
+
+        .mensaje-sistema.success {
+            border: 1px solid rgba(39, 220, 190, .45);
+            background: rgba(39, 220, 190, .10);
+            color: #8ff5e4;
+        }
+
+        .mensaje-sistema.success strong {
+            color: #31e6c5;
+        }
+
+        .mensaje-sistema.info,
+        .mensaje-sistema.warning {
+            border: 1px solid rgba(124, 92, 255, .45);
+            background: rgba(124, 92, 255, .10);
+            color: #c4b9ff;
+        }
+
+
+        .formulario {
+            padding: 30px;
+        }
+
+        .grupo {
+            margin-bottom: 22px;
+        }
+
+        .grupo label {
+            display: block;
+
+            margin-bottom: 8px;
+
+            color: #aab7ca;
+
+            font-size: .76rem;
+            font-weight: 900;
+            text-transform: uppercase;
+        }
+
+        .campo,
+        .grupo input[type="text"],
+        .grupo select {
+            width: 100%;
+            min-height: 46px;
+
+            padding: 10px 13px;
+
+            border: 1px solid #31425b;
+            border-radius: 9px;
+
+            background: #091524;
+            color: #f4f7fb;
+
+            font-family: inherit;
+            font-size: .95rem;
+        }
+
+        .campo:focus,
+        .grupo input[type="text"]:focus,
+        .grupo select:focus {
+            outline: none;
+
+            border-color: #7c5cff;
+
+            box-shadow:
+                0 0 0 3px rgba(124, 92, 255, .10);
+        }
+
+        .activo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+
+            min-height: 46px;
+        }
+
+        .check {
+            width: 18px;
+            height: 18px;
+
+            accent-color: #7c5cff;
+        }
+
+        .errores {
+            margin-top: 7px;
+
+            color: #ff8c95;
+            font-size: .82rem;
+            line-height: 1.4;
+        }
+
+        .aviso {
+            margin-bottom: 25px;
+            padding: 14px 16px;
+
+            border: 1px solid rgba(47, 211, 199, .18);
+            border-radius: 10px;
+
+            background: rgba(47, 211, 199, .06);
+            color: #9eafc2;
+
+            font-size: .84rem;
+            line-height: 1.6;
+        }
+
+        .acciones {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+
+            margin-top: 30px;
+        }
+
+        .boton {
+            min-height: 46px;
+
+            padding: 0 22px;
+
+            border-radius: 10px;
+
+            font-family: inherit;
+            font-size: .80rem;
+            font-weight: 900;
+
+            cursor: pointer;
+            text-decoration: none;
+
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .guardar {
+            border: 1px solid #8d73ff;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    #7c5cff,
+                    #633cff
+                );
+
+            color: #ffffff;
+        }
+
+        .guardar:hover {
+            filter: brightness(1.12);
+        }
+
+        .cancelar {
+            border: 1px solid #34455e;
+
+            background: #111d2e;
+            color: #c1ccda;
+        }
+
+        .cancelar:hover {
+            border-color: #526783;
+            color: #ffffff;
+        }
+
+
+        /* ====================================================
+           AMPLIAR CAPACIDAD
+           ==================================================== */
+
+        .capacidad-panel {
+            margin-top: 28px;
+            padding: 30px;
+
+            border: 1px solid rgba(124, 92, 255, .30);
+            border-radius: 18px;
+
+            background:
+                linear-gradient(
+                    145deg,
+                    rgba(18, 27, 48, .98),
+                    rgba(10, 18, 33, .98)
+                );
+
+            box-shadow: 0 20px 55px rgba(0, 0, 0, .22);
+        }
+
+        .capacidad-panel h2 {
+            margin: 0 0 8px;
+            font-size: 1.35rem;
+        }
+
+        .capacidad-descripcion {
+            margin: 0 0 24px;
+
+            color: #8999ae;
+            font-size: .88rem;
+            line-height: 1.6;
+        }
+
+        .capacidad-resumen {
+            display: grid;
+            grid-template-columns:
+                repeat(5, minmax(110px, 1fr));
+
+            gap: 12px;
+            margin-bottom: 28px;
+        }
+
+        .capacidad-dato {
+            padding: 14px;
+
+            border: 1px solid #27364d;
+            border-radius: 10px;
+
+            background: #091524;
+        }
+
+        .capacidad-dato small {
+            display: block;
+
+            margin-bottom: 6px;
+
+            color: #71839b;
+            font-size: .65rem;
+            font-weight: 900;
+            text-transform: uppercase;
+        }
+
+        .capacidad-dato strong {
+            color: #ffffff;
+            font-size: 1.15rem;
+        }
+
+        .capacidad-dato.vendidos strong {
+            color: #ff8c95;
+        }
+
+        .capacidad-dato.disponibles strong {
+            color: #52e1d6;
+        }
+
+        .ampliar-titulo {
+            margin: 0 0 16px;
+
+            color: #b9aaff;
+            font-size: .80rem;
+            font-weight: 900;
+            letter-spacing: .06em;
+            text-transform: uppercase;
+        }
+
+        .ampliar-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 18px;
+        }
+
+        .ampliar-campo label {
+            display: block;
+
+            margin-bottom: 8px;
+
+            color: #aab7ca;
+            font-size: .72rem;
+            font-weight: 900;
+            text-transform: uppercase;
+        }
+
+        .ampliar-campo input {
+            width: 100%;
+            min-height: 46px;
+
+            padding: 10px 13px;
+
+            border: 1px solid #31425b;
+            border-radius: 9px;
+
+            background: #091524;
+            color: #ffffff;
+
+            font: inherit;
+        }
+
+        .ampliar-campo input:focus {
+            outline: none;
+            border-color: #7c5cff;
+
+            box-shadow:
+                0 0 0 3px rgba(124, 92, 255, .10);
+        }
+
+        .capacidad-ayuda {
+            margin-top: 18px;
+            padding: 13px 15px;
+
+            border-left: 3px solid #7c5cff;
+
+            background: rgba(124, 92, 255, .06);
+            color: #93a3b8;
+
+            font-size: .82rem;
+            line-height: 1.6;
+        }
+
+        .boton-ampliar {
+            margin-top: 20px;
+            min-height: 46px;
+            padding: 0 22px;
+
+            border: 1px solid #8d73ff;
+            border-radius: 10px;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    #7c5cff,
+                    #633cff
+                );
+
+            color: #ffffff;
+
+            font: inherit;
+            font-size: .80rem;
+            font-weight: 900;
+
+            cursor: pointer;
+        }
+
+        .boton-ampliar:hover {
+            filter: brightness(1.12);
+        }
+
+        @media (max-width: 760px) {
+            .capacidad-resumen {
+                grid-template-columns:
+                    repeat(2, 1fr);
+            }
+
+            .ampliar-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+
+        @media (max-width: 600px) {
+            .contenedor {
+                padding-top: 30px;
+            }
+
+            .cabecera,
+            .formulario {
+                padding: 22px;
+            }
+
+            .acciones {
+                flex-direction: column;
+            }
+
+            .boton {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <main class="contenedor">
+
+        <a
+            href="{% url 'eventos:panel_asientos' evento.pk %}"
+            class="volver"
+        >
+            <span class="volver-flecha">&larr;</span>
+            <span>VOLVER AL MAPA DE ASIENTOS</span>
+        </a>
+
+
+        <section class="tarjeta">
+
+            <header class="cabecera">
+
+                <div class="etiqueta">
+                    PANEL DEL ORGANIZADOR
+                </div>
+
+                <h1>
+                    Editar locaci&oacute;n
+                </h1>
+
+                <p class="subtitulo">
+                    {{ evento.nombre }}
+                    &middot;
+                    {{ locacion.nombre }}
+                </p>
+
+            </header>
+
+
+            {% if messages %}
+
+                <div class="mensajes-sistema">
+
+                    {% for message in messages %}
+
+                        <div class="mensaje-sistema {{ message.tags }}">
+
+                            {% if message.tags == "error" %}
+                                <strong>NO SE PUEDE REALIZAR LA OPERACI&Oacute;N</strong>
+                            {% elif message.tags == "success" %}
+                                <strong>OPERACI&Oacute;N REALIZADA</strong>
+                            {% else %}
+                                <strong>INFORMACI&Oacute;N</strong>
+                            {% endif %}
+
+                            <span>
+                                {{ message }}
+                            </span>
+
+                        </div>
+
+                    {% endfor %}
+
+                </div>
+
+            {% endif %}
+
+
+            <form
+                method="post"
+                class="formulario"
+            >
+                {% csrf_token %}
+
+
+                <div class="aviso">
+                    Puedes modificar los datos generales de esta
+                    locaci&oacute;n. Los asientos existentes no ser&aacute;n
+                    eliminados ni regenerados desde esta pantalla.
+                </div>
+
+
+                {% if form.non_field_errors %}
+                    <div class="errores">
+                        {{ form.non_field_errors }}
+                    </div>
+                {% endif %}
+
+
+                <div class="grupo">
+
+                    <label for="{{ form.nombre.id_for_label }}">
+                        Nombre de la locaci&oacute;n
+                    </label>
+
+                    {{ form.nombre }}
+
+                    <div class="errores">
+                        {{ form.nombre.errors }}
+                    </div>
+
+                </div>
+
+
+                <div class="grupo">
+
+                    <label for="{{ form.descripcion.id_for_label }}">
+                        Descripci&oacute;n
+                    </label>
+
+                    {{ form.descripcion }}
+
+                    <div class="errores">
+                        {{ form.descripcion.errors }}
+                    </div>
+
+                </div>
+
+
+                <div class="grupo">
+
+                    <label for="{{ form.tipo_entrada.id_for_label }}">
+                        Tipo de entrada
+                    </label>
+
+                    {{ form.tipo_entrada }}
+
+                    <div class="errores">
+                        {{ form.tipo_entrada.errors }}
+                    </div>
+
+                </div>
+
+
+                <div class="grupo">
+
+                    <label for="{{ form.posicion.id_for_label }}">
+                        Posici&oacute;n en el mapa
+                    </label>
+
+                    {{ form.posicion }}
+
+                    <div class="errores">
+                        {{ form.posicion.errors }}
+                    </div>
+
+                </div>
+
+
+                <div class="grupo">
+
+                    <label>
+                        Estado
+                    </label>
+
+                    <div class="activo">
+                        {{ form.activo }}
+
+                        <span>
+                            Locaci&oacute;n activa
+                        </span>
+                    </div>
+
+                    <div class="errores">
+                        {{ form.activo.errors }}
+                    </div>
+
+                </div>
+
+
+                <div class="acciones">
+
+                    <button
+                        type="submit"
+                        class="boton guardar"
+                    >
+                        GUARDAR CAMBIOS
+                    </button>
+
+                    <a
+                        href="{% url 'eventos:panel_asientos' evento.pk %}"
+                        class="boton cancelar"
+                    >
+                        CANCELAR
+                    </a>
+
+                </div>
+
+            </form>
+
+        </section>
+
+
+        <section class="capacidad-panel">
+
+            <h2>
+                CAPACIDAD DE LA LOCACI&Oacute;N
+            </h2>
+
+            <p class="capacidad-descripcion">
+                Consulta la capacidad actual y agrega nuevas filas
+                sin modificar ni renumerar los asientos existentes.
+            </p>
+
+
+            <div class="capacidad-resumen">
+
+                <div class="capacidad-dato">
+                    <small>Filas actuales</small>
+                    <strong>
+                        {{ cantidad_filas_actuales }}
+                    </strong>
+                </div>
+
+                <div class="capacidad-dato">
+                    <small>Total asientos</small>
+                    <strong>
+                        {{ total_asientos }}
+                    </strong>
+                </div>
+
+                <div class="capacidad-dato">
+                    <small>&Uacute;ltima fila</small>
+                    <strong>
+                        {{ ultima_fila }}
+                    </strong>
+                </div>
+
+                <div class="capacidad-dato vendidos">
+                    <small>Vendidos</small>
+                    <strong>
+                        {{ vendidos }}
+                    </strong>
+                </div>
+
+                <div class="capacidad-dato disponibles">
+                    <small>Disponibles</small>
+                    <strong>
+                        {{ disponibles }}
+                    </strong>
+                </div>
+
+            </div>
+
+
+            <div class="ampliar-titulo">
+                AMPLIAR CAPACIDAD
+            </div>
+
+
+            <form
+                method="post"
+                onsubmit="return confirm('?Agregar estas nuevas filas a la locaci?n?');"
+            >
+                {% csrf_token %}
+
+                <input
+                    type="hidden"
+                    name="accion"
+                    value="ampliar"
+                >
+
+
+                <div class="ampliar-grid">
+
+                    <div class="ampliar-campo">
+
+                        <label for="filas_nuevas">
+                            Filas nuevas
+                        </label>
+
+                        <input
+                            type="number"
+                            id="filas_nuevas"
+                            name="filas_nuevas"
+                            value="1"
+                            min="1"
+                            max="26"
+                            required
+                        >
+
+                    </div>
+
+
+                    <div class="ampliar-campo">
+
+                        <label for="asientos_por_fila">
+                            Asientos por fila
+                        </label>
+
+                        <input
+                            type="number"
+                            id="asientos_por_fila"
+                            name="asientos_por_fila"
+                            min="1"
+                            max="200"
+                            required
+                        >
+
+                    </div>
+
+                </div>
+
+
+                <div class="capacidad-ayuda">
+
+                    Las nuevas filas continuar&aacute;n
+                    autom&aacute;ticamente despu&eacute;s de la fila
+
+                    <strong>
+                        {{ ultima_fila }}
+                    </strong>.
+
+                    Los asientos existentes y vendidos
+                    permanecer&aacute;n intactos.
+
+                    {% if locacion.tipo_entrada %}
+
+                        <br>
+
+                        Stock total del tipo
+                        <strong>
+                            {{ locacion.tipo_entrada.nombre }}
+                        </strong>:
+
+                        <strong>
+                            {{ locacion.tipo_entrada.stock_total }}
+                        </strong>.
+
+                    {% endif %}
+
+                </div>
+
+
+                <button
+                    type="submit"
+                    class="boton-ampliar"
+                >
+                    + AGREGAR FILA(S)
+                </button>
+
+            </form>
+
+
+            <!-- =================================================
+                 REDUCIR CAPACIDAD
+                 Disponible para cualquier locacion.
+                 ================================================= -->
+
+            <div
+                class="ampliar-titulo"
+                style="
+                    margin-top:34px;
+                    padding-top:28px;
+                    border-top:1px solid #27364d;
+                    color:#ff9ca4;
+                "
+            >
+                REDUCIR CAPACIDAD
+            </div>
+
+
+            <form
+                method="post"
+                onsubmit="return confirm('?Eliminar las ultimas filas seleccionadas? Esta operacion no se puede deshacer.');"
+            >
+                {% csrf_token %}
+
+                <input
+                    type="hidden"
+                    name="accion"
+                    value="reducir_filas"
+                >
+
+
+                <div class="ampliar-grid">
+
+                    <div class="ampliar-campo">
+
+                        <label for="filas_eliminar">
+                            Cantidad de &uacute;ltimas filas a eliminar
+                        </label>
+
+                        <input
+                            type="number"
+                            id="filas_eliminar"
+                            name="filas_eliminar"
+                            value="1"
+                            min="1"
+                            max="25"
+                            required
+                        >
+
+                    </div>
+
+
+                    <div class="ampliar-campo">
+
+                        <label>
+                            Filas actuales
+                        </label>
+
+                        <div
+                            style="
+                                min-height:46px;
+                                padding:10px 13px;
+                                border:1px solid #31425b;
+                                border-radius:9px;
+                                background:#091524;
+                                color:#ffffff;
+                                display:flex;
+                                align-items:center;
+                            "
+                        >
+                            {{ cantidad_filas_actuales }}
+                            &nbsp;&middot;&nbsp;
+                            &Uacute;ltima:
+                            &nbsp;
+                            <strong>{{ ultima_fila }}</strong>
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <div
+                    class="capacidad-ayuda"
+                    style="
+                        border-left-color:#ff7f8b;
+                        background:rgba(255,127,139,.06);
+                    "
+                >
+                    La reducci&oacute;n comienza siempre desde la
+                    <strong>&uacute;ltima fila</strong>.
+
+                    Por ejemplo, si existen las filas
+                    A, B, C, D y E y eliminas 2,
+                    se retirar&aacute;n D y E.
+
+                    <br><br>
+
+                    <strong>
+                        Protecci&oacute;n de ventas:
+                    </strong>
+
+                    si alguna de las filas seleccionadas contiene
+                    un asiento vendido en una compra PAGADA,
+                    la operaci&oacute;n completa ser&aacute; rechazada.
+                </div>
+
+
+                <button
+                    type="submit"
+                    class="boton-ampliar"
+                    style="
+                        border-color:#ff7f8b;
+                        background:
+                            linear-gradient(
+                                135deg,
+                                #b74350,
+                                #8f303b
+                            );
+                    "
+                >
+                    - ELIMINAR &Uacute;LTIMA(S) FILA(S)
+                </button>
+
+            </form>
+
+        </section>
+
+    </main>
+
+</body>
+</html>

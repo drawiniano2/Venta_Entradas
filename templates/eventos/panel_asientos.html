@@ -1,0 +1,4505 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>
+        Asientos | {{ evento.nombre }}
+    </title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+
+            background:
+                radial-gradient(
+                    circle at top right,
+                    rgba(124, 92, 255, .14),
+                    transparent 32%
+                ),
+                #080d16;
+
+            color: #f4f7fb;
+
+            font-family:
+                Arial,
+                Helvetica,
+                sans-serif;
+        }
+
+        .contenedor {
+            width: min(1280px, 94%);
+            margin: 0 auto;
+            padding: 38px 0 70px;
+        }
+
+        .volver {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 9px;
+
+            margin-bottom: 22px;
+            padding: 12px 20px;
+
+            border: 1px solid #7c4dff;
+            border-radius: 10px;
+
+            background: #6d3df5;
+            color: #ffffff;
+
+            text-decoration: none;
+            font-size: .86rem;
+            font-weight: 900;
+
+            box-shadow: 0 8px 22px rgba(109, 61, 245, .22);
+
+            transition:
+                transform .18s ease,
+                background .18s ease,
+                box-shadow .18s ease;
+        }
+
+        .volver:hover {
+            background: #8258ff;
+            color: #ffffff;
+
+            transform: translateY(-2px);
+
+            box-shadow: 0 11px 28px rgba(109, 61, 245, .32);
+        }
+
+        .volver-flecha {
+            display: inline-block;
+            font-size: 1.65rem;
+            font-weight: 900;
+            line-height: 0;
+            transform: translateY(-1px);
+        }
+
+        .volver:hover .volver-flecha {
+            transform: translate(-3px, -1px);
+        }
+
+        .boton-editar-locacion {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+
+            min-height: 30px;
+            padding: 0 14px;
+
+            border: 1px solid #7c5cff;
+            border-radius: 8px;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    #7c5cff,
+                    #633cff
+                );
+
+            color: #ffffff;
+
+            text-decoration: none;
+            font-size: .78rem;
+            font-weight: 900;
+            white-space: nowrap;
+
+            transition: .18s ease;
+        }
+
+        .boton-editar-locacion:hover {
+            transform: translateY(-2px);
+            filter: brightness(1.15);
+
+            box-shadow:
+                0 8px 20px rgba(99, 60, 255, .25);
+        }
+
+
+        .cabecera {
+            padding: 28px;
+
+            border: 1px solid #27364d;
+            border-radius: 18px;
+
+            background:
+                linear-gradient(
+                    145deg,
+                    rgba(18, 27, 48, .98),
+                    rgba(10, 18, 33, .98)
+                );
+
+            box-shadow: 0 20px 55px rgba(0, 0, 0, .22);
+        }
+
+        .etiqueta {
+            margin-bottom: 8px;
+
+            color: #7c5cff;
+
+            font-size: .74rem;
+            font-weight: 900;
+            letter-spacing: .12em;
+            text-transform: uppercase;
+        }
+
+        h1 {
+            margin: 0 0 10px;
+            font-size: clamp(1.8rem, 4vw, 2.7rem);
+        }
+
+        .datos-evento {
+            color: #95a5bb;
+            line-height: 1.6;
+        }
+
+        .leyenda {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+
+            margin-top: 22px;
+        }
+
+        .leyenda-item {
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+
+            padding: 7px 11px;
+
+            border-radius: 999px;
+
+            font-size: .72rem;
+            font-weight: 900;
+        }
+
+        .leyenda-item.disponible {
+            color: #55dfd2;
+            background: rgba(47, 211, 199, .10);
+            border: 1px solid rgba(47, 211, 199, .24);
+        }
+
+        .leyenda-item.vendido {
+            color: #ff8d96;
+            background: rgba(255, 92, 105, .10);
+            border: 1px solid rgba(255, 92, 105, .25);
+        }
+
+        .leyenda-item.inactivo {
+            color: #9ba8ba;
+            background: rgba(155, 168, 186, .08);
+            border: 1px solid rgba(155, 168, 186, .20);
+        }
+
+        .locacion {
+            margin-top: 28px;
+            padding: 26px;
+
+            border-radius: 18px;
+            border: 1px solid #26354a;
+
+            background: #0d1625;
+        }
+
+        .locacion-cabecera {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 20px;
+            flex-wrap: wrap;
+
+            padding-bottom: 20px;
+            margin-bottom: 24px;
+
+            border-bottom: 1px solid #233149;
+        }
+
+        .locacion h2 {
+            margin: 0 0 8px;
+            font-size: 1.35rem;
+        }
+
+        .tipo-entrada {
+            color: #95a5bb;
+            font-size: .85rem;
+        }
+
+        .resumen {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .contador {
+            padding: 7px 10px;
+
+            border-radius: 8px;
+
+            background: #111d30;
+            border: 1px solid #293a54;
+
+            color: #b7c4d5;
+
+            font-size: .72rem;
+            font-weight: 900;
+        }
+
+        .contador.disponibles {
+            color: #55dfd2;
+        }
+
+        .contador.vendidos {
+            color: #ff8d96;
+        }
+
+        .escenario {
+            width: min(620px, 90%);
+            margin: 0 auto 30px;
+            padding: 10px 20px;
+
+            text-align: center;
+
+            border-radius: 0 0 40px 40px;
+
+            background:
+                linear-gradient(
+                    90deg,
+                    #5033d8,
+                    #8b6cff,
+                    #5033d8
+                );
+
+            color: #ffffff;
+
+            font-size: .72rem;
+            font-weight: 900;
+            letter-spacing: .16em;
+
+            box-shadow: 0 10px 30px rgba(124, 92, 255, .18);
+        }
+
+        .aviso-edicion-mapa {
+            max-width: 720px;
+            margin: 12px auto 2px;
+            padding: 8px 14px;
+
+            text-align: center;
+
+            border: 1px solid rgba(124, 92, 255, .25);
+            border-radius: 8px;
+
+            background: rgba(124, 92, 255, .06);
+            color: #8193ad;
+
+            font-size: .82rem;
+            line-height: 1.25;
+        }
+
+        .aviso-edicion-mapa strong {
+            color: #a996ff;
+            font-weight: 900;
+        }
+
+
+        .mapa-asientos {
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+
+            align-items: center;
+
+            padding: 8px 0 12px;
+        }
+
+        .fila-asientos {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            width: 100%;
+            gap: 14px;
+        }
+
+        .numero-fila {
+            width: 62px;
+
+            flex: 0 0 62px;
+
+            text-align: right;
+
+            color: #9fb0c8;
+
+            font-size: .66rem;
+            font-weight: 900;
+            letter-spacing: .06em;
+        }
+
+        .asientos-fila {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+
+            gap: 9px;
+        }
+
+
+        /* ====================================================
+           FILAS DE ASIENTOS EDITABLES
+           ==================================================== */
+
+        .mapa-asientos {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+
+            gap: 4px;
+
+            width: 100%;
+            padding: 8px 0 10px;
+        }
+
+        .fila-asientos {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+
+            width: 100%;
+
+            padding-top: 10px;
+        }
+
+        .fila-asientos:first-child {
+            padding-top: 2px;
+        }
+
+        .numero-fila {
+            margin-bottom: 7px;
+
+            color: #b9c7db;
+
+            font-size: .72rem;
+            font-weight: 900;
+            letter-spacing: .10em;
+        }
+
+        .contenido-fila {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            gap: 8px;
+
+            width: 100%;
+        }
+
+        .asientos-fila {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-wrap: wrap;
+
+            gap: 9px;
+        }
+
+        .control-fila {
+            margin: 0;
+            padding: 0;
+            flex: 0 0 auto;
+        }
+
+        .boton-fila {
+            width: 34px;
+            height: 34px;
+
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+
+            border-radius: 9px;
+
+            cursor: pointer;
+
+            font-size: 1.25rem;
+            font-weight: 900;
+
+            transition: .18s ease;
+        }
+
+        .boton-fila.quitar,
+        .boton-fila.agregar {
+            border: 1px solid rgba(124, 92, 255, .75);
+            background: rgba(124, 92, 255, .18);
+            color: #b9aaff;
+
+            box-shadow: 0 0 0 1px rgba(124, 92, 255, .05);
+        }
+
+        .boton-fila.quitar:hover,
+        .boton-fila.agregar:hover {
+            background: #6d49f5;
+            border-color: #8f73ff;
+            color: #ffffff;
+        }
+
+        .boton-fila:hover {
+            transform: translateY(-2px);
+            filter: brightness(1.20);
+        }
+
+        .resumen-fila {
+            margin-top: 4px;
+            margin-bottom: 0;
+
+            color: #69798f;
+
+            font-size: .62rem;
+            font-weight: 800;
+            letter-spacing: .05em;
+        }
+
+
+        .asiento {
+            min-width: 58px;
+            min-height: 45px;
+
+            display: inline-flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+
+            padding: 6px 8px;
+
+            border-radius: 9px;
+
+            font-size: .78rem;
+            font-weight: 900;
+        }
+
+        .asiento small {
+            display: block;
+            margin-top: 3px;
+
+            font-size: .52rem;
+            font-weight: 800;
+        }
+
+        .asiento.disponible {
+            background: rgba(47, 211, 199, .10);
+            border: 1px solid rgba(47, 211, 199, .34);
+            color: #59e5da;
+        }
+
+        .asiento.vendido {
+            background: rgba(255, 92, 105, .12);
+            border: 1px solid rgba(255, 92, 105, .38);
+            color: #ff8d96;
+        }
+
+        .asiento.inactivo {
+            background: rgba(130, 143, 160, .08);
+            border: 1px solid rgba(130, 143, 160, .22);
+            color: #7e8b9d;
+            opacity: .72;
+        }
+
+        .sin-locaciones {
+            margin-top: 28px;
+            padding: 35px;
+
+            text-align: center;
+
+            border-radius: 16px;
+            border: 1px dashed #34445d;
+
+            color: #8f9fb5;
+            background: #0d1625;
+        }
+
+        .pie-panel {
+            margin-top: 26px;
+            text-align: center;
+            color: #65768d;
+            font-size: .78rem;
+        }
+
+        @media (max-width: 650px) {
+            .contenedor {
+                width: 92%;
+            }
+
+            .cabecera,
+            .locacion {
+                padding: 20px;
+            }
+
+            .asiento {
+                min-width: 52px;
+            }
+        }
+    
+        /* ====================================================
+           AJUSTE FINAL COMPACTO DE FILAS
+           Cada titulo queda unido visualmente a sus asientos
+           ==================================================== */
+
+        .mapa-asientos {
+            gap: 0;
+            padding-top: 8px;
+            padding-bottom: 10px;
+        }
+
+        .fila-asientos {
+            width: 100%;
+            padding-top: 12px;
+            padding-bottom: 3px;
+        }
+
+        .fila-asientos:first-child {
+            padding-top: 2px;
+        }
+
+        .numero-fila {
+            width: auto;
+            flex: none;
+
+            margin: 0 0 5px 0;
+
+            text-align: center;
+
+            color: #b9c7db;
+        }
+
+        .contenido-fila {
+            gap: 8px;
+            margin: 0;
+        }
+
+        .asientos-fila {
+            gap: 9px;
+        }
+
+        .resumen-fila {
+            margin: 4px 0 0 0;
+        }
+
+
+        /* ====================================================
+           AJUSTE ULTRA COMPACTO FINAL
+           ==================================================== */
+
+        .fila-asientos {
+            padding-top: 7px;
+            padding-bottom: 1px;
+        }
+
+        .fila-asientos:first-child {
+            padding-top: 2px;
+        }
+
+        .numero-fila {
+            margin-bottom: 5px;
+        }
+
+        .resumen-fila {
+            margin-top: 3px;
+            margin-bottom: 0;
+        }
+
+
+        /* ====================================================
+           RECINTO - ESCENARIO FRONTAL CON TRIBUNAS
+           ==================================================== */
+
+        .recinto-frontal-tribunas {
+            width: 100%;
+            margin-top: 26px;
+        }
+
+        .escenario-recinto {
+            width: min(620px, 72%);
+            margin: 0 auto 16px;
+            padding: 12px 20px;
+
+            border: 1px solid rgba(124, 92, 255, .45);
+            border-radius: 10px;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    rgba(124, 92, 255, .16),
+                    rgba(74, 47, 180, .08)
+                );
+
+            color: #b9aaff;
+
+            text-align: center;
+            font-size: .78rem;
+            font-weight: 900;
+            letter-spacing: .16em;
+        }
+
+        .tribunas-laterales {
+            display: grid;
+            grid-template-columns:
+                minmax(250px, 1fr)
+                minmax(250px, 1fr);
+
+            gap: 34px;
+
+            width: 100%;
+            margin-top: 18px;
+            align-items: start;
+        }
+
+        .zona-lateral {
+            min-width: 0;
+        }
+
+        .zona-lateral.izquierda {
+            justify-self: start;
+        }
+
+        .zona-lateral.derecha {
+            justify-self: end;
+        }
+
+        .zona-frontal {
+            width: min(900px, 86%);
+            margin: 30px auto 0;
+        }
+
+        .locacion-mapa {
+            padding: 18px;
+
+            border: 1px solid #26364d;
+            border-radius: 14px;
+
+            background:
+                linear-gradient(
+                    145deg,
+                    rgba(14, 24, 42, .98),
+                    rgba(8, 16, 29, .98)
+                );
+        }
+
+        .locacion-mapa .locacion-cabecera {
+            margin-bottom: 10px;
+        }
+
+        .posicion-locacion {
+            margin-top: 5px;
+
+            color: #7c8da5;
+
+            font-size: .66rem;
+            font-weight: 900;
+            letter-spacing: .08em;
+            text-transform: uppercase;
+        }
+
+        .zona-lateral .mapa-asientos {
+            padding-top: 4px;
+        }
+
+        .zona-lateral .fila-asientos {
+            padding-top: 6px;
+        }
+
+        .zona-lateral .asientos-fila {
+            max-width: 100%;
+        }
+
+        .zona-frontal .asientos-fila {
+            justify-content: center;
+        }
+
+        @media (max-width: 900px) {
+
+            .tribunas-laterales {
+                grid-template-columns: 1fr;
+                gap: 18px;
+            }
+
+            .zona-lateral.izquierda,
+            .zona-lateral.derecha {
+                justify-self: stretch;
+            }
+
+            .zona-frontal {
+                width: 100%;
+                margin-top: 18px;
+            }
+
+            .escenario-recinto {
+                width: 90%;
+            }
+        }
+
+
+
+        /* ====================================================
+           MAPA FINAL - CUATRO TIPOS DE ESCENARIO
+           ==================================================== */
+
+        .recinto-mapa {
+            width: 100%;
+            margin-top: 24px;
+            padding: 24px;
+
+            border: 1px solid #25354d;
+            border-radius: 18px;
+
+            background:
+                radial-gradient(
+                    circle at center,
+                    rgba(124, 92, 255, .045),
+                    transparent 48%
+                ),
+                linear-gradient(
+                    145deg,
+                    rgba(11, 20, 35, .98),
+                    rgba(7, 14, 26, .98)
+                );
+        }
+
+
+        /* ESCENARIO FRONTAL */
+
+        .recinto-mapa .escenario-recinto {
+            width: min(620px, 72%);
+            margin: 0 auto 18px;
+            padding: 13px 20px;
+
+            border: 1px solid rgba(124, 92, 255, .55);
+            border-radius: 10px;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    rgba(124, 92, 255, .20),
+                    rgba(124, 92, 255, .07)
+                );
+
+            color: #c5b9ff;
+
+            text-align: center;
+            font-size: .82rem;
+            font-weight: 900;
+            letter-spacing: .16em;
+        }
+
+
+        /* LOCACIONES DENTRO DEL MISMO RECINTO */
+
+        .recinto-mapa .locacion-mapa {
+            margin: 0;
+            padding: 15px;
+
+            border: 1px solid rgba(67, 87, 116, .62);
+            border-radius: 12px;
+
+            background: rgba(10, 20, 35, .72);
+
+            box-shadow: none;
+        }
+
+        .recinto-mapa .locacion-mapa + .locacion-mapa {
+            margin-top: 14px;
+        }
+
+
+        /* FRONTAL SIMPLE */
+
+        .recinto-frontal-simple .zona-frontal {
+            width: min(940px, 92%);
+            margin: 22px auto 0;
+        }
+
+
+        /* FRONTAL CON TRIBUNAS */
+
+        .recinto-frontal-tribunas .tribunas-laterales {
+            display: grid;
+
+            grid-template-columns:
+                minmax(0, 1fr)
+                minmax(0, 1fr);
+
+            gap: 26px;
+
+            width: 100%;
+            margin: 22px 0 0;
+        }
+
+        .recinto-frontal-tribunas .zona-frontal {
+            width: min(940px, 86%);
+            margin: 26px auto 0;
+        }
+
+
+        /* ====================================================
+           ESCENARIO CENTRAL - APARIENCIA VISUAL
+           La geometria se controla exclusivamente en
+           CENTRAL DEFINITIVO al final del CSS.
+           ==================================================== */
+
+        .escenario-central-cuadrado {
+            grid-column: 2;
+
+            width: 160px;
+            height: 160px;
+
+            margin: auto;
+
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+
+            border: 2px solid rgba(124, 92, 255, .72);
+            border-radius: 18px;
+
+            background:
+                radial-gradient(
+                    circle at center,
+                    rgba(124, 92, 255, .30),
+                    rgba(52, 31, 112, .16)
+                );
+
+            box-shadow:
+                0 0 35px rgba(124, 92, 255, .10);
+
+            color: #c8bdff;
+
+            text-align: center;
+        }
+
+        .escenario-central-cuadrado span {
+            font-size: .67rem;
+            font-weight: 800;
+            letter-spacing: .15em;
+        }
+
+        .escenario-central-cuadrado strong {
+            margin-top: 6px;
+
+            font-size: .92rem;
+            letter-spacing: .12em;
+        }
+
+
+
+        /* ====================================================
+           SIN ESCENARIO
+           ==================================================== */
+
+        .recinto-libre .sin-escenario-titulo {
+            width: min(520px, 75%);
+            margin: 0 auto 14px;
+            padding: 12px 18px;
+
+            border: 1px dashed #41536e;
+            border-radius: 10px;
+
+            color: #91a2ba;
+
+            text-align: center;
+            font-size: .78rem;
+            font-weight: 900;
+            letter-spacing: .14em;
+        }
+
+        .recinto-libre .zona-libre {
+            display: grid;
+
+            grid-template-columns:
+                repeat(
+                    auto-fit,
+                    minmax(320px, 1fr)
+                );
+
+            gap: 18px;
+
+            margin-top: 22px;
+        }
+
+        .recinto-libre .zona-libre .locacion-mapa {
+            margin: 0;
+        }
+
+
+        /* ====================================================
+           AJUSTE RESPONSIVE
+           ==================================================== */
+
+        @media (max-width: 900px) {
+
+            .recinto-mapa {
+                padding: 16px;
+            }
+
+            .recinto-frontal-tribunas .tribunas-laterales {
+                grid-template-columns: 1fr;
+            }
+
+            .recinto-frontal-simple .zona-frontal,
+            .recinto-frontal-tribunas .zona-frontal,
+            .recinto-central .zona-posterior,
+            .recinto-central > .zona-frontal {
+                width: 100%;
+            }
+
+            .recinto-central {
+                display: block;
+            }
+
+            .recinto-central .centro-recinto {
+                display: flex;
+                flex-direction: column;
+
+                gap: 18px;
+
+                margin: 18px 0;
+            }
+
+            .recinto-central .zona-lateral {
+                width: 100%;
+            }
+
+            .escenario-central-cuadrado {
+                width: 135px;
+                height: 135px;
+            }
+
+            .recinto-libre .zona-libre {
+                grid-template-columns: 1fr;
+            }
+
+            .recinto-mapa .escenario-recinto {
+                width: 92%;
+            }
+        }
+
+
+
+
+        /* ====================================================
+           SALA FRONTAL CON TRIBUNAS - GEOMETRIA UNIFICADA
+           ==================================================== */
+
+        .sala-frontal-tribunas {
+            display: grid;
+
+            grid-template-columns:
+                minmax(210px, 0.72fr)
+                minmax(420px, 1.65fr)
+                minmax(210px, 0.72fr);
+
+            gap: 12px;
+
+            width: 100%;
+            margin-top: 16px;
+
+            padding: 14px;
+
+            border: 1px solid #2a3a52;
+            border-radius: 18px;
+
+            background:
+                radial-gradient(
+                    circle at top,
+                    rgba(124, 92, 255, .055),
+                    transparent 45%
+                ),
+                rgba(7, 14, 25, .72);
+
+            align-items: stretch;
+        }
+
+
+        /* ====================================================
+           ZONA CENTRAL - PLATEAS
+           ==================================================== */
+
+        .sala-frontal-tribunas .zona-central-publico {
+            min-width: 0;
+
+            display: flex;
+            flex-direction: column;
+
+            gap: 10px;
+        }
+
+        .sala-frontal-tribunas
+        .zona-central-publico
+        .locacion-mapa {
+            width: 100%;
+        }
+
+
+        /* ====================================================
+           TRIBUNAS LATERALES
+           ==================================================== */
+
+        .sala-frontal-tribunas .zona-lateral {
+            min-width: 0;
+
+            display: flex;
+            flex-direction: column;
+
+            gap: 10px;
+        }
+
+        .sala-frontal-tribunas
+        .zona-lateral
+        .locacion-mapa {
+            width: 100%;
+            height: 100%;
+        }
+
+
+        /* ====================================================
+           UNIR VISUALMENTE EL RECINTO
+           ==================================================== */
+
+        .sala-frontal-tribunas .locacion-mapa {
+            margin: 0;
+
+            border-radius: 11px;
+
+            background:
+                linear-gradient(
+                    180deg,
+                    rgba(15, 27, 47, .98),
+                    rgba(8, 17, 31, .98)
+                );
+        }
+
+        .sala-frontal-tribunas
+        .zona-lateral.izquierda
+        .locacion-mapa {
+            border-right-color:
+                rgba(124, 92, 255, .42);
+        }
+
+        .sala-frontal-tribunas
+        .zona-lateral.derecha
+        .locacion-mapa {
+            border-left-color:
+                rgba(124, 92, 255, .42);
+        }
+
+
+        /* ====================================================
+           ESCENARIO ALINEADO CON EL CENTRO DEL RECINTO
+           ==================================================== */
+
+        .recinto-frontal-tribunas > .escenario-recinto {
+            width: 52%;
+            max-width: 650px;
+
+            margin-left: auto;
+            margin-right: auto;
+            margin-bottom: 10px;
+        }
+
+
+        /* ====================================================
+           COMPACTAR CONTROLES DENTRO DE LAS TRIBUNAS
+           ==================================================== */
+
+        .sala-frontal-tribunas .locacion-cabecera {
+            gap: 10px;
+        }
+
+        .sala-frontal-tribunas .resumen {
+            gap: 5px;
+        }
+
+        .sala-frontal-tribunas .contador {
+            font-size: .60rem;
+        }
+
+        .sala-frontal-tribunas .boton-editar-locacion {
+            font-size: .60rem;
+        }
+
+        .sala-frontal-tribunas .asiento {
+            min-width: 50px;
+            min-height: 42px;
+
+            padding: 5px 6px;
+
+            font-size: .70rem;
+        }
+
+        .sala-frontal-tribunas .asientos-fila {
+            gap: 6px;
+        }
+
+        .sala-frontal-tribunas .contenido-fila {
+            gap: 5px;
+        }
+
+        .sala-frontal-tribunas .boton-fila {
+            width: 30px;
+            height: 30px;
+        }
+
+
+        /* ====================================================
+           RESPONSIVE
+           ==================================================== */
+
+        @media (max-width: 1050px) {
+
+            .sala-frontal-tribunas {
+                grid-template-columns:
+                    minmax(170px, .8fr)
+                    minmax(330px, 1.5fr)
+                    minmax(170px, .8fr);
+
+                gap: 8px;
+                padding: 10px;
+            }
+
+            .sala-frontal-tribunas .asiento {
+                min-width: 45px;
+            }
+        }
+
+
+        @media (max-width: 820px) {
+
+            .sala-frontal-tribunas {
+                grid-template-columns: 1fr;
+            }
+
+            .sala-frontal-tribunas
+            .zona-central-publico {
+                order: 1;
+            }
+
+            .sala-frontal-tribunas
+            .zona-lateral.izquierda {
+                order: 2;
+            }
+
+            .sala-frontal-tribunas
+            .zona-lateral.derecha {
+                order: 3;
+            }
+
+            .recinto-frontal-tribunas > .escenario-recinto {
+                width: 90%;
+            }
+        }
+
+
+
+        /* ====================================================
+           SALA TEATRO - FRONTAL SIMPLE
+           ==================================================== */
+
+        .recinto-frontal-simple {
+            width: 100%;
+            margin-top: 26px;
+        }
+
+        /* ESCENARIO */
+
+        .recinto-frontal-simple > .escenario-recinto {
+            position: relative;
+
+            width: min(620px, 70%);
+            margin: 0 auto 20px;
+            padding: 17px 25px;
+
+            border: 2px solid rgba(124, 92, 255, .80);
+            border-radius: 10px 10px 20px 20px;
+
+            background:
+                linear-gradient(
+                    180deg,
+                    rgba(72, 52, 155, .38),
+                    rgba(25, 29, 62, .92)
+                );
+
+            box-shadow:
+                0 10px 30px rgba(0, 0, 0, .35),
+                inset 0 -5px 15px rgba(124, 92, 255, .10);
+
+            color: #d3c9ff;
+
+            text-align: center;
+            font-size: .82rem;
+            font-weight: 900;
+            letter-spacing: .18em;
+        }
+
+        .recinto-frontal-simple > .escenario-recinto::after {
+            content: "";
+
+            position: absolute;
+            left: 7%;
+            right: 7%;
+            bottom: -8px;
+
+            height: 7px;
+
+            border-radius: 0 0 12px 12px;
+
+            background:
+                linear-gradient(
+                    90deg,
+                    transparent,
+                    rgba(124, 92, 255, .65),
+                    transparent
+                );
+        }
+
+        /* SALA COMPLETA */
+
+        .recinto-frontal-simple .zona-frontal {
+            position: relative;
+
+            width: min(900px, 88%);
+            margin: 18px auto 0;
+
+            padding: 30px 30px 38px;
+
+            display: flex;
+            flex-direction: column;
+            gap: 13px;
+
+            border: 1px solid #30425d;
+
+            border-radius:
+                26px
+                26px
+                48px
+                48px;
+
+            background:
+                radial-gradient(
+                    ellipse at top,
+                    rgba(124, 92, 255, .09),
+                    transparent 48%
+                ),
+                linear-gradient(
+                    180deg,
+                    rgba(13, 25, 44, .98),
+                    rgba(6, 13, 24, .98)
+                );
+
+            box-shadow:
+                inset 0 0 35px rgba(0, 0, 0, .22),
+                0 14px 35px rgba(0, 0, 0, .20);
+        }
+
+        /* PASILLOS LATERALES */
+
+        .recinto-frontal-simple .zona-frontal::before,
+        .recinto-frontal-simple .zona-frontal::after {
+            content: "";
+
+            position: absolute;
+            top: 25px;
+            bottom: 35px;
+
+            width: 2px;
+
+            background:
+                linear-gradient(
+                    180deg,
+                    transparent,
+                    rgba(124, 92, 255, .28),
+                    rgba(124, 92, 255, .28),
+                    transparent
+                );
+        }
+
+        .recinto-frontal-simple .zona-frontal::before {
+            left: 15px;
+        }
+
+        .recinto-frontal-simple .zona-frontal::after {
+            right: 15px;
+        }
+
+        /* SECTORES DEL TEATRO */
+
+        .recinto-frontal-simple
+        .zona-frontal
+        .locacion-mapa {
+            width: 100%;
+            margin: 0;
+
+            border: 1px solid rgba(58, 78, 106, .92);
+            border-radius: 15px;
+
+            background:
+                linear-gradient(
+                    180deg,
+                    rgba(16, 30, 51, .96),
+                    rgba(9, 18, 32, .98)
+                );
+
+            box-shadow:
+                inset 0 1px 0 rgba(255, 255, 255, .025);
+        }
+
+        /* PLATEA CERCANA AL ESCENARIO */
+
+        .recinto-frontal-simple
+        .zona-frontal
+        .locacion-mapa:first-child {
+            border-color: rgba(124, 92, 255, .48);
+        }
+
+        /* FILAS DE ASIENTOS */
+
+        .recinto-frontal-simple .mapa-asientos {
+            padding-left: 14px;
+            padding-right: 14px;
+        }
+
+        .recinto-frontal-simple .asientos-fila {
+            justify-content: center;
+        }
+
+        /* ULTIMO SECTOR / BALCON */
+
+        .recinto-frontal-simple
+        .zona-frontal
+        .locacion-mapa:last-child {
+            margin-top: 5px;
+
+            border-top:
+                2px solid rgba(124, 92, 255, .35);
+
+            background:
+                linear-gradient(
+                    180deg,
+                    rgba(20, 32, 55, .98),
+                    rgba(8, 16, 29, .98)
+                );
+        }
+
+        /* RESPONSIVE */
+
+        @media (max-width: 820px) {
+
+            .recinto-frontal-simple > .escenario-recinto {
+                width: 90%;
+            }
+
+            .recinto-frontal-simple .zona-frontal {
+                width: 100%;
+                padding-left: 14px;
+                padding-right: 14px;
+                border-radius: 18px;
+            }
+        }
+
+
+
+        /* ====================================================
+           ESCENARIO FRONTAL SIMPLE - VERSION AMPLIA
+           ==================================================== */
+
+        .recinto-frontal-simple > .escenario-recinto {
+            width: min(900px, 88%);
+            max-width: none;
+
+            min-height: 105px;
+
+            margin: 0 auto 22px;
+            padding: 25px 35px;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            border: 2px solid rgba(124, 92, 255, .90);
+            border-radius: 12px 12px 26px 26px;
+
+            background:
+                radial-gradient(
+                    ellipse at center,
+                    rgba(124, 92, 255, .28),
+                    transparent 68%
+                ),
+                linear-gradient(
+                    180deg,
+                    rgba(65, 45, 145, .55),
+                    rgba(20, 24, 55, .98)
+                );
+
+            box-shadow:
+                0 18px 38px rgba(0, 0, 0, .38),
+                inset 0 -12px 25px rgba(0, 0, 0, .22),
+                inset 0 1px 0 rgba(255, 255, 255, .10);
+
+            font-size: 1rem;
+            letter-spacing: .22em;
+        }
+
+
+        .recinto-frontal-simple > .escenario-recinto::before {
+            content: "ESCENARIO";
+
+            font-size: 1.05rem;
+            font-weight: 900;
+            letter-spacing: .24em;
+        }
+
+
+        .recinto-frontal-simple > .escenario-recinto {
+            font-size: 0;
+        }
+
+
+        .recinto-frontal-simple > .escenario-recinto::after {
+            left: 4%;
+            right: 4%;
+            bottom: -11px;
+
+            height: 10px;
+
+            background:
+                linear-gradient(
+                    90deg,
+                    transparent,
+                    rgba(124, 92, 255, .90) 15%,
+                    rgba(124, 92, 255, .90) 85%,
+                    transparent
+                );
+        }
+
+
+        @media (max-width: 820px) {
+
+            .recinto-frontal-simple > .escenario-recinto {
+                width: 96%;
+                min-height: 80px;
+            }
+        }
+
+
+
+        /* ====================================================
+           BALCON - NIVEL SUPERIOR DEL TEATRO
+           Solo afecta la ultima locacion de FRONTAL_SIMPLE
+           ==================================================== */
+
+        .recinto-frontal-simple
+        .zona-frontal
+        .locacion-mapa:last-child {
+            position: relative;
+
+            margin-top: 34px;
+
+            border: 1px solid rgba(124, 92, 255, .55);
+            border-top: 4px solid rgba(124, 92, 255, .80);
+
+            border-radius:
+                18px
+                18px
+                28px
+                28px;
+
+            background:
+                linear-gradient(
+                    180deg,
+                    rgba(30, 39, 70, .98),
+                    rgba(10, 19, 34, .98)
+                );
+
+            box-shadow:
+                0 -10px 28px rgba(0, 0, 0, .28),
+                0 12px 28px rgba(0, 0, 0, .20),
+                inset 0 4px 12px rgba(124, 92, 255, .08);
+        }
+
+
+        /* LINEA QUE REPRESENTA EL NIVEL SUPERIOR */
+
+        .recinto-frontal-simple
+        .zona-frontal
+        .locacion-mapa:last-child::before {
+            content: "NIVEL SUPERIOR / BALC\00D3N";
+
+            position: absolute;
+
+            top: -27px;
+            left: 50%;
+
+            transform: translateX(-50%);
+
+            padding: 5px 18px;
+
+            border: 1px solid rgba(124, 92, 255, .42);
+            border-radius: 20px;
+
+            background: #0b1526;
+
+            color: #a998ff;
+
+            font-size: .58rem;
+            font-weight: 900;
+            letter-spacing: .14em;
+
+            white-space: nowrap;
+        }
+
+
+        /* PEQUE?A BASE INFERIOR DEL BALCON */
+
+        .recinto-frontal-simple
+        .zona-frontal
+        .locacion-mapa:last-child::after {
+            content: "";
+
+            position: absolute;
+
+            left: 7%;
+            right: 7%;
+            bottom: -9px;
+
+            height: 8px;
+
+            border-radius: 0 0 18px 18px;
+
+            background:
+                linear-gradient(
+                    90deg,
+                    transparent,
+                    rgba(124, 92, 255, .45),
+                    transparent
+                );
+
+            opacity: .75;
+        }
+
+
+        /* RESPONSIVE */
+
+        @media (max-width: 820px) {
+
+            .recinto-frontal-simple
+            .zona-frontal
+            .locacion-mapa:last-child {
+                margin-top: 30px;
+            }
+
+            .recinto-frontal-simple
+            .zona-frontal
+            .locacion-mapa:last-child::before {
+                font-size: .52rem;
+                padding: 4px 12px;
+            }
+        }
+
+
+
+        /* ====================================================
+           TEATRO FRONTAL CON TRIBUNAS - DISENO DEFINITIVO
+           ==================================================== */
+
+        .recinto-frontal-tribunas {
+            width: 100%;
+            margin-top: 28px;
+        }
+
+        /* ====================================================
+           ESCENARIO
+           ==================================================== */
+
+        .recinto-frontal-tribunas > .escenario-recinto {
+            position: relative;
+
+            width: min(760px, 68%);
+            max-width: none;
+
+            margin: 0 auto 24px;
+            padding: 20px 30px;
+
+            border: 2px solid rgba(124, 92, 255, .82);
+            border-radius: 12px 12px 26px 26px;
+
+            background:
+                linear-gradient(
+                    180deg,
+                    rgba(80, 57, 175, .42),
+                    rgba(27, 30, 67, .96)
+                );
+
+            box-shadow:
+                0 12px 32px rgba(0, 0, 0, .38),
+                inset 0 -6px 18px rgba(124, 92, 255, .12);
+
+            color: #d8d0ff;
+
+            text-align: center;
+            font-size: .86rem;
+            font-weight: 900;
+            letter-spacing: .20em;
+        }
+
+        .recinto-frontal-tribunas > .escenario-recinto::after {
+            content: "";
+
+            position: absolute;
+
+            left: 6%;
+            right: 6%;
+            bottom: -9px;
+
+            height: 8px;
+
+            border-radius: 0 0 16px 16px;
+
+            background:
+                linear-gradient(
+                    90deg,
+                    transparent,
+                    rgba(124, 92, 255, .72),
+                    transparent
+                );
+        }
+
+        /* ====================================================
+           SALA COMPLETA
+           IZQUIERDA | PLATEA | DERECHA
+           ==================================================== */
+
+        .sala-frontal-tribunas {
+            display: grid;
+
+            grid-template-columns:
+                minmax(230px, .82fr)
+                minmax(440px, 1.65fr)
+                minmax(230px, .82fr);
+
+            gap: 12px;
+
+            width: 100%;
+            margin: 18px auto 0;
+            padding: 18px;
+
+            align-items: stretch;
+
+            border: 1px solid #30425d;
+            border-radius: 28px 28px 46px 46px;
+
+            background:
+                radial-gradient(
+                    ellipse at top,
+                    rgba(124, 92, 255, .09),
+                    transparent 50%
+                ),
+                linear-gradient(
+                    180deg,
+                    rgba(11, 22, 39, .98),
+                    rgba(6, 13, 24, .98)
+                );
+
+            box-shadow:
+                inset 0 0 40px rgba(0, 0, 0, .22),
+                0 14px 35px rgba(0, 0, 0, .22);
+        }
+
+        /* ====================================================
+           LAS TRES ZONAS SON PARTES DE LA MISMA SALA
+           ==================================================== */
+
+        .sala-frontal-tribunas .zona-lateral,
+        .sala-frontal-tribunas .zona-central-publico {
+            min-width: 0;
+
+            display: flex;
+            flex-direction: column;
+
+            gap: 10px;
+        }
+
+        .sala-frontal-tribunas .locacion-mapa {
+            width: 100%;
+            margin: 0;
+
+            border-radius: 15px;
+
+            background:
+                linear-gradient(
+                    180deg,
+                    rgba(16, 30, 51, .98),
+                    rgba(8, 17, 31, .98)
+                );
+
+            box-shadow:
+                inset 0 1px 0 rgba(255, 255, 255, .025);
+        }
+
+        /* ====================================================
+           PLATEA CENTRAL
+           ==================================================== */
+
+        .sala-frontal-tribunas .zona-central-publico {
+            position: relative;
+        }
+
+        .sala-frontal-tribunas
+        .zona-central-publico
+        .locacion-mapa {
+            height: 100%;
+
+            border:
+                1px solid rgba(124, 92, 255, .42);
+
+            background:
+                radial-gradient(
+                    ellipse at top,
+                    rgba(124, 92, 255, .08),
+                    transparent 45%
+                ),
+                linear-gradient(
+                    180deg,
+                    rgba(17, 31, 54, .99),
+                    rgba(8, 17, 31, .99)
+                );
+        }
+
+        /* ====================================================
+           TRIBUNA IZQUIERDA
+           ==================================================== */
+
+        .sala-frontal-tribunas
+        .zona-lateral.izquierda
+        .locacion-mapa {
+            height: 100%;
+
+            border-right:
+                2px solid rgba(124, 92, 255, .48);
+
+            border-radius:
+                24px
+                12px
+                12px
+                32px;
+        }
+
+        /* ====================================================
+           TRIBUNA DERECHA
+           ==================================================== */
+
+        .sala-frontal-tribunas
+        .zona-lateral.derecha
+        .locacion-mapa {
+            height: 100%;
+
+            border-left:
+                2px solid rgba(124, 92, 255, .48);
+
+            border-radius:
+                12px
+                24px
+                32px
+                12px;
+        }
+
+        /* ====================================================
+           ASIENTOS
+           ==================================================== */
+
+        .sala-frontal-tribunas .mapa-asientos {
+            padding-left: 6px;
+            padding-right: 6px;
+        }
+
+        .sala-frontal-tribunas .asientos-fila {
+            justify-content: center;
+            gap: 6px;
+        }
+
+        .sala-frontal-tribunas .contenido-fila {
+            gap: 5px;
+        }
+
+        .sala-frontal-tribunas .asiento {
+            min-width: 46px;
+            min-height: 42px;
+
+            padding: 5px 6px;
+
+            font-size: .68rem;
+        }
+
+        .sala-frontal-tribunas .boton-fila {
+            width: 30px;
+            height: 30px;
+        }
+
+        /* ====================================================
+           RESPONSIVE
+           ==================================================== */
+
+        @media (max-width: 1100px) {
+
+            .sala-frontal-tribunas {
+                grid-template-columns:
+                    minmax(190px, .8fr)
+                    minmax(350px, 1.45fr)
+                    minmax(190px, .8fr);
+
+                gap: 8px;
+                padding: 12px;
+            }
+
+            .sala-frontal-tribunas .asiento {
+                min-width: 42px;
+            }
+        }
+
+        @media (max-width: 820px) {
+
+            .recinto-frontal-tribunas > .escenario-recinto {
+                width: 92%;
+            }
+
+            .sala-frontal-tribunas {
+                grid-template-columns: 1fr;
+
+                border-radius: 20px;
+            }
+
+            .sala-frontal-tribunas .zona-central-publico {
+                order: 1;
+            }
+
+            .sala-frontal-tribunas .zona-lateral.izquierda {
+                order: 2;
+            }
+
+            .sala-frontal-tribunas .zona-lateral.derecha {
+                order: 3;
+            }
+        }
+
+
+
+        /* ====================================================
+           TRIBUNAS TEATRALES - GEOMETRIA LATERAL V2
+           ==================================================== */
+
+        @media (min-width: 821px) {
+
+            /*
+             * La sala conserva tres zonas:
+             * tribuna izquierda + platea + tribuna derecha.
+             * Las laterales ya no se estiran hasta el fondo.
+             */
+
+            .sala-frontal-tribunas {
+                align-items: start;
+
+                grid-template-columns:
+                    minmax(210px, .72fr)
+                    minmax(500px, 1.75fr)
+                    minmax(210px, .72fr);
+
+                column-gap: 12px;
+            }
+
+
+            /* PLATEA CENTRAL */
+
+            .sala-frontal-tribunas
+            .zona-central-publico {
+                align-self: start;
+
+                position: relative;
+                z-index: 2;
+            }
+
+
+            /* TRIBUNAS LATERALES */
+
+            .sala-frontal-tribunas
+            .zona-lateral {
+                height: auto;
+                min-height: 0;
+
+                align-self: start;
+
+                position: relative;
+                z-index: 3;
+
+                overflow: visible;
+
+                background:
+                    linear-gradient(
+                        180deg,
+                        rgba(20, 37, 62, .98),
+                        rgba(9, 19, 34, .98)
+                    );
+
+                box-shadow:
+                    0 16px 30px rgba(0, 0, 0, .24),
+                    inset 0 1px 0 rgba(255,255,255,.025);
+            }
+
+
+            /* TRIBUNA IZQUIERDA:
+               ligera orientacion hacia la platea */
+
+            .sala-frontal-tribunas
+            .zona-lateral.izquierda {
+                transform:
+                    perspective(1000px)
+                    rotateY(4deg);
+
+                transform-origin: right top;
+
+                border-radius:
+                    18px
+                    8px
+                    24px
+                    36px;
+            }
+
+
+            /* TRIBUNA DERECHA:
+               espejo de la izquierda */
+
+            .sala-frontal-tribunas
+            .zona-lateral.derecha {
+                transform:
+                    perspective(1000px)
+                    rotateY(-4deg);
+
+                transform-origin: left top;
+
+                border-radius:
+                    8px
+                    18px
+                    36px
+                    24px;
+            }
+
+
+            /* BORDE INTERIOR DE LAS TRIBUNAS */
+
+            .sala-frontal-tribunas
+            .zona-lateral.izquierda {
+                border-right:
+                    2px solid rgba(124, 92, 255, .48);
+            }
+
+            .sala-frontal-tribunas
+            .zona-lateral.derecha {
+                border-left:
+                    2px solid rgba(124, 92, 255, .48);
+            }
+
+
+            /*
+             * La tarjeta interna mantiene su contenido normal,
+             * sin deformar botones ni textos.
+             */
+
+            .sala-frontal-tribunas
+            .zona-lateral.izquierda
+            .locacion-mapa {
+                transform:
+                    perspective(1000px)
+                    rotateY(-4deg);
+
+                transform-origin: right top;
+            }
+
+            .sala-frontal-tribunas
+            .zona-lateral.derecha
+            .locacion-mapa {
+                transform:
+                    perspective(1000px)
+                    rotateY(4deg);
+
+                transform-origin: left top;
+            }
+
+
+            /* Separacion visual respecto del escenario */
+
+            .sala-frontal-tribunas
+            .zona-lateral {
+                margin-top: 18px;
+            }
+
+
+            /*
+             * Peque?o remate inferior para que no parezcan
+             * columnas rectangulares.
+             */
+
+            .sala-frontal-tribunas
+            .zona-lateral::after {
+                content: "";
+
+                position: absolute;
+
+                left: 12%;
+                right: 12%;
+                bottom: -9px;
+
+                height: 9px;
+
+                border-radius: 0 0 18px 18px;
+
+                background:
+                    linear-gradient(
+                        90deg,
+                        transparent,
+                        rgba(124, 92, 255, .38),
+                        transparent
+                    );
+
+                pointer-events: none;
+            }
+        }
+
+
+
+        /* ====================================================
+           CORRECCION V4 - ASIENTOS LATERALES UNA SOLA COLUMNA
+           ==================================================== */
+
+        @media (min-width: 821px) {
+
+            /*
+             * Las distintas FILAS de una tribuna se colocan
+             * horizontalmente una al lado de otra.
+             */
+
+            .sala-frontal-tribunas
+            .zona-lateral
+            .locacion-mapa
+            .mapa-asientos {
+                display: flex !important;
+                flex-direction: row !important;
+                flex-wrap: nowrap !important;
+
+                align-items: flex-start !important;
+                justify-content: center !important;
+
+                gap: 8px !important;
+
+                width: 100%;
+            }
+
+
+            /*
+             * Cada fila real C, D, E / A, B, C, D
+             * se convierte en una columna independiente.
+             */
+
+            .sala-frontal-tribunas
+            .zona-lateral
+            .locacion-mapa
+            .fila-asientos {
+                display: flex !important;
+                flex-direction: column !important;
+
+                align-items: center !important;
+                justify-content: flex-start !important;
+
+                flex: 0 0 auto !important;
+
+                width: 48px !important;
+                min-width: 48px !important;
+
+                margin: 0 !important;
+                padding: 0 !important;
+            }
+
+
+            /*
+             * El bloque que contiene - / ASIENTOS / +
+             * tambi?n es estrictamente vertical.
+             */
+
+            .sala-frontal-tribunas
+            .zona-lateral
+            .locacion-mapa
+            .fila-asientos
+            .contenido-fila {
+                display: flex !important;
+                flex-direction: column !important;
+
+                align-items: center !important;
+                justify-content: flex-start !important;
+
+                width: 48px !important;
+
+                gap: 5px !important;
+            }
+
+
+            /*
+             * ESTA ES LA REGLA CLAVE:
+             *
+             * C1
+             * C2
+             * C3
+             * C4
+             *
+             * nunca C1 C2 / C3 C4.
+             */
+
+            .sala-frontal-tribunas
+            .zona-lateral
+            .locacion-mapa
+            .fila-asientos
+            .contenido-fila
+            .asientos-fila {
+                display: flex !important;
+
+                flex-direction: column !important;
+                flex-wrap: nowrap !important;
+
+                align-items: center !important;
+                justify-content: flex-start !important;
+
+                width: 44px !important;
+                min-width: 44px !important;
+                max-width: 44px !important;
+
+                gap: 5px !important;
+            }
+
+
+            /*
+             * Cada asiento ocupa individualmente una l?nea.
+             */
+
+            .sala-frontal-tribunas
+            .zona-lateral
+            .locacion-mapa
+            .fila-asientos
+            .asientos-fila
+            .asiento {
+                display: flex !important;
+                flex-direction: column !important;
+
+                align-items: center !important;
+                justify-content: center !important;
+
+                flex: 0 0 auto !important;
+
+                width: 42px !important;
+                min-width: 42px !important;
+                max-width: 42px !important;
+
+                height: 39px !important;
+                min-height: 39px !important;
+
+                margin: 0 !important;
+            }
+
+
+            /*
+             * Controles arriba y abajo de la columna.
+             */
+
+            .sala-frontal-tribunas
+            .zona-lateral
+            .locacion-mapa
+            .control-fila {
+                display: block !important;
+
+                width: 28px !important;
+                margin: 0 auto !important;
+            }
+
+
+            .sala-frontal-tribunas
+            .zona-lateral
+            .locacion-mapa
+            .boton-fila {
+                width: 28px !important;
+                min-width: 28px !important;
+                height: 28px !important;
+
+                margin: 0 !important;
+            }
+
+
+            /*
+             * Nombre de la fila centrado sobre la columna.
+             */
+
+            .sala-frontal-tribunas
+            .zona-lateral
+            .locacion-mapa
+            .numero-fila {
+                width: 100% !important;
+
+                margin: 0 0 7px !important;
+
+                text-align: center !important;
+                white-space: nowrap !important;
+            }
+
+
+            /*
+             * Resumen debajo de la columna.
+             */
+
+            .sala-frontal-tribunas
+            .zona-lateral
+            .locacion-mapa
+            .resumen-fila {
+                width: 48px !important;
+
+                margin-top: 7px !important;
+
+                text-align: center !important;
+                white-space: normal !important;
+            }
+
+
+            /* IZQUIERDA: columnas aproxim?ndose al centro */
+
+            .sala-frontal-tribunas
+            .zona-lateral.izquierda
+            .locacion-mapa
+            .mapa-asientos {
+                justify-content: flex-end !important;
+            }
+
+
+            /* DERECHA: columnas naciendo desde el centro */
+
+            .sala-frontal-tribunas
+            .zona-lateral.derecha
+            .locacion-mapa
+            .mapa-asientos {
+                justify-content: flex-start !important;
+            }
+
+        }
+
+
+
+        /* ====================================================
+           BALCON IZQUIERDO - INVERTIR COLUMNAS
+           E - D - C hacia la platea
+           ==================================================== */
+
+        @media (min-width: 821px) {
+
+            .sala-frontal-tribunas
+            .zona-lateral.izquierda
+            .locacion-mapa
+            .mapa-asientos {
+                flex-direction: row-reverse !important;
+            }
+
+        }
+
+
+
+        /* ====================================================
+           ESCENARIO GRANDE TIPO TEATRO - VERSION 2
+           ==================================================== */
+
+        .recinto-frontal-simple > .escenario-recinto,
+        .recinto-frontal-tribunas > .escenario-recinto {
+            position: relative;
+
+            width: min(900px, 84%) !important;
+            min-height: 125px !important;
+
+            margin: 20px auto 38px !important;
+            padding: 34px 30px !important;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            border: 2px solid rgba(124, 92, 255, .95) !important;
+
+            border-radius:
+                18px
+                18px
+                32px
+                32px !important;
+
+            background:
+                radial-gradient(
+                    ellipse at 50% 10%,
+                    rgba(125, 94, 255, .34),
+                    transparent 48%
+                ),
+                linear-gradient(
+                    180deg,
+                    #302568 0%,
+                    #211b4d 45%,
+                    #11152d 100%
+                ) !important;
+
+            box-shadow:
+                0 16px 35px rgba(0, 0, 0, .42),
+                inset 0 -18px 30px rgba(0, 0, 0, .28),
+                inset 0 2px 0 rgba(255,255,255,.07) !important;
+
+            color: #eeeaff !important;
+
+            font-size: 1rem !important;
+            font-weight: 900 !important;
+            letter-spacing: .30em !important;
+
+            text-align: center;
+        }
+
+
+        /* TARIMA / FRENTE DEL ESCENARIO */
+
+        .recinto-frontal-simple > .escenario-recinto::after,
+        .recinto-frontal-tribunas > .escenario-recinto::after {
+            content: "";
+
+            position: absolute;
+
+            left: 4%;
+            right: 4%;
+            bottom: -16px;
+
+            height: 15px;
+
+            border-radius: 0 0 24px 24px;
+
+            background:
+                linear-gradient(
+                    90deg,
+                    transparent 0%,
+                    #523bd4 12%,
+                    #815eff 50%,
+                    #523bd4 88%,
+                    transparent 100%
+                );
+
+            box-shadow:
+                0 7px 18px rgba(96, 69, 255, .40);
+        }
+
+
+        /* BORDE SUPERIOR / ILUMINACION */
+
+        .recinto-frontal-simple > .escenario-recinto::before,
+        .recinto-frontal-tribunas > .escenario-recinto::before {
+            content: "";
+
+            position: absolute;
+
+            top: 13px;
+            left: 8%;
+            right: 8%;
+
+            height: 2px;
+
+            background:
+                linear-gradient(
+                    90deg,
+                    transparent,
+                    rgba(190, 177, 255, .50),
+                    transparent
+                );
+        }
+
+
+        @media (max-width: 820px) {
+
+            .recinto-frontal-simple > .escenario-recinto,
+            .recinto-frontal-tribunas > .escenario-recinto {
+                width: 94% !important;
+                min-height: 95px !important;
+                padding: 25px 15px !important;
+                margin-bottom: 30px !important;
+
+                font-size: .82rem !important;
+            }
+
+        }
+
+        /* ====================================================
+           CENTRAL DEFINITIVO - DISTRIBUCION UNIVERSAL
+           Se aplica a TODOS los eventos tipo CENTRAL
+           ==================================================== */
+
+        .recinto-central {
+            display: flex !important;
+            flex-direction: column !important;
+            gap: 22px !important;
+
+            width: 100% !important;
+            max-width: 100% !important;
+
+            box-sizing: border-box !important;
+        }
+
+
+        /* ====================================================
+           POSTERIOR
+           ==================================================== */
+
+        .recinto-central > .zona-posterior {
+            width: min(900px, 82%) !important;
+            max-width: 900px !important;
+
+            margin: 0 auto !important;
+
+            box-sizing: border-box !important;
+        }
+
+
+        /* ====================================================
+           CENTRO DEL RECINTO
+           IZQUIERDA | ESCENARIO | DERECHA
+           ==================================================== */
+
+        .recinto-central > .centro-recinto {
+            display: grid !important;
+
+            grid-template-columns:
+                minmax(0, 1fr)
+                190px
+                minmax(0, 1fr) !important;
+
+            grid-template-areas:
+                "izquierda escenario derecha" !important;
+
+            column-gap: 22px !important;
+            row-gap: 18px !important;
+
+            width: 100% !important;
+            max-width: 100% !important;
+
+            margin: 0 !important;
+            padding: 0 !important;
+
+            align-items: center !important;
+
+            box-sizing: border-box !important;
+        }
+
+
+        /* ====================================================
+           LATERAL IZQUIERDA
+           ==================================================== */
+
+        .recinto-central
+        > .centro-recinto
+        > .zona-lateral.izquierda {
+
+            grid-area: izquierda !important;
+
+            display: flex !important;
+            flex-direction: column !important;
+
+            width: 100% !important;
+            min-width: 0 !important;
+            max-width: none !important;
+
+            margin: 0 !important;
+
+            justify-self: stretch !important;
+            align-self: stretch !important;
+
+            box-sizing: border-box !important;
+        }
+
+
+        /* ====================================================
+           ESCENARIO CENTRAL
+           ==================================================== */
+
+        .recinto-central
+        > .centro-recinto
+        > .escenario-central-cuadrado {
+
+            grid-area: escenario !important;
+
+            width: 170px !important;
+            height: 170px !important;
+
+            min-width: 170px !important;
+            min-height: 170px !important;
+
+            margin: auto !important;
+
+            justify-self: center !important;
+            align-self: center !important;
+
+            box-sizing: border-box !important;
+        }
+
+
+        /* ====================================================
+           LATERAL DERECHA
+           ==================================================== */
+
+        .recinto-central
+        > .centro-recinto
+        > .zona-lateral.derecha {
+
+            grid-area: derecha !important;
+
+            display: flex !important;
+            flex-direction: column !important;
+
+            width: 100% !important;
+            min-width: 0 !important;
+            max-width: none !important;
+
+            margin: 0 !important;
+
+            justify-self: stretch !important;
+            align-self: stretch !important;
+
+            box-sizing: border-box !important;
+        }
+
+
+        /* ====================================================
+           TARJETAS DE LOCACION LATERALES
+           Ambas columnas utilizan exactamente el mismo ancho.
+           ==================================================== */
+
+        .recinto-central
+        > .centro-recinto
+        > .zona-lateral
+        > .locacion-mapa {
+
+            width: 100% !important;
+            min-width: 0 !important;
+            max-width: 100% !important;
+
+            margin: 0 !important;
+
+            box-sizing: border-box !important;
+        }
+
+
+        .recinto-central
+        > .centro-recinto
+        > .zona-lateral
+        > .locacion-mapa
+        + .locacion-mapa {
+
+            margin-top: 18px !important;
+        }
+
+
+        /* ====================================================
+           ESPACIO VACIO DE UNA LOCACION LATERAL
+           Debe conservar la columna aunque no tenga locacion.
+           ==================================================== */
+
+        .recinto-central
+        > .centro-recinto
+        > .zona-lateral
+        > .sin-locaciones {
+
+            width: 100% !important;
+            min-width: 0 !important;
+
+            box-sizing: border-box !important;
+        }
+
+
+        /* ====================================================
+           FRONTAL
+           ==================================================== */
+
+        .recinto-central > .zona-frontal {
+
+            width: min(900px, 82%) !important;
+            max-width: 900px !important;
+
+            margin: 0 auto !important;
+
+            box-sizing: border-box !important;
+        }
+
+
+        .recinto-central
+        > .zona-posterior
+        > .locacion-mapa,
+
+        .recinto-central
+        > .zona-frontal
+        > .locacion-mapa {
+
+            width: 100% !important;
+            max-width: 100% !important;
+
+            box-sizing: border-box !important;
+        }
+
+
+        /* ====================================================
+           CENTRAL RESPONSIVE
+           ==================================================== */
+
+        @media (max-width: 900px) {
+
+            .recinto-central
+            > .zona-posterior,
+
+            .recinto-central
+            > .zona-frontal {
+
+                width: 100% !important;
+                max-width: 100% !important;
+            }
+
+
+            .recinto-central
+            > .centro-recinto {
+
+                display: flex !important;
+                flex-direction: column !important;
+
+                gap: 18px !important;
+            }
+
+
+            .recinto-central
+            > .centro-recinto
+            > .zona-lateral {
+
+                width: 100% !important;
+                max-width: 100% !important;
+            }
+
+
+            .recinto-central
+            > .centro-recinto
+            > .escenario-central-cuadrado {
+
+                width: 145px !important;
+                height: 145px !important;
+
+                min-width: 145px !important;
+                min-height: 145px !important;
+            }
+        }
+
+
+
+        /* ====================================================
+           CENTRAL V2 - ORIENTACION CORRECTA DE LATERALES
+           Replica la geometria lateral del teatro.
+           Solo afecta eventos con escenario CENTRAL.
+           ==================================================== */
+
+        @media (min-width: 821px) {
+
+            .recinto-central
+            > .centro-recinto
+            > .zona-lateral
+            .locacion-mapa
+            .mapa-asientos {
+                display: flex !important;
+                flex-direction: row !important;
+                flex-wrap: nowrap !important;
+                align-items: flex-start !important;
+                justify-content: center !important;
+                gap: 8px !important;
+                width: 100% !important;
+            }
+
+            .recinto-central
+            > .centro-recinto
+            > .zona-lateral
+            .locacion-mapa
+            .fila-asientos {
+                display: flex !important;
+                flex-direction: column !important;
+                align-items: center !important;
+                justify-content: flex-start !important;
+                flex: 0 0 auto !important;
+                width: 48px !important;
+                min-width: 48px !important;
+                margin: 0 !important;
+                padding: 0 !important;
+            }
+
+            .recinto-central
+            > .centro-recinto
+            > .zona-lateral
+            .locacion-mapa
+            .fila-asientos
+            .contenido-fila {
+                display: flex !important;
+                flex-direction: column !important;
+                align-items: center !important;
+                justify-content: flex-start !important;
+                width: 48px !important;
+                gap: 5px !important;
+            }
+
+            .recinto-central
+            > .centro-recinto
+            > .zona-lateral
+            .locacion-mapa
+            .fila-asientos
+            .contenido-fila
+            .asientos-fila {
+                display: flex !important;
+                flex-direction: column !important;
+                flex-wrap: nowrap !important;
+                align-items: center !important;
+                justify-content: flex-start !important;
+                width: 44px !important;
+                min-width: 44px !important;
+                max-width: 44px !important;
+                gap: 5px !important;
+            }
+
+            .recinto-central
+            > .centro-recinto
+            > .zona-lateral
+            .locacion-mapa
+            .fila-asientos
+            .asientos-fila
+            .asiento {
+                display: flex !important;
+                flex-direction: column !important;
+                align-items: center !important;
+                justify-content: center !important;
+                flex: 0 0 auto !important;
+                width: 42px !important;
+                min-width: 42px !important;
+                max-width: 42px !important;
+                height: 39px !important;
+                min-height: 39px !important;
+                margin: 0 !important;
+            }
+
+            .recinto-central
+            > .centro-recinto
+            > .zona-lateral
+            .locacion-mapa
+            .control-fila {
+                display: block !important;
+                width: 28px !important;
+                margin: 0 auto !important;
+            }
+
+            .recinto-central
+            > .centro-recinto
+            > .zona-lateral
+            .locacion-mapa
+            .boton-fila {
+                width: 28px !important;
+                min-width: 28px !important;
+                height: 28px !important;
+                margin: 0 !important;
+            }
+
+            .recinto-central
+            > .centro-recinto
+            > .zona-lateral
+            .locacion-mapa
+            .numero-fila {
+                width: 100% !important;
+                margin: 0 0 7px !important;
+                text-align: center !important;
+                white-space: nowrap !important;
+            }
+
+            .recinto-central
+            > .centro-recinto
+            > .zona-lateral
+            .locacion-mapa
+            .resumen-fila {
+                width: 48px !important;
+                margin-top: 7px !important;
+                text-align: center !important;
+                white-space: normal !important;
+            }
+
+            /* LATERAL IZQUIERDO */
+            .recinto-central
+            > .centro-recinto
+            > .zona-lateral.izquierda
+            .locacion-mapa
+            .mapa-asientos {
+                justify-content: flex-end !important;
+                flex-direction: row-reverse !important;
+            }
+
+            /* LATERAL DERECHO */
+            .recinto-central
+            > .centro-recinto
+            > .zona-lateral.derecha
+            .locacion-mapa
+            .mapa-asientos {
+                justify-content: flex-start !important;
+                flex-direction: row !important;
+            }
+
+        }
+
+
+        /* ====================================================
+           VISOR HORIZONTAL UNIVERSAL DEL MAPA
+           Aplica a todos los tipos de escenario.
+           ==================================================== */
+
+        .visor-mapa-horizontal {
+            width: 100%;
+            max-width: 100%;
+
+            overflow-x: auto;
+            overflow-y: visible;
+
+            padding: 0 0 18px;
+
+            box-sizing: border-box;
+
+            scrollbar-width: auto;
+            scrollbar-color:
+                rgba(124, 92, 255, .75)
+                rgba(10, 18, 33, .85);
+        }
+
+
+        .visor-mapa-horizontal::-webkit-scrollbar {
+            height: 14px;
+        }
+
+
+        .visor-mapa-horizontal::-webkit-scrollbar-track {
+            background: rgba(10, 18, 33, .85);
+            border-radius: 10px;
+        }
+
+
+        .visor-mapa-horizontal::-webkit-scrollbar-thumb {
+            background:
+                linear-gradient(
+                    90deg,
+                    #633cff,
+                    #7c5cff
+                );
+
+            border-radius: 10px;
+
+            border: 3px solid rgba(10, 18, 33, .85);
+        }
+
+
+        /*
+         * El recinto conserva como minimo el ancho de la ventana,
+         * pero puede crecer cuando las locaciones necesitan
+         * espacio adicional.
+         */
+
+        .visor-mapa-horizontal > .recinto-mapa {
+            width: max-content !important;
+            min-width: 100% !important;
+            max-width: none !important;
+
+            box-sizing: border-box !important;
+        }
+
+
+        /* ====================================================
+           CENTRAL
+           Las laterales obtienen espacio real suficiente.
+           ==================================================== */
+
+        @media (min-width: 901px) {
+
+            /*
+             * CENTRAL V5
+             * Cada lateral conserva espacio suficiente,
+             * pero nunca invade la columna del escenario.
+             */
+
+            .visor-mapa-horizontal
+            > .recinto-central
+            > .centro-recinto {
+
+                /*
+                 CENTRAL ADAPTABLE
+
+                 El ancho deja de estar forzado a 1450px.
+                 Las zonas laterales crecen solamente cuando
+                 la cantidad real de filas/asientos lo requiere.
+
+                 IZQUIERDA | ESCENARIO | DERECHA
+                */
+
+                width: max-content !important;
+                min-width: 100% !important;
+                max-width: none !important;
+
+                grid-template-columns:
+                    minmax(260px, max-content)
+                    340px
+                    minmax(260px, max-content) !important;
+
+                grid-template-areas:
+                    "izquierda escenario derecha" !important;
+
+                column-gap: 28px !important;
+
+                align-items: center !important;
+                justify-content: center !important;
+
+                box-sizing: border-box !important;
+            }
+
+
+            .visor-mapa-horizontal
+            > .recinto-central
+            > .centro-recinto
+            > .zona-lateral {
+
+                width: max-content !important;
+                min-width: 260px !important;
+                max-width: none !important;
+
+                overflow: visible !important;
+
+                box-sizing: border-box !important;
+            }
+
+
+            .visor-mapa-horizontal
+            > .recinto-central
+            > .centro-recinto
+            > .zona-lateral
+            > .locacion-mapa {
+
+                width: max-content !important;
+                min-width: 260px !important;
+                max-width: none !important;
+
+                /*
+                 Eliminamos el scroll individual de cada lateral.
+                 El desplazamiento pertenece al plano completo.
+                */
+
+                overflow: visible !important;
+
+                box-sizing: border-box !important;
+            }
+
+
+            /* ================================================
+               FRONTAL CON TRIBUNAS
+               Tambi?n puede crecer horizontalmente.
+               ================================================ */
+
+            .visor-mapa-horizontal
+            > .recinto-frontal-tribunas
+            > .sala-frontal-tribunas {
+
+                width: max-content !important;
+                min-width: 100% !important;
+
+                grid-template-columns:
+                    minmax(260px, max-content)
+                    minmax(520px, max-content)
+                    minmax(260px, max-content) !important;
+            }
+
+
+            .visor-mapa-horizontal
+            .sala-frontal-tribunas
+            .zona-lateral {
+
+                width: max-content !important;
+                min-width: 260px !important;
+                max-width: none !important;
+            }
+
+
+            /* ================================================
+               FRONTAL SIMPLE Y SIN ESCENARIO
+               Permitir crecimiento sin comprimir asientos.
+               ================================================ */
+
+            .visor-mapa-horizontal
+            > .recinto-frontal-simple
+            > .zona-frontal,
+
+            .visor-mapa-horizontal
+            > .recinto-libre
+            > .zona-libre {
+
+                width: max-content !important;
+                min-width: 100% !important;
+                max-width: none !important;
+            }
+
+        }
+
+
+        /* ====================================================
+           RESUMEN DE CADA FILA/COLUMNA
+           Evita:
+           20 ASIENTOS20 ASIENTOS20 ASIENTOS
+           ==================================================== */
+
+        @media (min-width: 821px) {
+
+            .visor-mapa-horizontal
+            .zona-lateral
+            .fila-asientos
+            .resumen-fila {
+
+                display: flex !important;
+                flex-direction: column !important;
+
+                align-items: center !important;
+                justify-content: center !important;
+
+                width: 48px !important;
+                min-width: 48px !important;
+                max-width: 48px !important;
+
+                margin: 8px 0 0 !important;
+
+                text-align: center !important;
+
+                white-space: normal !important;
+                overflow-wrap: normal !important;
+                word-break: normal !important;
+
+                line-height: 1.15 !important;
+
+                box-sizing: border-box !important;
+            }
+
+
+            .visor-mapa-horizontal
+            .zona-lateral
+            .fila-asientos {
+
+                margin-right: 6px !important;
+            }
+
+
+            .visor-mapa-horizontal
+            .zona-lateral
+            .fila-asientos:last-child {
+
+                margin-right: 0 !important;
+            }
+
+        }
+
+
+        /* ====================================================
+           MOVIL
+           En pantallas pequenas se conserva el comportamiento
+           responsive existente.
+           ==================================================== */
+
+        @media (max-width: 900px) {
+
+            .visor-mapa-horizontal {
+                overflow-x: auto;
+            }
+
+            .visor-mapa-horizontal > .recinto-mapa {
+                width: 100% !important;
+                min-width: 100% !important;
+            }
+
+        }
+
+
+
+        /* ====================================================
+           CREAR LOCACION DESDE MAPA - ESTILO UNIVERSAL
+           APLICA A TODOS LOS MODELOS DE ESCENARIO
+           ==================================================== */
+
+        .crear-locacion-mapa {
+            width: 100%;
+            min-width: 0;
+            margin-top: 18px;
+            padding: 18px;
+
+            border: 1px dashed rgba(124, 92, 255, .55);
+            border-radius: 14px;
+
+            background:
+                linear-gradient(
+                    145deg,
+                    rgba(18, 27, 48, .98),
+                    rgba(9, 18, 33, .98)
+                );
+
+            box-sizing: border-box;
+        }
+
+
+        .crear-locacion-titulo {
+            margin-bottom: 5px;
+
+            color: #b9aaff;
+
+            font-size: .72rem;
+            font-weight: 900;
+            letter-spacing: .08em;
+
+            text-transform: uppercase;
+        }
+
+
+        .crear-locacion-posicion {
+            margin-bottom: 16px;
+
+            color: #ffffff;
+
+            font-size: .95rem;
+            font-weight: 900;
+
+            text-transform: uppercase;
+        }
+
+
+        .crear-locacion-form {
+            width: 100%;
+            min-width: 0;
+        }
+
+
+        .crear-locacion-grid {
+            display: grid;
+
+            grid-template-columns:
+                repeat(
+                    2,
+                    minmax(0, 1fr)
+                );
+
+            gap: 12px;
+
+            width: 100%;
+            min-width: 0;
+        }
+
+
+        .crear-locacion-campo {
+            min-width: 0;
+        }
+
+
+        .crear-locacion-campo:first-child {
+            grid-column: 1 / -1;
+        }
+
+
+        .crear-locacion-campo label {
+            display: block;
+
+            margin-bottom: 6px;
+
+            color: #8999ae;
+
+            font-size: .62rem;
+            font-weight: 900;
+            letter-spacing: .04em;
+
+            text-transform: uppercase;
+        }
+
+
+        .crear-locacion-campo input,
+        .crear-locacion-campo select {
+            display: block;
+
+            width: 100%;
+            min-width: 0;
+            min-height: 40px;
+
+            padding: 8px 10px;
+
+            border: 1px solid #31425b;
+            border-radius: 8px;
+
+            background: #091524;
+            color: #ffffff;
+
+            font: inherit;
+            font-size: .78rem;
+
+            box-sizing: border-box;
+        }
+
+
+        .crear-locacion-campo input:focus,
+        .crear-locacion-campo select:focus {
+            outline: none;
+
+            border-color: #7c5cff;
+
+            box-shadow:
+                0 0 0 3px
+                rgba(124, 92, 255, .12);
+        }
+
+
+        .crear-locacion-campo input::placeholder {
+            color: #61738c;
+        }
+
+
+        .boton-crear-locacion-mapa {
+            width: 100%;
+            min-height: 42px;
+
+            margin-top: 14px;
+            padding: 0 18px;
+
+            border: 1px solid #8d73ff;
+            border-radius: 9px;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    #7c5cff,
+                    #633cff
+                );
+
+            color: #ffffff;
+
+            font: inherit;
+            font-size: .72rem;
+            font-weight: 900;
+            letter-spacing: .03em;
+
+            cursor: pointer;
+
+            box-sizing: border-box;
+        }
+
+
+        .boton-crear-locacion-mapa:hover {
+            filter: brightness(1.12);
+        }
+
+
+        /* ====================================================
+           POSTERIOR / FRONTAL / LATERALES / LIBRE
+           ==================================================== */
+
+        .zona-posterior
+        > .crear-locacion-mapa,
+
+        .zona-frontal
+        > .crear-locacion-mapa,
+
+        .zona-lateral
+        > .crear-locacion-mapa,
+
+        .zona-libre
+        > .crear-locacion-mapa {
+
+            width: 100%;
+            max-width: 100%;
+            min-width: 0;
+
+            box-sizing: border-box;
+        }
+
+
+        /* ====================================================
+           RESPONSIVE
+           ==================================================== */
+
+        @media (max-width: 650px) {
+
+            .crear-locacion-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .crear-locacion-campo:first-child {
+                grid-column: auto;
+            }
+
+            .crear-locacion-mapa {
+                padding: 14px;
+            }
+        }
+
+
+
+
+        /* ====================================================
+           CENTRAL V3 - ESCENARIO GRANDE Y FILAS HACIA ESCENARIO
+           ==================================================== */
+
+        @media (min-width: 901px) {
+
+            /* ================================================
+               ESCENARIO CENTRAL
+               Se aumenta a mas del doble del tamano anterior.
+               ================================================ */
+
+            .recinto-central
+            > .centro-recinto
+            > .escenario-central-cuadrado {
+
+                width: 300px !important;
+                height: 300px !important;
+
+                min-width: 300px !important;
+                min-height: 300px !important;
+
+                margin: auto !important;
+
+                justify-self: center !important;
+                align-self: center !important;
+            }
+
+
+            .recinto-central
+            > .centro-recinto
+            > .escenario-central-cuadrado
+            span {
+
+                font-size: .78rem !important;
+                letter-spacing: .16em !important;
+            }
+
+
+            .recinto-central
+            > .centro-recinto
+            > .escenario-central-cuadrado
+            strong {
+
+                margin-top: 8px !important;
+
+                font-size: 1.12rem !important;
+                letter-spacing: .14em !important;
+            }
+
+
+            /* ================================================
+               POSTERIOR
+               
+               Invierte SOLO la presentacion visual.
+               Los datos A, B, C... no cambian.
+               
+               Resultado:
+               
+               fila mas alta
+               C
+               B
+               A
+               ESCENARIO
+               ================================================ */
+
+            .recinto-central
+            > .zona-posterior
+            > .locacion-mapa
+            > .mapa-asientos {
+
+                display: flex !important;
+                flex-direction: column-reverse !important;
+
+                align-items: center !important;
+                justify-content: center !important;
+            }
+
+
+            /* ================================================
+               SEPARACION ENTRE FILAS POSTERIORES
+               ================================================ */
+
+            .recinto-central
+            > .zona-posterior
+            .fila-asientos {
+
+                width: 100% !important;
+
+                padding-top: 10px !important;
+                padding-bottom: 10px !important;
+
+                box-sizing: border-box !important;
+            }
+
+
+            .recinto-central
+            > .zona-posterior
+            .resumen-fila {
+
+                display: block !important;
+
+                width: 100% !important;
+
+                margin: 8px 0 4px !important;
+
+                text-align: center !important;
+
+                white-space: nowrap !important;
+
+                line-height: 1.25 !important;
+            }
+
+
+            /* ================================================
+               LATERALES
+               Evita que 20 ASIENTOS / 12 ASIENTOS queden
+               visualmente pegados entre columnas.
+               ================================================ */
+
+            .recinto-central
+            > .centro-recinto
+            > .zona-lateral
+            .fila-asientos {
+
+                width: 56px !important;
+                min-width: 56px !important;
+            }
+
+
+            .recinto-central
+            > .centro-recinto
+            > .zona-lateral
+            .resumen-fila {
+
+                display: block !important;
+
+                width: 56px !important;
+                min-width: 56px !important;
+                max-width: 56px !important;
+
+                margin: 10px 0 0 !important;
+
+                padding: 0 3px !important;
+
+                text-align: center !important;
+
+                line-height: 1.15 !important;
+
+                box-sizing: border-box !important;
+            }
+
+
+            .recinto-central
+            > .centro-recinto
+            > .zona-lateral
+            .mapa-asientos {
+
+                gap: 12px !important;
+            }
+
+        }
+
+
+
+
+        /* ====================================================
+           CENTRAL V4 - COLUMNA ESCENARIO SIN SOLAPAMIENTO
+           ==================================================== */
+
+        @media (min-width: 901px) {
+
+            /*
+             * El escenario crecio a 300px.
+             * Ahora reservamos fisicamente una columna central
+             * suficientemente grande para contenerlo.
+             */
+
+            .recinto-central
+            > .centro-recinto {
+
+                display: grid !important;
+
+                grid-template-columns:
+                    minmax(420px, 1fr)
+                    340px
+                    minmax(420px, 1fr) !important;
+
+                grid-template-areas:
+                    "izquierda escenario derecha" !important;
+
+                column-gap: 36px !important;
+
+                align-items: center !important;
+
+                width: 100% !important;
+                min-width: 1250px !important;
+
+                box-sizing: border-box !important;
+            }
+
+
+            /* LATERAL IZQUIERDO */
+
+            .recinto-central
+            > .centro-recinto
+            > .zona-lateral.izquierda {
+
+                grid-area: izquierda !important;
+
+                width: 100% !important;
+                min-width: 0 !important;
+
+                justify-self: stretch !important;
+
+                box-sizing: border-box !important;
+            }
+
+
+            /* ESCENARIO */
+
+            .recinto-central
+            > .centro-recinto
+            > .escenario-central-cuadrado {
+
+                grid-area: escenario !important;
+
+                width: 300px !important;
+                height: 300px !important;
+
+                min-width: 300px !important;
+                min-height: 300px !important;
+
+                max-width: 300px !important;
+                max-height: 300px !important;
+
+                margin: 0 auto !important;
+
+                justify-self: center !important;
+                align-self: center !important;
+
+                box-sizing: border-box !important;
+
+                position: relative !important;
+                z-index: 1 !important;
+            }
+
+
+            /* LATERAL DERECHO */
+
+            .recinto-central
+            > .centro-recinto
+            > .zona-lateral.derecha {
+
+                grid-area: derecha !important;
+
+                width: 100% !important;
+                min-width: 0 !important;
+
+                justify-self: stretch !important;
+
+                box-sizing: border-box !important;
+            }
+
+
+            /*
+             * Las tarjetas laterales nunca pueden invadir
+             * la columna reservada al escenario.
+             */
+
+            .recinto-central
+            > .centro-recinto
+            > .zona-lateral
+            > .locacion-mapa {
+
+                width: 100% !important;
+                max-width: 100% !important;
+
+                min-width: 0 !important;
+
+                box-sizing: border-box !important;
+            }
+
+        }
+
+
+
+
+        /* ====================================================
+           CENTRAL V6 - LEYENDAS DE FILA COMPACTAS
+           Evita que TOTAL ASIENTOS se una entre columnas.
+           No modifica el tamano de los asientos.
+           ==================================================== */
+
+        @media (min-width: 901px) {
+
+            .recinto-central
+            > .centro-recinto
+            > .zona-lateral
+            .fila-asientos
+            .resumen-fila {
+
+                width: 42px !important;
+                min-width: 42px !important;
+                max-width: 42px !important;
+
+                margin: 9px auto 0 !important;
+
+                font-size: .50rem !important;
+                line-height: 1.15 !important;
+                letter-spacing: 0 !important;
+
+                text-align: center !important;
+
+                white-space: normal !important;
+                overflow-wrap: normal !important;
+                word-break: normal !important;
+            }
+
+
+            .recinto-central
+            > .centro-recinto
+            > .zona-lateral
+            .fila-asientos {
+
+                margin-left: 3px !important;
+                margin-right: 3px !important;
+            }
+
+
+            .recinto-central
+            > .centro-recinto
+            > .zona-lateral
+            .numero-fila {
+
+                font-size: .60rem !important;
+                letter-spacing: .02em !important;
+
+                text-align: center !important;
+            }
+
+        }
+
+
+
+
+        /* ====================================================
+           SCROLL SUPERIOR DEL MAPA DE GESTION
+           ==================================================== */
+
+        .scroll-mapa-superior {
+            width: 100%;
+            max-width: 100%;
+
+            overflow-x: auto;
+            overflow-y: hidden;
+
+            height: 20px;
+
+            margin: 0 0 16px;
+
+            box-sizing: border-box;
+
+            scrollbar-width: auto;
+            scrollbar-color:
+                rgba(124, 92, 255, .85)
+                rgba(10, 18, 33, .90);
+        }
+
+
+        .scroll-mapa-superior-interior {
+            height: 1px;
+            width: 100%;
+        }
+
+
+        .scroll-mapa-superior::-webkit-scrollbar {
+            height: 14px;
+        }
+
+
+        .scroll-mapa-superior::-webkit-scrollbar-track {
+            background: rgba(10, 18, 33, .90);
+            border-radius: 10px;
+        }
+
+
+        .scroll-mapa-superior::-webkit-scrollbar-thumb {
+            background:
+                linear-gradient(
+                    90deg,
+                    #633cff,
+                    #7c5cff
+                );
+
+            border-radius: 10px;
+
+            border: 3px solid rgba(10, 18, 33, .90);
+        }
+
+
+
+
+        /* ====================================================
+           AJUSTE VISUAL FINAL DE LAS BARRAS DEL MAPA
+           ==================================================== */
+
+        /*
+         * BARRA SUPERIOR
+         * M?s separada de la tarjeta de informaci?n.
+         */
+        .scroll-mapa-superior {
+            margin-top: 18px !important;
+            margin-bottom: 28px !important;
+
+            height: 24px !important;
+
+            padding: 2px 0 !important;
+        }
+
+
+        /*
+         * Scroll superior m?s grueso.
+         */
+        .scroll-mapa-superior::-webkit-scrollbar {
+            height: 18px !important;
+        }
+
+        .scroll-mapa-superior::-webkit-scrollbar-thumb {
+            border: 2px solid rgba(10, 18, 33, .85) !important;
+            border-radius: 10px !important;
+        }
+
+
+        /*
+         * BARRA INFERIOR DEL VISOR
+         * Misma presencia visual que la superior.
+         */
+        .visor-mapa-horizontal {
+            padding-bottom: 22px !important;
+
+            scrollbar-width: auto;
+        }
+
+        .visor-mapa-horizontal::-webkit-scrollbar {
+            height: 18px !important;
+        }
+
+        .visor-mapa-horizontal::-webkit-scrollbar-thumb {
+            border: 2px solid rgba(10, 18, 33, .85) !important;
+            border-radius: 10px !important;
+        }
+
+
+
+
+        /* ====================================================
+           BARRAS HORIZONTALES MAS GRUESAS
+           Solo modifica grosor / facilidad de agarre.
+           ==================================================== */
+
+        /* BARRA SUPERIOR */
+        .scroll-mapa-superior {
+            height: 28px !important;
+        }
+
+        .scroll-mapa-superior::-webkit-scrollbar {
+            height: 20px !important;
+        }
+
+        .scroll-mapa-superior::-webkit-scrollbar-thumb {
+            border: 2px solid rgba(10, 18, 33, .85) !important;
+            border-radius: 10px !important;
+        }
+
+
+        /* BARRA INFERIOR */
+        .visor-mapa-horizontal::-webkit-scrollbar {
+            height: 20px !important;
+        }
+
+        .visor-mapa-horizontal::-webkit-scrollbar-thumb {
+            border: 2px solid rgba(10, 18, 33, .85) !important;
+            border-radius: 10px !important;
+        }
+
+
+
+
+        /* ====================================================
+           BARRAS MAPA - GROSOR VISIBLE DEFINITIVO
+           ==================================================== */
+
+        .scroll-mapa-superior {
+            height: 32px !important;
+            padding: 0 !important;
+        }
+
+        .scroll-mapa-superior::-webkit-scrollbar {
+            height: 24px !important;
+        }
+
+        .scroll-mapa-superior::-webkit-scrollbar-track {
+            background: rgba(15, 23, 42, .95) !important;
+            border-radius: 12px !important;
+        }
+
+        .scroll-mapa-superior::-webkit-scrollbar-thumb {
+            background: #7c5cff !important;
+
+            border: 0 !important;
+            border-radius: 12px !important;
+
+            min-width: 80px !important;
+        }
+
+
+        /* BARRA INFERIOR */
+
+        .visor-mapa-horizontal::-webkit-scrollbar {
+            height: 24px !important;
+        }
+
+        .visor-mapa-horizontal::-webkit-scrollbar-track {
+            background: rgba(15, 23, 42, .95) !important;
+            border-radius: 12px !important;
+        }
+
+        .visor-mapa-horizontal::-webkit-scrollbar-thumb {
+            background: #7c5cff !important;
+
+            border: 0 !important;
+            border-radius: 12px !important;
+
+            min-width: 80px !important;
+        }
+
+
+
+
+        /* ====================================================
+           BARRAS HORIZONTALES EXTRA GRUESAS
+           ==================================================== */
+
+        /* SUPERIOR */
+
+        .scroll-mapa-superior {
+            height: 40px !important;
+            padding: 0 !important;
+        }
+
+        .scroll-mapa-superior::-webkit-scrollbar {
+            width: 32px !important;
+            height: 32px !important;
+        }
+
+        .scroll-mapa-superior::-webkit-scrollbar-track {
+            background: rgba(15, 23, 42, .98) !important;
+            border-radius: 16px !important;
+        }
+
+        .scroll-mapa-superior::-webkit-scrollbar-thumb {
+            background: #7c5cff !important;
+            border: 0 !important;
+            border-radius: 16px !important;
+        }
+
+        .scroll-mapa-superior::-webkit-scrollbar-button {
+            width: 32px !important;
+            height: 32px !important;
+        }
+
+
+        /* INFERIOR */
+
+        .visor-mapa-horizontal::-webkit-scrollbar {
+            width: 32px !important;
+            height: 32px !important;
+        }
+
+        .visor-mapa-horizontal::-webkit-scrollbar-track {
+            background: rgba(15, 23, 42, .98) !important;
+            border-radius: 16px !important;
+        }
+
+        .visor-mapa-horizontal::-webkit-scrollbar-thumb {
+            background: #7c5cff !important;
+            border: 0 !important;
+            border-radius: 16px !important;
+        }
+
+        .visor-mapa-horizontal::-webkit-scrollbar-button {
+            width: 32px !important;
+            height: 32px !important;
+        }
+
+
+</style>
+</head>
+
+<body>
+
+    <main class="contenedor">
+
+        <a
+            href="{% url 'eventos:editar_evento' evento.pk %}"
+            class="volver"
+        >
+            <span class="volver-flecha">&larr;</span>
+            <span>VOLVER A GESTIONAR EVENTO</span>
+        </a>
+
+
+        <section class="cabecera">
+
+            <div class="etiqueta">
+                PANEL DEL ORGANIZADOR
+            </div>
+
+            <h1>
+                {{ evento.nombre }}
+            </h1>
+
+            <div class="datos-evento">
+                Mapa de locaciones y asientos
+                {% if evento.recinto %}
+                    &middot; {{ evento.recinto.nombre }}
+                    &middot; {{ evento.recinto.ciudad }}
+                {% endif %}
+            </div>
+
+            <div class="leyenda">
+
+                <span class="leyenda-item disponible">
+                    DISPONIBLE
+                </span>
+
+                <span class="leyenda-item vendido">
+                    VENDIDO
+                </span>
+
+                <span class="leyenda-item inactivo">
+                    INACTIVO
+                </span>
+
+            </div>
+
+        </section>
+
+
+        <!-- =================================================
+             VISOR UNIVERSAL DEL MAPA
+             Permite desplazamiento horizontal cuando el recinto
+             supera el ancho disponible de la pantalla.
+             ================================================= -->
+
+        <!-- =================================================
+             BARRA HORIZONTAL SUPERIOR DEL MAPA
+             Sincronizada con el visor principal.
+             ================================================= -->
+
+        <div
+            class="scroll-mapa-superior"
+            id="scroll-mapa-superior"
+        >
+            <div
+                class="scroll-mapa-superior-interior"
+                id="scroll-mapa-superior-interior"
+            ></div>
+        </div>
+
+
+        <div
+            class="visor-mapa-horizontal"
+            id="visor-mapa-horizontal"
+        >
+
+        {% if evento.tipo_escenario == "FRONTAL_SIMPLE" %}
+
+            <div class="recinto-mapa recinto-frontal-simple">
+
+                <div class="escenario-recinto">
+                    ESCENARIO
+                </div>
+
+                <div class="aviso-edicion-mapa">
+                    <strong>EDITAR LOCACI&Oacute;N</strong>
+                    para configuraci&oacute;n general.
+                    <strong>&minus; / +</strong>
+                    ajustan los asientos por fila.
+                </div>
+
+                <div class="zona-frontal">
+
+                    {% for item in locaciones_frontales %}
+
+                        {% include "eventos/_locacion_mapa.html" %}
+
+                    {% empty %}
+
+                        <div class="sin-locaciones">
+                            Sin locaciones frontales.
+                        </div>
+
+                        {% include "eventos/_crear_locacion_mapa.html" with posicion_nueva="FRONTAL" etiqueta_posicion="FRONTAL" %}
+
+                    {% endfor %}
+
+                </div>
+
+            </div>
+
+
+        {% elif evento.tipo_escenario == "FRONTAL_TRIBUNAS" %}
+
+            <div class="recinto-mapa recinto-frontal-tribunas">
+
+                <div class="escenario-recinto">
+                    ESCENARIO
+                </div>
+
+                <div class="aviso-edicion-mapa">
+                    <strong>EDITAR LOCACI&Oacute;N</strong>
+                    para configuraci&oacute;n general.
+                    <strong>&minus; / +</strong>
+                    ajustan los asientos por fila.
+                </div>
+
+
+                <div class="sala-frontal-tribunas">
+
+                    <!-- ==========================================
+                         TRIBUNA LATERAL IZQUIERDA
+                         ========================================== -->
+
+                    <div class="zona-lateral izquierda">
+
+                        {% for item in locaciones_izquierdas %}
+
+                            {% include "eventos/_locacion_mapa.html" %}
+
+                        {% empty %}
+
+                            <div class="sin-locaciones">
+                                Sin locaci&oacute;n lateral izquierda.
+                            </div>
+
+                            {% include "eventos/_crear_locacion_mapa.html" with posicion_nueva="IZQUIERDA" etiqueta_posicion="LATERAL IZQUIERDA" %}
+
+                        {% endfor %}
+
+                    </div>
+
+
+                    <!-- ==========================================
+                         PLATEAS / LOCACIONES FRONTALES
+                         ========================================== -->
+
+                    <div class="zona-central-publico">
+
+                        {% for item in locaciones_frontales %}
+
+                            {% include "eventos/_locacion_mapa.html" %}
+
+                        {% empty %}
+
+                            <div class="sin-locaciones">
+                                Sin locaci&oacute;n frontal.
+                            </div>
+
+                            {% include "eventos/_crear_locacion_mapa.html" with posicion_nueva="FRONTAL" etiqueta_posicion="FRONTAL" %}
+
+                        {% endfor %}
+
+                    </div>
+
+
+                    <!-- ==========================================
+                         TRIBUNA LATERAL DERECHA
+                         ========================================== -->
+
+                    <div class="zona-lateral derecha">
+
+                        {% for item in locaciones_derechas %}
+
+                            {% include "eventos/_locacion_mapa.html" %}
+
+                        {% empty %}
+
+                            <div class="sin-locaciones">
+                                Sin locaci&oacute;n lateral derecha.
+                            </div>
+
+                            {% include "eventos/_crear_locacion_mapa.html" with posicion_nueva="DERECHA" etiqueta_posicion="LATERAL DERECHA" %}
+
+                        {% endfor %}
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+        {% elif evento.tipo_escenario == "CENTRAL" %}
+
+            <div class="recinto-mapa recinto-central">
+
+                <div class="zona-posterior">
+
+                    {% for item in locaciones_posteriores %}
+
+                        {% include "eventos/_locacion_mapa.html" %}
+
+                    {% empty %}
+
+                        <div class="sin-locaciones">
+                            Sin locaci&oacute;n posterior.
+                        </div>
+
+                        {% include "eventos/_crear_locacion_mapa.html" with posicion_nueva="POSTERIOR" etiqueta_posicion="POSTERIOR" %}
+
+                    {% endfor %}
+
+                </div>
+
+
+                <div class="centro-recinto">
+
+                    <div class="zona-lateral izquierda">
+
+                        {% for item in locaciones_izquierdas %}
+
+                            {% include "eventos/_locacion_mapa.html" %}
+
+                        {% empty %}
+
+                            <div class="sin-locaciones">
+                                Sin locaci&oacute;n lateral izquierda.
+                            </div>
+
+                            {% include "eventos/_crear_locacion_mapa.html" with posicion_nueva="IZQUIERDA" etiqueta_posicion="LATERAL IZQUIERDA" %}
+
+                        {% endfor %}
+
+                    </div>
+
+
+                    <div class="escenario-central-cuadrado">
+                        <span>ESCENARIO</span>
+                        <strong>CENTRAL</strong>
+                    </div>
+
+
+                    <div class="zona-lateral derecha">
+
+                        {% for item in locaciones_derechas %}
+
+                            {% include "eventos/_locacion_mapa.html" %}
+
+                        {% empty %}
+
+                            <div class="sin-locaciones">
+                                Sin locaci&oacute;n lateral derecha.
+                            </div>
+
+                            {% include "eventos/_crear_locacion_mapa.html" with posicion_nueva="DERECHA" etiqueta_posicion="LATERAL DERECHA" %}
+
+                        {% endfor %}
+
+                    </div>
+
+                </div>
+
+
+                <div class="zona-frontal">
+
+                    {% for item in locaciones_frontales %}
+
+                        {% include "eventos/_locacion_mapa.html" %}
+
+                    {% empty %}
+
+                        <div class="sin-locaciones">
+                            Sin locaci&oacute;n frontal.
+                        </div>
+
+                        {% include "eventos/_crear_locacion_mapa.html" with posicion_nueva="FRONTAL" etiqueta_posicion="FRONTAL" %}
+
+                    {% endfor %}
+
+                </div>
+
+            </div>
+
+
+        {% elif evento.tipo_escenario == "SIN_ESCENARIO" %}
+
+            <div class="recinto-mapa recinto-libre">
+
+                <div class="sin-escenario-titulo">
+                    DISTRIBUCI&Oacute;N LIBRE
+                </div>
+
+                <div class="aviso-edicion-mapa">
+                    Este evento no utiliza escenario.
+                    Las locaciones pueden distribuirse libremente.
+                </div>
+
+
+                <div class="zona-libre">
+
+                    {% for item in locaciones_libres %}
+
+                        {% include "eventos/_locacion_mapa.html" %}
+
+                    {% empty %}
+
+                        {% for item in locaciones_panel %}
+
+                            {% include "eventos/_locacion_mapa.html" %}
+
+                        {% empty %}
+
+                            <div class="sin-locaciones">
+                                Este evento todav&iacute;a no posee locaciones.
+                            </div>
+
+                        {% endfor %}
+
+                    {% endfor %}
+
+                    {% include "eventos/_crear_locacion_mapa.html" with posicion_nueva="LIBRE" etiqueta_posicion="DISTRIBUCION LIBRE" %}
+
+                </div>
+
+            </div>
+
+        {% endif %}
+
+        </div>
+        <!-- FIN VISOR UNIVERSAL DEL MAPA -->
+
+
+        <div class="pie-panel">
+            Los asientos vendidos corresponden a compras
+            confirmadas en estado PAGADO.
+        </div>
+
+    </main>
+
+
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+
+    const barraSuperior =
+        document.getElementById("scroll-mapa-superior");
+
+    const interiorSuperior =
+        document.getElementById(
+            "scroll-mapa-superior-interior"
+        );
+
+    const visor =
+        document.getElementById(
+            "visor-mapa-horizontal"
+        );
+
+
+    if (
+        !barraSuperior ||
+        !interiorSuperior ||
+        !visor
+    ) {
+        return;
+    }
+
+
+    /*
+     * La barra superior recibe exactamente el ancho
+     * desplazable real del visor.
+     */
+    function actualizarScrollSuperior() {
+
+        const anchoReal =
+            Math.max(
+                visor.scrollWidth,
+                visor.clientWidth
+            );
+
+        interiorSuperior.style.width =
+            anchoReal + "px";
+
+
+        /*
+         * Si el recinto cabe completamente en pantalla,
+         * no necesitamos mostrar una barra artificial.
+         */
+        if (
+            visor.scrollWidth <=
+            visor.clientWidth + 2
+        ) {
+
+            barraSuperior.style.display =
+                "none";
+
+        } else {
+
+            barraSuperior.style.display =
+                "block";
+        }
+    }
+
+
+    let desdeSuperior = false;
+    let desdeVisor = false;
+
+
+    /*
+     * SUPERIOR -> MAPA
+     */
+    barraSuperior.addEventListener(
+        "scroll",
+        function () {
+
+            if (desdeVisor) {
+                return;
+            }
+
+            desdeSuperior = true;
+
+            visor.scrollLeft =
+                barraSuperior.scrollLeft;
+
+            requestAnimationFrame(
+                function () {
+                    desdeSuperior = false;
+                }
+            );
+        }
+    );
+
+
+    /*
+     * MAPA -> SUPERIOR
+     */
+    visor.addEventListener(
+        "scroll",
+        function () {
+
+            if (desdeSuperior) {
+                return;
+            }
+
+            desdeVisor = true;
+
+            barraSuperior.scrollLeft =
+                visor.scrollLeft;
+
+            requestAnimationFrame(
+                function () {
+                    desdeVisor = false;
+                }
+            );
+        }
+    );
+
+
+    /*
+     * ========================================================
+     * CENTRADO INICIAL AUTOMATICO DEL MAPA
+     * ========================================================
+     *
+     * Al entrar a la pantalla colocamos el visor en el centro
+     * de su recorrido horizontal.
+     *
+     * Esto NO modifica la geometria del recinto.
+     * Solamente define la posicion inicial del scroll.
+     */
+
+    function centrarMapaInicial() {
+
+        const desplazamientoMaximo =
+            Math.max(
+                0,
+                visor.scrollWidth - visor.clientWidth
+            );
+
+        const posicionCentral =
+            desplazamientoMaximo / 2;
+
+        visor.scrollLeft =
+            posicionCentral;
+
+        barraSuperior.scrollLeft =
+            posicionCentral;
+    }
+
+
+    /*
+     * Primero calculamos el ancho real de la barra.
+     */
+    actualizarScrollSuperior();
+
+
+    /*
+     * Esperamos al siguiente ciclo de renderizado para que
+     * filas, locaciones y asientos ya tengan sus dimensiones.
+     */
+    requestAnimationFrame(function () {
+
+        actualizarScrollSuperior();
+
+        centrarMapaInicial();
+
+    });
+
+
+    /*
+     * Recalcular si cambia el tama?o de pantalla.
+     */
+    window.addEventListener(
+        "resize",
+        actualizarScrollSuperior
+    );
+
+
+    /*
+     * Recalcular despu?s de que el navegador termine
+     * de acomodar filas, asientos y locaciones.
+     */
+    requestAnimationFrame(
+        actualizarScrollSuperior
+    );
+
+    setTimeout(
+        actualizarScrollSuperior,
+        150
+    );
+
+});
+</script>
+
+</body>
+</html>

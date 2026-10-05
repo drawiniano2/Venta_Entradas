@@ -1,6 +1,6 @@
 from django import forms
 
-from .models import Evento, Recinto, TipoEntrada
+from .models import Evento, Locacion, Recinto, TipoEntrada
 
 
 class EventoForm(forms.ModelForm):
@@ -18,6 +18,8 @@ class EventoForm(forms.ModelForm):
             "fecha_inicio",
             "fecha_fin",
             "recinto",
+            "modalidad_entrada",
+            "tipo_escenario",
             "estado",
             "activo",
         ]
@@ -36,6 +38,18 @@ class EventoForm(forms.ModelForm):
                     "placeholder": "Descripción del evento",
                 }
             ),
+            "modalidad_entrada": forms.Select(
+                attrs={
+                    "class": "campo",
+                }
+            ),
+
+            "tipo_escenario": forms.Select(
+                attrs={
+                    "class": "campo",
+                }
+            ),
+
             "imagen": forms.ClearableFileInput(
                 attrs={
                     "class": "campo",
@@ -253,3 +267,90 @@ class RecintoForm(forms.ModelForm):
             )
 
         return capacidad
+
+
+
+# ============================================================
+# FORMULARIO DE LOCACION
+# ============================================================
+
+class LocacionForm(forms.ModelForm):
+    """
+    Permite editar los datos generales de una locacion.
+
+    La estructura de asientos no se modifica desde este
+    formulario para proteger compras y asientos ya vendidos.
+    """
+
+    class Meta:
+        model = Locacion
+
+        fields = [
+            "nombre",
+            "descripcion",
+            "tipo_entrada",
+            "posicion",
+            "activo",
+        ]
+
+        widgets = {
+            "nombre": forms.TextInput(
+                attrs={
+                    "class": "campo",
+                    "placeholder": "Nombre de la locacion",
+                }
+            ),
+
+            "descripcion": forms.TextInput(
+                attrs={
+                    "class": "campo",
+                    "placeholder": "Descripcion de la locacion",
+                }
+            ),
+
+            "tipo_entrada": forms.Select(
+                attrs={
+                    "class": "campo",
+                }
+            ),
+
+            "posicion": forms.Select(
+                attrs={
+                    "class": "campo",
+                }
+            ),
+
+            "activo": forms.CheckboxInput(
+                attrs={
+                    "class": "check",
+                }
+            ),
+        }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        if self.instance and self.instance.evento_id:
+            self.fields["tipo_entrada"].queryset = (
+                TipoEntrada.objects
+                .filter(
+                    evento=self.instance.evento,
+                    activo=True,
+                )
+                .order_by("nombre")
+            )
+
+    def clean_tipo_entrada(self):
+        tipo_entrada = self.cleaned_data.get("tipo_entrada")
+
+        if (
+            tipo_entrada
+            and self.instance
+            and self.instance.evento_id
+            and tipo_entrada.evento_id != self.instance.evento_id
+        ):
+            raise forms.ValidationError(
+                "El tipo de entrada debe pertenecer al mismo evento."
+            )
+
+        return tipo_entrada

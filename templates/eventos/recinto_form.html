@@ -299,6 +299,14 @@
 
         {% csrf_token %}
 
+        {% if volver %}
+            <input
+                type="hidden"
+                name="volver"
+                value="{{ volver }}"
+            >
+        {% endif %}
+
         {% if form.non_field_errors %}
             <div class="error-general">
                 {{ form.non_field_errors }}

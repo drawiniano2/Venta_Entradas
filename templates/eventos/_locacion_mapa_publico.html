@@ -1,0 +1,136 @@
+{% load humanize moneda %}
+
+<div
+    class="
+        mapa-publico-locacion
+        mapa-publico-locacion-{{ item.locacion.posicion|lower }}
+    "
+    data-posicion="{{ item.locacion.posicion }}"
+>
+
+    <div class="mapa-publico-cabecera">
+
+        <div>
+            <div class="mapa-publico-nombre">
+                {{ item.locacion.nombre }}
+            </div>
+
+            {% if item.locacion.descripcion %}
+                <div class="mapa-publico-descripcion">
+                    {{ item.locacion.descripcion }}
+                </div>
+            {% endif %}
+        </div>
+
+
+        {% if item.locacion.tipo_entrada %}
+
+            <div class="mapa-publico-precio">
+                ${{ item.locacion.tipo_entrada.precio|clp }}
+            </div>
+
+        {% endif %}
+
+    </div>
+
+
+    <div class="mapa-publico-filas">
+
+        {% for fila in item.filas %}
+
+            <div class="mapa-publico-fila">
+
+                <div class="mapa-publico-numero-fila">
+                    FILA {{ fila.nombre }}
+                </div>
+
+
+                <div class="mapa-publico-asientos">
+
+                    {% for asiento in fila.asientos %}
+
+                        {% if asiento.activo %}
+
+                            {% if asiento.vendido %}
+
+                                <div
+                                    class="asiento-demo asiento-vendido mapa-publico-asiento"
+                                    title="{{ item.locacion.nombre }} - {{ asiento.codigo }} - Vendido"
+                                >
+                                    <span>
+                                        {{ asiento.codigo }}
+                                    </span>
+
+                                    <small>
+                                        VENDIDO
+                                    </small>
+                                </div>
+
+
+                            {% elif item.locacion.tipo_entrada %}
+
+                                {% if user.is_authenticated %}
+
+                                    <form
+                                        method="post"
+                                        action="{% url 'eventos:agregar_al_carrito' item.locacion.tipo_entrada.id %}"
+                                        class="asiento-form"
+                                    >
+                                        {% csrf_token %}
+
+                                        <input
+                                            type="hidden"
+                                            name="asiento_id"
+                                            value="{{ asiento.id }}"
+                                        >
+
+                                        <button
+                                            type="submit"
+                                            class="asiento-demo mapa-publico-asiento"
+                                            title="{{ item.locacion.nombre }} - {{ asiento.codigo }}"
+                                        >
+                                            {{ asiento.codigo }}
+                                        </button>
+
+                                    </form>
+
+
+                                {% else %}
+
+                                    <a
+                                        href="{% url 'accounts_web:login' %}?next={% url 'eventos:detalle' evento.pk %}"
+                                        class="asiento-demo mapa-publico-asiento mapa-publico-login"
+                                        title="Inicia sesi?n para seleccionar {{ asiento.codigo }}"
+                                    >
+                                        {{ asiento.codigo }}
+                                    </a>
+
+                                {% endif %}
+
+                            {% endif %}
+
+                        {% endif %}
+
+                    {% empty %}
+
+                        <span class="sin-asientos">
+                            No hay asientos configurados.
+                        </span>
+
+                    {% endfor %}
+
+                </div>
+
+            </div>
+
+        {% empty %}
+
+            <div class="sin-asientos">
+                Esta locaci?n no posee filas configuradas.
+            </div>
+
+        {% endfor %}
+
+    </div>
+
+</div>

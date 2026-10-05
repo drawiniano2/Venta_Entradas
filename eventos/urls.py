@@ -4,13 +4,17 @@ from .views import (
     agregar_al_carrito_web,
     detalle_evento,
     editar_evento,
+    editar_locacion,
     editar_tipo_entrada,
     eliminar_evento,
     eliminar_tipo_entrada,
+    generar_locacion_asientos,
+    modificar_fila_asientos,
     inicio,
     nuevo_evento,
     nuevo_recinto,
     nuevo_tipo_entrada,
+    panel_asientos,
     panel_organizador,
 )
 
@@ -87,6 +91,42 @@ urlpatterns = [
         "organizador/entradas/<int:pk>/eliminar/",
         eliminar_tipo_entrada,
         name="eliminar_tipo_entrada",
+    ),
+
+    # ========================================================
+    # MODIFICAR ASIENTOS DE UNA FILA - ORGANIZADOR
+    # ========================================================
+    path(
+        "organizador/locaciones/<int:locacion_pk>/filas/<str:fila>/modificar/",
+        modificar_fila_asientos,
+        name="modificar_fila_asientos",
+    ),
+
+    # ========================================================
+    # EDICION DE LOCACIONES - ORGANIZADOR
+    # ========================================================
+    path(
+        "organizador/locaciones/<int:pk>/editar/",
+        editar_locacion,
+        name="editar_locacion",
+    ),
+
+    # ========================================================
+    # GENERADOR DE LOCACIONES Y ASIENTOS - ORGANIZADOR
+    # ========================================================
+    path(
+        "organizador/eventos/<int:evento_pk>/locaciones/generar/",
+        generar_locacion_asientos,
+        name="generar_locacion_asientos",
+    ),
+
+    # ========================================================
+    # PANEL DE LOCACIONES Y ASIENTOS - ORGANIZADOR
+    # ========================================================
+    path(
+        "organizador/eventos/<int:evento_pk>/asientos/",
+        panel_asientos,
+        name="panel_asientos",
     ),
 
     # ========================================================

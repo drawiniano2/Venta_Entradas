@@ -118,6 +118,43 @@
             font: inherit;
         }
 
+        /* ==================================================
+           SELECTOR DE ARCHIVO / IMAGEN
+           ================================================== */
+
+        input[type="file"] {
+            padding: 7px 8px;
+            cursor: pointer;
+        }
+
+        input[type="file"]::file-selector-button {
+            margin-right: 12px;
+            padding: 8px 14px;
+
+            border: 1px solid #7658ff;
+            border-radius: 7px;
+
+            background: rgba(124, 92, 255, .18);
+            color: #c7baff;
+
+            font: inherit;
+            font-size: .82rem;
+            font-weight: 900;
+
+            cursor: pointer;
+
+            transition:
+                background .18s ease,
+                border-color .18s ease,
+                color .18s ease;
+        }
+
+        input[type="file"]::file-selector-button:hover {
+            background: #6f4cff;
+            border-color: #8b73ff;
+            color: #ffffff;
+        }
+
         textarea {
             resize: vertical;
         }
@@ -393,6 +430,140 @@
         grid-template-columns: 1fr;
     }
 }
+
+
+/* ============================================================
+   GENERADOR DE LOCACIONES Y ASIENTOS
+   ============================================================ */
+
+.generador-asientos {
+    margin-top: 28px;
+    padding: 28px;
+
+    border-radius: 18px;
+    border: 1px solid rgba(124, 92, 255, .30);
+
+    background:
+        linear-gradient(
+            145deg,
+            rgba(18, 27, 48, .97),
+            rgba(10, 18, 33, .97)
+        );
+
+    box-shadow: 0 20px 55px rgba(0,0,0,.20);
+}
+
+.generador-asientos h2 {
+    margin: 0 0 8px;
+    font-size: 1.35rem;
+}
+
+.generador-descripcion {
+    margin: 0 0 24px;
+    color: #8999ae;
+    line-height: 1.6;
+}
+
+.generador-grid {
+    display: grid;
+    grid-template-columns: 1.4fr 1.4fr .8fr .8fr .9fr;
+    gap: 14px;
+    align-items: end;
+}
+
+.generador-campo label {
+    display: block;
+    margin-bottom: 7px;
+
+    color: #9cabc0;
+
+    font-size: .72rem;
+    font-weight: 900;
+    text-transform: uppercase;
+}
+
+.generador-campo input,
+.generador-campo select {
+    width: 100%;
+    min-height: 44px;
+
+    padding: 0 12px;
+
+    border: 1px solid #31425b;
+    border-radius: 9px;
+
+    background: #0a1424;
+    color: #f4f7fb;
+
+    font-family: inherit;
+}
+
+.generador-campo input:focus,
+.generador-campo select:focus {
+    outline: none;
+    border-color: #7c5cff;
+    box-shadow: 0 0 0 3px rgba(124, 92, 255, .10);
+}
+
+.boton-generar-asientos {
+    min-height: 44px;
+    width: 100%;
+
+    padding: 0 18px;
+
+    border: 1px solid #8d73ff;
+    border-radius: 10px;
+
+    background:
+        linear-gradient(
+            135deg,
+            #7c5cff,
+            #633cff
+        );
+
+    color: #ffffff;
+
+    font-family: inherit;
+    font-size: .78rem;
+    font-weight: 900;
+
+    cursor: pointer;
+}
+
+.boton-generar-asientos:hover {
+    filter: brightness(1.12);
+    transform: translateY(-1px);
+}
+
+.generador-ayuda {
+    margin-top: 18px;
+    padding: 14px 16px;
+
+    border-radius: 10px;
+
+    background: rgba(47, 211, 199, .06);
+    border: 1px solid rgba(47, 211, 199, .16);
+
+    color: #9eafc2;
+
+    font-size: .82rem;
+    line-height: 1.5;
+}
+
+@media (max-width: 950px) {
+
+    .generador-grid {
+        grid-template-columns: 1fr 1fr;
+    }
+}
+
+@media (max-width: 600px) {
+
+    .generador-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
 </style>
 
 </head>
@@ -488,16 +659,56 @@
                     Recinto
                 </label>
                 {{ form.recinto }}
-                <div class="errores">{{ form.recinto.errors }}</div>
+
+                <div class="errores">
+                    {{ form.recinto.errors }}
+                </div>
+
+                <a
+                    href="{% url 'eventos:nuevo_recinto' %}?volver=evento"
+                    class="boton-nuevo-recinto"
+                >
+                    + NUEVO RECINTO
+                </a>
+            </div>
+
+            <div class="grupo">
+                <label for="{{ form.modalidad_entrada.id_for_label }}">
+                    Modalidad de entrada
+                </label>
+                {{ form.modalidad_entrada }}
+                <div class="errores">
+                    {{ form.modalidad_entrada.errors }}
+                </div>
+            </div>
+        </div>
+
+        <div class="fila">
+
+            <div class="grupo">
+                <label for="{{ form.tipo_escenario.id_for_label }}">
+                    Tipo de escenario
+                </label>
+
+                {{ form.tipo_escenario }}
+
+                <div class="errores">
+                    {{ form.tipo_escenario.errors }}
+                </div>
             </div>
 
             <div class="grupo">
                 <label for="{{ form.estado.id_for_label }}">
                     Estado
                 </label>
+
                 {{ form.estado }}
-                <div class="errores">{{ form.estado.errors }}</div>
+
+                <div class="errores">
+                    {{ form.estado.errors }}
+                </div>
             </div>
+
         </div>
 
         <div class="grupo">
@@ -628,6 +839,368 @@
         {% endfor %}
 
     </section>
+
+    <!-- =====================================================
+         ACCESO PRINCIPAL AL MAPA DE ASIENTOS
+         ===================================================== -->
+
+    <section
+        class="acceso-mapa-asientos"
+        style="
+            margin-top:28px;
+            padding:26px 28px;
+            border-radius:18px;
+            border:1px solid rgba(47,211,199,.28);
+            background:
+                linear-gradient(
+                    145deg,
+                    rgba(18,27,48,.97),
+                    rgba(10,18,33,.97)
+                );
+            display:flex;
+            align-items:center;
+            justify-content:space-between;
+            gap:24px;
+            flex-wrap:wrap;
+        "
+    >
+
+        <div style="flex:1; min-width:260px;">
+
+            <h2
+                style="
+                    margin:0 0 8px;
+                    font-size:1.35rem;
+                "
+            >
+                MAPA DE ASIENTOS
+            </h2>
+
+            <p
+                style="
+                    margin:0;
+                    color:#8999ae;
+                    line-height:1.6;
+                "
+            >
+                Administra visualmente las locaciones,
+                filas y asientos de este evento.
+                Desde el mapa puedes revisar disponibilidad,
+                ventas y distribuci&oacute;n del recinto.
+            </p>
+
+        </div>
+
+        <a
+            href="{% url 'eventos:panel_asientos' evento.pk %}"
+            style="
+                min-height:46px;
+                padding:0 22px;
+                border-radius:10px;
+                border:1px solid #2fd3c7;
+                background:rgba(47,211,199,.10);
+                color:#45e4d8;
+                text-decoration:none;
+                display:flex;
+                align-items:center;
+                justify-content:center;
+                font-size:.78rem;
+                font-weight:900;
+                white-space:nowrap;
+            "
+        >
+            GESTIONAR MAPA DE ASIENTOS
+        </a>
+
+    </section>
+
+
+    {% if evento.modalidad_entrada == "UBICACION" %}
+
+    <!-- =====================================================
+         MENSAJES DEL GENERADOR DE LOCACIONES
+         ===================================================== -->
+
+    {% if messages %}
+
+        <div
+            style="
+                margin:22px 0;
+                display:flex;
+                flex-direction:column;
+                gap:12px;
+            "
+        >
+
+            {% for message in messages %}
+
+                <div
+                    style="
+                        padding:16px 18px;
+                        border-radius:12px;
+
+                        {% if message.tags == 'error' %}
+                            border:1px solid rgba(255,95,95,.55);
+                            background:rgba(255,95,95,.10);
+                            color:#ffb1b1;
+
+                        {% elif message.tags == 'success' %}
+                            border:1px solid rgba(47,211,199,.55);
+                            background:rgba(47,211,199,.10);
+                            color:#72eee4;
+
+                        {% elif message.tags == 'warning' %}
+                            border:1px solid rgba(255,190,70,.55);
+                            background:rgba(255,190,70,.10);
+                            color:#ffd88a;
+
+                        {% else %}
+                            border:1px solid rgba(124,92,255,.55);
+                            background:rgba(124,92,255,.10);
+                            color:#c9bdff;
+                        {% endif %}
+
+                        font-size:.84rem;
+                        font-weight:800;
+                        line-height:1.55;
+                    "
+                >
+
+                    {% if message.tags == 'error' %}
+                        <strong>
+                            NO SE PUDO COMPLETAR LA OPERACI&Oacute;N
+                        </strong>
+                        <br>
+
+                    {% elif message.tags == 'success' %}
+                        <strong>
+                            OPERACI&Oacute;N COMPLETADA
+                        </strong>
+                        <br>
+
+                    {% elif message.tags == 'warning' %}
+                        <strong>
+                            ATENCI&Oacute;N
+                        </strong>
+                        <br>
+                    {% endif %}
+
+                    {{ message }}
+
+                </div>
+
+            {% endfor %}
+
+        </div>
+
+    {% endif %}
+
+
+    <section
+        id="generador-locaciones"
+        class="generador-asientos"
+    >
+
+        <h2>
+            GENERADOR DE LOCACIONES Y ASIENTOS
+        </h2>
+
+        <p class="generador-descripcion">
+            Crea autom&aacute;ticamente una locaci&oacute;n completa y todos
+            sus asientos por filas. Ideal para teatros,
+            auditorios y recintos con sectores numerados.
+        </p>
+
+        <form
+            method="post"
+            action="{% url 'eventos:generar_locacion_asientos' evento.pk %}"
+        >
+            {% csrf_token %}
+
+            <div class="generador-grid">
+
+                <div class="generador-campo">
+                    <label for="nombre_locacion">
+                        Nombre locaci&oacute;n
+                    </label>
+
+                    <input
+                        type="text"
+                        id="nombre_locacion"
+                        name="nombre_locacion"
+                        placeholder="Ej: Platea Baja"
+                        maxlength="100"
+                        required
+                    >
+                </div>
+
+
+                <div class="generador-campo">
+                    <label for="tipo_entrada">
+                        Tipo de entrada
+                    </label>
+
+                    <select
+                        id="tipo_entrada"
+                        name="tipo_entrada"
+                        required
+                    >
+                        <option value="">
+                            Seleccionar
+                        </option>
+
+                        {% for tipo in tipos_entrada %}
+
+                            {% if tipo.activo %}
+                                <option value="{{ tipo.pk }}">
+                                    {{ tipo.nombre }}
+                                </option>
+                            {% endif %}
+
+                        {% endfor %}
+
+                    </select>
+                </div>
+
+
+                <div class="generador-campo">
+                    <label for="posicion">
+                        Posici&oacute;n en el escenario
+                    </label>
+
+                    <select
+                        id="posicion"
+                        name="posicion"
+                        required
+                    >
+                        <option value="">
+                            Seleccionar
+                        </option>
+
+                        <option value="FRONTAL">
+                            Frontal
+                        </option>
+
+                        <option value="IZQUIERDA">
+                            Lateral izquierda
+                        </option>
+
+                        <option value="DERECHA">
+                            Lateral derecha
+                        </option>
+
+                        <option value="POSTERIOR">
+                            Posterior
+                        </option>
+
+                        <option value="LIBRE">
+                            Zona libre
+                        </option>
+                    </select>
+                </div>
+
+
+                <div class="generador-campo">
+                    <label for="fila_inicial">
+                        Fila inicial
+                    </label>
+
+                    <input
+                        type="text"
+                        id="fila_inicial"
+                        name="fila_inicial"
+                        value="A"
+                        maxlength="2"
+                        required
+                    >
+                </div>
+
+
+                <div class="generador-campo">
+                    <label for="cantidad_filas">
+                        Cantidad filas
+                    </label>
+
+                    <input
+                        type="number"
+                        id="cantidad_filas"
+                        name="cantidad_filas"
+                        min="1"
+                        max="50"
+                        value="10"
+                        required
+                    >
+                </div>
+
+
+                <div class="generador-campo">
+                    <label for="asientos_por_fila">
+                        Asientos / fila
+                    </label>
+
+                    <input
+                        type="number"
+                        id="asientos_por_fila"
+                        name="asientos_por_fila"
+                        min="1"
+                        max="100"
+                        value="20"
+                        required
+                    >
+                </div>
+
+            </div>
+
+
+            <div
+                style="
+                    margin-top:18px;
+                    display:flex;
+                    flex-wrap:wrap;
+                    gap:12px;
+                "
+            >
+
+                <button
+                    type="submit"
+                    class="boton-generar-asientos"
+                    style="max-width:260px;"
+                    onclick="return confirm('&iquest;Generar esta locaci&oacute;n y todos sus asientos?');"
+                >
+                    GENERAR ASIENTOS
+                </button>
+
+                <a
+                    href="{% url 'eventos:panel_asientos' evento.pk %}"
+                    class="boton-generar-asientos"
+                    style="
+                        max-width:260px;
+                        text-decoration:none;
+                        display:flex;
+                        align-items:center;
+                        justify-content:center;
+                        background:#142238;
+                        border:1px solid #7657ff;
+                        color:#ffffff;
+                    "
+                >
+                    VER MAPA DE ASIENTOS
+                </a>
+
+            </div>
+
+        </form>
+
+
+        <div class="generador-ayuda">
+            Ejemplo: 15 filas &times; 20 asientos genera autom&aacute;ticamente
+            300 asientos: A1, A2, A3... B1, B2, B3...
+        </div>
+
+    </section>
+
+    {% endif %}
+
     {% endif %}
 
 
