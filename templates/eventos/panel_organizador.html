@@ -905,6 +905,1511 @@
             transform: translateY(-1px);
             filter: brightness(1.10);
         }
+
+
+        /* =====================================================
+           PANEL ORGANIZADOR - FICHA INTEGRAL FINAL
+           Una sola implementacion para imagen + informacion.
+           ===================================================== */
+
+        .evento-contenido-visual {
+            display: grid;
+
+            grid-template-columns:
+                230px
+                minmax(0, 1fr);
+
+            gap: 20px;
+
+            align-items: stretch;
+        }
+
+
+        /* =====================================================
+           MINIATURA HORIZONTAL
+           ===================================================== */
+
+        .evento-miniatura {
+            width: 230px;
+            min-width: 230px;
+
+            height: 138px;
+            min-height: 138px;
+            max-height: 138px;
+
+            align-self: start;
+
+            overflow: hidden;
+
+            border:
+                1px solid rgba(255, 255, 255, .10);
+
+            border-radius: 13px;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    rgba(124, 92, 255, .18),
+                    rgba(15, 20, 32, .95)
+                );
+
+            box-sizing: border-box;
+        }
+
+
+        .evento-miniatura img {
+            width: 100%;
+            height: 100%;
+
+            min-height: 0;
+            max-height: none;
+
+            display: block;
+
+            object-fit: cover;
+            object-position: center;
+
+            transition:
+                transform .25s ease,
+                filter .25s ease;
+        }
+
+
+        .evento:hover
+        .evento-miniatura img {
+            transform: scale(1.025);
+        }
+
+
+        .evento-miniatura-vacia {
+            width: 100%;
+            height: 100%;
+
+            min-height: 0;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            background:
+                radial-gradient(
+                    circle at 50% 35%,
+                    rgba(124, 92, 255, .28),
+                    transparent 42%
+                ),
+                #101521;
+
+            color: var(--acento-claro);
+
+            font-size: 12px;
+            font-weight: 900;
+
+            letter-spacing: 1.5px;
+        }
+
+
+        /* =====================================================
+           INFORMACION DE LA FICHA
+           ===================================================== */
+
+        .evento-contenido-visual
+        > .evento-datos {
+            min-width: 0;
+
+            display: flex;
+            flex-direction: column;
+
+            margin: 0;
+        }
+
+
+        /*
+         * Cabecera del evento.
+         * Reducimos espacios sin modificar el HTML.
+         */
+
+        .evento-contenido-visual
+        .evento-cabecera {
+            margin-bottom: 8px;
+        }
+
+
+        .evento-contenido-visual
+        .evento-cabecera h3 {
+            margin-bottom: 5px;
+
+            font-size: 19px;
+            line-height: 1.15;
+        }
+
+
+        .evento-contenido-visual
+        .evento-fecha,
+        .evento-contenido-visual
+        .evento-recinto {
+            font-size: 11px;
+            line-height: 1.35;
+        }
+
+
+        /* =====================================================
+           TRES INDICADORES EN UNA SOLA FILA
+           ===================================================== */
+
+        .evento-contenido-visual
+        > .evento-datos
+        > .evento-datos {
+
+            width: 100%;
+
+            display: grid;
+
+            grid-template-columns:
+                repeat(3, minmax(0, 1fr));
+
+            gap: 10px;
+
+            margin-top: 8px;
+            margin-bottom: 8px;
+        }
+
+
+        .evento-contenido-visual
+        > .evento-datos
+        > .evento-datos
+        > .dato {
+
+            min-width: 0;
+            min-height: 48px;
+
+            padding: 8px 11px;
+
+            border-radius: 10px;
+
+            box-sizing: border-box;
+        }
+
+
+        .evento-contenido-visual
+        > .evento-datos
+        > .evento-datos
+        > .dato
+        .dato-label {
+
+            margin-bottom: 3px;
+
+            font-size: 8px;
+            line-height: 1;
+
+            letter-spacing: .8px;
+        }
+
+
+        .evento-contenido-visual
+        > .evento-datos
+        > .evento-datos
+        > .dato
+        .dato-valor {
+
+            font-size: 13px;
+            line-height: 1.15;
+        }
+
+
+        /* =====================================================
+           ACCIONES INTEGRADAS EN LA FICHA
+           ===================================================== */
+
+        .evento-contenido-visual
+        .evento-acciones {
+
+            margin-top: auto;
+
+            padding-top: 8px;
+
+            gap: 8px;
+        }
+
+
+        .evento-contenido-visual
+        .evento-acciones a,
+        .evento-contenido-visual
+        .evento-acciones button {
+
+            min-height: 32px;
+
+            padding:
+                6px
+                13px;
+
+            font-size: 10px;
+
+            border-radius: 9px;
+        }
+
+
+        /* =====================================================
+           ESCRITORIO GRANDE
+           ===================================================== */
+
+        @media (min-width: 1100px) {
+
+            .evento-contenido-visual {
+                grid-template-columns:
+                    230px
+                    minmax(0, 1fr);
+            }
+
+        }
+
+
+        /* =====================================================
+           TABLET
+           ===================================================== */
+
+        @media (min-width: 701px) and (max-width: 900px) {
+
+            .evento-contenido-visual {
+
+                grid-template-columns:
+                    190px
+                    minmax(0, 1fr);
+
+                gap: 16px;
+            }
+
+
+            .evento-miniatura {
+
+                width: 190px;
+                min-width: 190px;
+
+                height: 125px;
+                min-height: 125px;
+                max-height: 125px;
+            }
+
+
+            .evento-contenido-visual
+            > .evento-datos
+            > .evento-datos {
+
+                gap: 7px;
+            }
+
+        }
+
+
+        /* =====================================================
+           MOVIL
+           ===================================================== */
+
+        @media (max-width: 700px) {
+
+            .evento-contenido-visual {
+
+                grid-template-columns: 1fr;
+
+                gap: 14px;
+            }
+
+
+            .evento-miniatura {
+
+                width: 100%;
+                min-width: 0;
+
+                height: 210px;
+                min-height: 210px;
+                max-height: 210px;
+            }
+
+
+            .evento-contenido-visual
+            > .evento-datos
+            > .evento-datos {
+
+                grid-template-columns: 1fr;
+
+                gap: 8px;
+            }
+
+
+            .evento-contenido-visual
+            .evento-cabecera h3 {
+
+                font-size: 18px;
+            }
+
+        }
+
+
+
+
+
+        /* AJUSTE LEGIBILIDAD V6 */
+
+        @media (min-width: 901px) {
+
+            /* Fecha, hora y recinto */
+            .evento-contenido-visual .evento-info {
+                font-size: 14px !important;
+                line-height: 1.45 !important;
+            }
+
+            /* Etiquetas peque?as:
+               TIPOS DE ENTRADA / RECINTO / ESTADO */
+            .evento-contenido-visual
+            > .evento-datos
+            > .evento-datos
+            > .dato
+            .dato-label {
+
+                font-size: 11px !important;
+                line-height: 1.1 !important;
+                letter-spacing: .6px !important;
+            }
+
+            /* Valores */
+            .evento-contenido-visual
+            > .evento-datos
+            > .evento-datos
+            > .dato
+            .dato-valor {
+
+                font-size: 15px !important;
+                line-height: 1.15 !important;
+            }
+
+            /* Botones */
+            .evento-contenido-visual
+            .evento-acciones a,
+            .evento-contenido-visual
+            .evento-acciones button {
+
+                font-size: 12px !important;
+                font-weight: 800 !important;
+
+                min-height: 34px !important;
+
+                padding: 6px 14px !important;
+            }
+
+            /* PUBLICADO */
+            .evento-contenido-visual .estado {
+                font-size: 10px !important;
+            }
+
+        }
+
+
+
+
+        /* =====================================================
+           PANEL ORGANIZADOR - FICHA INTEGRAL V7
+           Indicadores compactos + eliminacion de espacio muerto
+           ===================================================== */
+
+        @media (min-width: 901px) {
+
+            /* TARJETA EXTERIOR */
+
+            .evento {
+                padding: 16px 22px !important;
+            }
+
+
+            /* FOTO + COLUMNA DERECHA */
+
+            .evento-contenido-visual {
+                grid-template-columns:
+                    230px
+                    minmax(0, 1fr) !important;
+
+                gap: 18px !important;
+
+                align-items: start !important;
+            }
+
+
+            /* FOTO */
+
+            .evento-contenido-visual
+            > .evento-miniatura {
+
+                width: 230px !important;
+                min-width: 230px !important;
+
+                height: 138px !important;
+                min-height: 138px !important;
+                max-height: 138px !important;
+            }
+
+
+            /* COLUMNA DERECHA */
+
+            .evento-contenido-visual
+            > .evento-datos {
+
+                display: flex !important;
+                flex-direction: column !important;
+
+                min-width: 0 !important;
+
+                margin: 0 !important;
+            }
+
+
+            /* CABECERA */
+
+            .evento-contenido-visual
+            .evento-superior {
+
+                margin:
+                    0
+                    0
+                    8px !important;
+            }
+
+
+            .evento-contenido-visual
+            .evento-nombre {
+
+                margin:
+                    0
+                    0
+                    5px !important;
+
+                font-size: 20px !important;
+                line-height: 1.15 !important;
+            }
+
+
+            .evento-contenido-visual
+            .evento-info {
+
+                margin: 0 !important;
+
+                font-size: 14px !important;
+                line-height: 1.4 !important;
+            }
+
+
+            /* =================================================
+               INDICADORES COMPACTOS
+               ================================================= */
+
+            .evento-contenido-visual
+            > .evento-datos
+            > .evento-datos {
+
+                display: flex !important;
+
+                flex-direction: row !important;
+                flex-wrap: nowrap !important;
+
+                justify-content: flex-start !important;
+                align-items: stretch !important;
+
+                width: fit-content !important;
+                max-width: 100% !important;
+
+                gap: 8px !important;
+
+                margin:
+                    7px
+                    0
+                    8px !important;
+            }
+
+
+            /* RESETEO DE LAS CAJAS */
+
+            .evento-contenido-visual
+            > .evento-datos
+            > .evento-datos
+            > .dato {
+
+                flex:
+                    0
+                    0
+                    auto !important;
+
+                width: auto !important;
+
+                min-height: 44px !important;
+
+                padding:
+                    7px
+                    12px !important;
+
+                display: flex !important;
+                flex-direction: column !important;
+                justify-content: center !important;
+
+                box-sizing: border-box !important;
+
+                border-radius: 10px !important;
+            }
+
+
+            /* ENTRADAS */
+
+            .evento-contenido-visual
+            > .evento-datos
+            > .evento-datos
+            > .dato:nth-child(1) {
+
+                width: 125px !important;
+                min-width: 125px !important;
+                max-width: 125px !important;
+            }
+
+
+            /* RECINTO */
+
+            .evento-contenido-visual
+            > .evento-datos
+            > .evento-datos
+            > .dato:nth-child(2) {
+
+                width: 235px !important;
+                min-width: 235px !important;
+                max-width: 235px !important;
+            }
+
+
+            /* ESTADO */
+
+            .evento-contenido-visual
+            > .evento-datos
+            > .evento-datos
+            > .dato:nth-child(3) {
+
+                width: 115px !important;
+                min-width: 115px !important;
+                max-width: 115px !important;
+            }
+
+
+            /* ETIQUETAS */
+
+            .evento-contenido-visual
+            > .evento-datos
+            > .evento-datos
+            > .dato
+            .dato-label {
+
+                margin:
+                    0
+                    0
+                    4px !important;
+
+                font-size: 11px !important;
+                line-height: 1.05 !important;
+
+                letter-spacing: .5px !important;
+            }
+
+
+            /* VALORES */
+
+            .evento-contenido-visual
+            > .evento-datos
+            > .evento-datos
+            > .dato
+            .dato-valor {
+
+                font-size: 15px !important;
+                line-height: 1.1 !important;
+            }
+
+
+            /* =================================================
+               BOTONES
+               ================================================= */
+
+            .evento-contenido-visual
+            .evento-acciones {
+
+                margin:
+                    0 !important;
+
+                padding:
+                    7px
+                    0
+                    0 !important;
+
+                display: flex !important;
+                flex-wrap: wrap !important;
+
+                gap: 7px !important;
+            }
+
+
+            .evento-contenido-visual
+            .evento-acciones a,
+            .evento-contenido-visual
+            .evento-acciones button {
+
+                min-height: 34px !important;
+
+                padding:
+                    6px
+                    14px !important;
+
+                font-size: 12px !important;
+                font-weight: 800 !important;
+            }
+
+
+            /* PUBLICADO */
+
+            .evento-contenido-visual
+            .estado {
+
+                padding:
+                    6px
+                    10px !important;
+
+                font-size: 10px !important;
+            }
+
+        }
+
+
+
+
+        /* =====================================================
+           PANEL ORGANIZADOR - FICHA HORIZONTAL V8
+           Foto ampliada + informacion desplazada a la derecha
+           ===================================================== */
+
+        @media (min-width: 901px) {
+
+            /* TARJETA */
+
+            .evento {
+                padding: 18px 22px !important;
+            }
+
+
+            /* =================================================
+               ESTRUCTURA PRINCIPAL
+               FOTO | INFORMACION
+               ================================================= */
+
+            .evento-contenido-visual {
+
+                display: grid !important;
+
+                grid-template-columns:
+                    320px
+                    minmax(0, 1fr) !important;
+
+                column-gap: 24px !important;
+                row-gap: 0 !important;
+
+                align-items: start !important;
+            }
+
+
+            /* =================================================
+               FOTO
+               320 x 192 conserva proporcion horizontal
+               ================================================= */
+
+            .evento-contenido-visual
+            > .evento-miniatura {
+
+                width: 320px !important;
+                min-width: 320px !important;
+                max-width: 320px !important;
+
+                height: 192px !important;
+                min-height: 192px !important;
+                max-height: 192px !important;
+
+                align-self: start !important;
+
+                overflow: hidden !important;
+
+                border-radius: 14px !important;
+
+                box-sizing: border-box !important;
+            }
+
+
+            .evento-contenido-visual
+            > .evento-miniatura
+            > img {
+
+                width: 100% !important;
+                height: 100% !important;
+
+                min-height: 0 !important;
+                max-height: none !important;
+
+                display: block !important;
+
+                object-fit: cover !important;
+                object-position: center !important;
+            }
+
+
+            .evento-contenido-visual
+            > .evento-miniatura
+            > .evento-miniatura-vacia {
+
+                width: 100% !important;
+                height: 100% !important;
+
+                min-height: 0 !important;
+                max-height: none !important;
+
+                display: flex !important;
+                align-items: center !important;
+                justify-content: center !important;
+            }
+
+
+            /* =================================================
+               COLUMNA DERECHA
+               ================================================= */
+
+            .evento-contenido-visual
+            > .evento-datos {
+
+                width: 100% !important;
+                min-width: 0 !important;
+
+                display: flex !important;
+                flex-direction: column !important;
+
+                margin: 0 !important;
+                padding: 0 !important;
+            }
+
+
+            /* TITULO */
+
+            .evento-contenido-visual
+            .evento-nombre {
+
+                margin:
+                    0
+                    0
+                    5px !important;
+
+                font-size: 20px !important;
+                line-height: 1.15 !important;
+            }
+
+
+            /* FECHA / HORA / RECINTO */
+
+            .evento-contenido-visual
+            .evento-info {
+
+                margin: 0 !important;
+
+                font-size: 14px !important;
+                line-height: 1.45 !important;
+            }
+
+
+            /* =================================================
+               INDICADORES
+               Se desplazan naturalmente a la derecha
+               ================================================= */
+
+            .evento-contenido-visual
+            > .evento-datos
+            > .evento-datos {
+
+                display: flex !important;
+
+                flex-direction: row !important;
+                flex-wrap: nowrap !important;
+
+                justify-content: flex-start !important;
+                align-items: stretch !important;
+
+                width: auto !important;
+                max-width: 100% !important;
+
+                gap: 10px !important;
+
+                margin:
+                    24px
+                    0
+                    12px !important;
+            }
+
+
+            /* CAJA BASE */
+
+            .evento-contenido-visual
+            > .evento-datos
+            > .evento-datos
+            > .dato {
+
+                flex:
+                    0
+                    0
+                    auto !important;
+
+                min-height: 54px !important;
+
+                padding:
+                    9px
+                    13px !important;
+
+                display: flex !important;
+                flex-direction: column !important;
+                justify-content: center !important;
+
+                box-sizing: border-box !important;
+
+                border-radius: 10px !important;
+            }
+
+
+            /* TIPOS DE ENTRADA */
+
+            .evento-contenido-visual
+            > .evento-datos
+            > .evento-datos
+            > .dato:nth-child(1) {
+
+                width: 145px !important;
+                min-width: 145px !important;
+                max-width: 145px !important;
+            }
+
+
+            /* RECINTO */
+
+            .evento-contenido-visual
+            > .evento-datos
+            > .evento-datos
+            > .dato:nth-child(2) {
+
+                width: 270px !important;
+                min-width: 270px !important;
+                max-width: 270px !important;
+            }
+
+
+            /* ESTADO */
+
+            .evento-contenido-visual
+            > .evento-datos
+            > .evento-datos
+            > .dato:nth-child(3) {
+
+                width: 130px !important;
+                min-width: 130px !important;
+                max-width: 130px !important;
+            }
+
+
+            /* LETRA DE ETIQUETAS */
+
+            .evento-contenido-visual
+            > .evento-datos
+            > .evento-datos
+            > .dato
+            .dato-label {
+
+                margin:
+                    0
+                    0
+                    4px !important;
+
+                font-size: 11px !important;
+                line-height: 1.05 !important;
+
+                letter-spacing: .55px !important;
+            }
+
+
+            /* VALORES */
+
+            .evento-contenido-visual
+            > .evento-datos
+            > .evento-datos
+            > .dato
+            .dato-valor {
+
+                font-size: 15px !important;
+                line-height: 1.15 !important;
+            }
+
+
+            /* =================================================
+               ACCIONES
+               ================================================= */
+
+            .evento-contenido-visual
+            .evento-acciones {
+
+                margin: 0 !important;
+
+                padding:
+                    10px
+                    0
+                    0 !important;
+
+                display: flex !important;
+                align-items: center !important;
+                flex-wrap: wrap !important;
+
+                gap: 8px !important;
+
+                border-top:
+                    1px solid rgba(255, 255, 255, .08) !important;
+            }
+
+
+            .evento-contenido-visual
+            .evento-acciones a,
+            .evento-contenido-visual
+            .evento-acciones button {
+
+                min-height: 34px !important;
+
+                padding:
+                    6px
+                    14px !important;
+
+                font-size: 12px !important;
+                font-weight: 800 !important;
+            }
+
+
+            /* PUBLICADO */
+
+            .evento-contenido-visual
+            .estado {
+
+                padding:
+                    6px
+                    11px !important;
+
+                font-size: 10px !important;
+            }
+
+        }
+
+
+        /* =====================================================
+           TABLET - no forzar 320 px
+           ===================================================== */
+
+        @media (min-width: 701px) and (max-width: 900px) {
+
+            .evento-contenido-visual {
+
+                grid-template-columns:
+                    210px
+                    minmax(0, 1fr) !important;
+
+                gap: 18px !important;
+            }
+
+
+            .evento-contenido-visual
+            > .evento-miniatura {
+
+                width: 210px !important;
+                min-width: 210px !important;
+
+                height: 126px !important;
+                min-height: 126px !important;
+                max-height: 126px !important;
+            }
+
+        }
+
+
+
+
+        /* =====================================================
+           PANEL ORGANIZADOR - CIERRE COMPACTO V9
+           Indicadores + acciones en una sola franja
+           ===================================================== */
+
+        @media (min-width: 901px) {
+
+            /*
+             * La columna derecha se transforma en una grilla.
+             *
+             * Fila 1: cabecera
+             * Fila 2: indicadores + acciones
+             */
+
+            .evento-contenido-visual
+            > .evento-datos {
+
+                display: grid !important;
+
+                grid-template-columns:
+                    minmax(0, 1fr)
+                    auto !important;
+
+                grid-template-areas:
+                    "cabecera cabecera"
+                    "indicadores acciones" !important;
+
+                column-gap: 18px !important;
+                row-gap: 14px !important;
+
+                align-items: center !important;
+
+                width: 100% !important;
+                min-width: 0 !important;
+
+                margin: 0 !important;
+                padding: 0 !important;
+            }
+
+
+            /* CABECERA:
+               titulo + fecha/hora/recinto */
+
+            .evento-contenido-visual
+            > .evento-datos
+            > .evento-cabecera {
+
+                grid-area: cabecera !important;
+
+                min-width: 0 !important;
+
+                margin: 0 !important;
+            }
+
+
+            /* Si la cabecera usa evento-superior */
+
+            .evento-contenido-visual
+            > .evento-datos
+            > .evento-superior {
+
+                grid-area: cabecera !important;
+
+                min-width: 0 !important;
+
+                margin: 0 !important;
+            }
+
+
+            /* INDICADORES */
+
+            .evento-contenido-visual
+            > .evento-datos
+            > .evento-datos {
+
+                grid-area: indicadores !important;
+
+                display: flex !important;
+
+                flex-direction: row !important;
+                flex-wrap: nowrap !important;
+
+                justify-content: flex-start !important;
+                align-items: stretch !important;
+
+                width: auto !important;
+                max-width: 100% !important;
+
+                gap: 10px !important;
+
+                margin: 0 !important;
+                padding: 0 !important;
+            }
+
+
+            /* Conservamos dimensiones V8 */
+
+            .evento-contenido-visual
+            > .evento-datos
+            > .evento-datos
+            > .dato {
+
+                margin: 0 !important;
+
+                min-height: 54px !important;
+            }
+
+
+            /* ACCIONES A LA DERECHA */
+
+            .evento-contenido-visual
+            > .evento-datos
+            > .evento-acciones {
+
+                grid-area: acciones !important;
+
+                display: flex !important;
+
+                flex-direction: row !important;
+                flex-wrap: nowrap !important;
+
+                justify-content: flex-end !important;
+                align-items: center !important;
+
+                gap: 7px !important;
+
+                width: auto !important;
+
+                margin: 0 !important;
+
+                padding:
+                    0
+                    0
+                    0
+                    16px !important;
+
+                border-top: 0 !important;
+
+                border-left:
+                    1px solid rgba(255, 255, 255, .10) !important;
+            }
+
+
+            .evento-contenido-visual
+            > .evento-datos
+            > .evento-acciones a,
+            .evento-contenido-visual
+            > .evento-datos
+            > .evento-acciones button {
+
+                min-height: 34px !important;
+
+                margin: 0 !important;
+
+                padding:
+                    6px
+                    12px !important;
+
+                white-space: nowrap !important;
+
+                font-size: 12px !important;
+                font-weight: 800 !important;
+            }
+
+
+            /*
+             * La foto mantiene exactamente V8:
+             * 320 x 192.
+             *
+             * No modificamos imagen, titulo,
+             * tipografia ni estado PUBLICADO.
+             */
+
+        }
+
+
+        /* =====================================================
+           SEGURIDAD RESPONSIVE
+           En tablet/movil dejamos las acciones debajo.
+           ===================================================== */
+
+        @media (max-width: 1100px) and (min-width: 701px) {
+
+            .evento-contenido-visual
+            > .evento-datos {
+
+                display: flex !important;
+                flex-direction: column !important;
+
+                align-items: stretch !important;
+            }
+
+
+            .evento-contenido-visual
+            > .evento-datos
+            > .evento-datos {
+
+                margin:
+                    12px
+                    0
+                    8px !important;
+            }
+
+
+            .evento-contenido-visual
+            > .evento-datos
+            > .evento-acciones {
+
+                width: 100% !important;
+
+                justify-content: flex-start !important;
+
+                margin: 0 !important;
+
+                padding:
+                    9px
+                    0
+                    0 !important;
+
+                border-left: 0 !important;
+
+                border-top:
+                    1px solid rgba(255, 255, 255, .08) !important;
+            }
+
+        }
+
+
+
+
+        /* =====================================================
+           AJUSTE FINAL V9.1
+           Separacion entre estado y acciones
+           ===================================================== */
+
+        @media (min-width: 1101px) {
+
+            /* RECINTO un poco mas compacto */
+
+            .evento-contenido-visual
+            > .evento-datos
+            > .evento-datos
+            > .dato:nth-child(2) {
+
+                width: 240px !important;
+                min-width: 240px !important;
+                max-width: 240px !important;
+            }
+
+
+            /* ESTADO */
+
+            .evento-contenido-visual
+            > .evento-datos
+            > .evento-datos
+            > .dato:nth-child(3) {
+
+                width: 115px !important;
+                min-width: 115px !important;
+                max-width: 115px !important;
+            }
+
+
+            /* Separacion clara antes de los botones */
+
+            .evento-contenido-visual
+            > .evento-datos
+            > .evento-acciones {
+
+                margin-left: 8px !important;
+
+                padding-left: 18px !important;
+
+                border-left:
+                    1px solid rgba(255, 255, 255, .13) !important;
+            }
+
+        }
+
+
+
+
+        /* =====================================================
+           PANEL ORGANIZADOR - DISTRIBUCION FINAL
+           Indicadores y acciones sin superposicion
+           ===================================================== */
+
+        @media (min-width: 1101px) {
+
+            /* COLUMNA DERECHA */
+
+            .evento-contenido-visual
+            > .evento-datos {
+
+                display: grid !important;
+
+                grid-template-columns:
+                    auto
+                    minmax(0, 1fr) !important;
+
+                grid-template-areas:
+                    "cabecera cabecera"
+                    "indicadores acciones" !important;
+
+                column-gap: 14px !important;
+                row-gap: 18px !important;
+
+                align-items: center !important;
+
+                width: 100% !important;
+                min-width: 0 !important;
+            }
+
+
+            /* CABECERA */
+
+            .evento-contenido-visual
+            > .evento-datos
+            > .evento-superior {
+
+                grid-area: cabecera !important;
+
+                width: 100% !important;
+                min-width: 0 !important;
+
+                margin: 0 !important;
+            }
+
+
+            /* =============================================
+               INDICADORES
+               ============================================= */
+
+            .evento-contenido-visual
+            > .evento-datos
+            > .evento-datos {
+
+                grid-area: indicadores !important;
+
+                display: flex !important;
+
+                flex-direction: row !important;
+                flex-wrap: nowrap !important;
+
+                align-items: stretch !important;
+
+                width: auto !important;
+                min-width: 0 !important;
+                max-width: none !important;
+
+                gap: 8px !important;
+
+                margin: 0 !important;
+                padding: 0 !important;
+            }
+
+
+            .evento-contenido-visual
+            > .evento-datos
+            > .evento-datos
+            > .dato {
+
+                flex: 0 0 auto !important;
+
+                min-height: 54px !important;
+
+                padding:
+                    8px
+                    11px !important;
+
+                box-sizing: border-box !important;
+            }
+
+
+            /* TIPOS DE ENTRADA */
+
+            .evento-contenido-visual
+            > .evento-datos
+            > .evento-datos
+            > .dato:nth-child(1) {
+
+                width: 120px !important;
+                min-width: 120px !important;
+                max-width: 120px !important;
+            }
+
+
+            /* RECINTO */
+
+            .evento-contenido-visual
+            > .evento-datos
+            > .evento-datos
+            > .dato:nth-child(2) {
+
+                width: 205px !important;
+                min-width: 205px !important;
+                max-width: 205px !important;
+            }
+
+
+            /* ESTADO */
+
+            .evento-contenido-visual
+            > .evento-datos
+            > .evento-datos
+            > .dato:nth-child(3) {
+
+                width: 100px !important;
+                min-width: 100px !important;
+                max-width: 100px !important;
+            }
+
+
+            /* =============================================
+               ACCIONES
+               ============================================= */
+
+            .evento-contenido-visual
+            > .evento-datos
+            > .evento-acciones {
+
+                grid-area: acciones !important;
+
+                display: flex !important;
+
+                flex-direction: row !important;
+                flex-wrap: nowrap !important;
+
+                align-items: center !important;
+                justify-content: flex-start !important;
+
+                width: auto !important;
+                min-width: 0 !important;
+
+                gap: 6px !important;
+
+                margin: 0 !important;
+
+                padding:
+                    0
+                    0
+                    0
+                    14px !important;
+
+                border-top: 0 !important;
+
+                border-left:
+                    1px solid rgba(255, 255, 255, .14) !important;
+            }
+
+
+            .evento-contenido-visual
+            > .evento-datos
+            > .evento-acciones a,
+            .evento-contenido-visual
+            > .evento-datos
+            > .evento-acciones button {
+
+                min-height: 34px !important;
+
+                padding:
+                    6px
+                    10px !important;
+
+                margin: 0 !important;
+
+                white-space: nowrap !important;
+
+                font-size: 12px !important;
+                font-weight: 800 !important;
+            }
+
+        }
+
+
 </style>
 
 
@@ -1466,6 +2971,34 @@ a.boton-validar:active {
 
                     <article class="evento">
 
+                        <!-- ===================================== -->
+                        <!-- FOTO IDENTIFICADORA DEL EVENTO        -->
+                        <!-- ===================================== -->
+
+                        <div class="evento-contenido-visual">
+
+                            <div class="evento-miniatura">
+
+                                {% if evento.imagen %}
+
+                                    <img
+                                        src="{{ evento.imagen.url }}"
+                                        alt="Imagen de {{ evento.nombre }}"
+                                        loading="lazy"
+                                    >
+
+                                {% else %}
+
+                                    <div class="evento-miniatura-vacia">
+                                        <span>EVENTO</span>
+                                    </div>
+
+                                {% endif %}
+
+                            </div>
+
+
+                            <div class="evento-datos">
 
                         <div class="evento-superior">
 
@@ -1601,6 +3134,9 @@ a.boton-validar:active {
 
                         </div>
 
+                            </div>
+
+                        </div>
 
                     </article>
 
