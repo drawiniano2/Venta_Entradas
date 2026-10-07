@@ -1,4 +1,4 @@
-﻿import os
+import os
 from datetime import timedelta
 from pathlib import Path
 from dotenv import load_dotenv
@@ -22,7 +22,7 @@ SECRET_KEY = 'django-insecure-s$_=2++#&k+aj^xk#$rqm5cx9vlq_4&8ln56gzk$p%6+-!ib62
 
 DEBUG = os.getenv(
     "DJANGO_DEBUG",
-    "True",
+    "False",
 ).lower() in ("1", "true", "yes", "on")
 
 ALLOWED_HOSTS = [
