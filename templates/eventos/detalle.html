@@ -2962,6 +2962,155 @@
         }
 
 
+
+        /* =====================================================
+           ORIENTACION LATERAL DEFINITIVA V1
+
+           IZQUIERDA:
+           invierte las columnas respecto al orden recibido.
+
+           DERECHA:
+           conserva el orden recibido.
+
+           Esta regla esta al final del STYLE para tener
+           prioridad sobre configuraciones anteriores.
+           ===================================================== */
+
+        @media (min-width: 901px) {
+
+            .mapa-publico-central
+            > .mapa-publico-centro
+            > .mapa-publico-zona-izquierda
+            .mapa-publico-filas {
+
+                flex-direction: row-reverse !important;
+            }
+
+
+            .mapa-publico-central
+            > .mapa-publico-centro
+            > .mapa-publico-zona-derecha
+            .mapa-publico-filas {
+
+                flex-direction: row !important;
+            }
+
+        }
+
+
+        /* =====================================================
+           FRONTAL TRIBUNAS - ORIENTACION LATERAL FINAL V1
+
+           Estructura real:
+           IZQUIERDA | FRONTAL | DERECHA
+
+           IZQUIERDA:
+           C queda exterior y E queda hacia el centro.
+
+           DERECHA:
+           A queda hacia el centro y D queda exterior.
+           ===================================================== */
+
+        @media (min-width: 901px) {
+
+            .mapa-publico-frontal-tribunas
+            > .mapa-publico-tres-zonas
+            > .mapa-publico-zona-izquierda
+            .mapa-publico-filas {
+
+                flex-direction: row !important;
+            }
+
+
+            .mapa-publico-frontal-tribunas
+            > .mapa-publico-tres-zonas
+            > .mapa-publico-zona-derecha
+            .mapa-publico-filas {
+
+                flex-direction: row !important;
+            }
+
+        }
+
+
+        /* =====================================================
+           FRONTAL TRIBUNAS - COMPACTACION FINAL V1
+
+           Solo afecta FRONTAL_TRIBUNAS.
+           Mantiene orientacion actual de las filas.
+           Reduce el ancho excesivo 340 | 620 | 340.
+           ===================================================== */
+
+        @media (min-width: 901px) {
+
+            .mapa-publico-frontal-tribunas
+            > .mapa-publico-tres-zonas {
+
+                display: grid !important;
+
+                grid-template-columns:
+                    max-content
+                    max-content
+                    max-content !important;
+
+                gap: 14px !important;
+
+                width: max-content !important;
+                min-width: 0 !important;
+                max-width: none !important;
+
+                margin-left: auto !important;
+                margin-right: auto !important;
+
+                align-items: start !important;
+                justify-content: center !important;
+
+                box-sizing: border-box !important;
+            }
+
+        }
+
+
+        /* =====================================================
+           FRONTAL TRIBUNAS - CENTRADO DEFINITIVO V1
+
+           Elimina el min-width general de 1500px solamente
+           para FRONTAL_TRIBUNAS.
+
+           El recinto y sus tres zonas crecen segun contenido.
+           No modifica filas, asientos ni orientacion.
+           ===================================================== */
+
+        @media (min-width: 901px) {
+
+            .mapa-publico-recinto.mapa-publico-frontal-tribunas {
+
+                width: max-content !important;
+                min-width: 0 !important;
+                max-width: none !important;
+
+                margin-left: auto !important;
+                margin-right: auto !important;
+
+                box-sizing: border-box !important;
+            }
+
+
+            .mapa-publico-frontal-tribunas
+            > .mapa-publico-tres-zonas {
+
+                width: max-content !important;
+                min-width: 0 !important;
+                max-width: none !important;
+
+                margin-left: auto !important;
+                margin-right: auto !important;
+
+                justify-content: center !important;
+            }
+
+        }
+
 </style>
 </head>
 

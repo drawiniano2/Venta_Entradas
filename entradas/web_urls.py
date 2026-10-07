@@ -1,8 +1,9 @@
-﻿from django.urls import path
+from django.urls import path
 
 from .web_views import (
     detalle_entrada_web,
     mis_entradas_web,
+    ocultar_entrada_web,
     qr_entrada_web,
     validar_entrada_web,
 )
@@ -39,6 +40,14 @@ urlpatterns = [
         name="qr-entrada",
     ),
 
+    # ========================================================
+    # OCULTAR ENTRADA UTILIZADA O ANULADA
+    # ========================================================
+    path(
+        "<uuid:codigo>/ocultar/",
+        ocultar_entrada_web,
+        name="ocultar-entrada",
+    ),
     # ========================================================
     # DETALLE INDIVIDUAL DE UNA ENTRADA
     # ========================================================

@@ -203,6 +203,7 @@ def detalle_evento(request, pk):
             filas_mapa.values()
         )
 
+
         locaciones_mapa.append(
             {
                 "locacion": locacion,

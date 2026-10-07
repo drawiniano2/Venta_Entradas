@@ -1,4 +1,4 @@
-﻿import io
+import io
 
 import qrcode
 
@@ -24,6 +24,7 @@ def mis_entradas_web(request):
         Entrada.objects
         .filter(
             detalle_compra__compra__usuario=request.user,
+            oculta_usuario=False,
         )
         .select_related(
             "detalle_compra",
@@ -182,4 +183,64 @@ def validar_entrada_web(request):
         {
             "entrada": entrada,
         },
+    )
+
+@login_required
+def ocultar_entrada_web(request, codigo):
+    """
+    Oculta una entrada utilizada o anulada del listado
+    personal del usuario.
+
+    La entrada NO se elimina de la base de datos.
+    Se conserva su UUID, compra, estado y trazabilidad.
+    """
+
+    if request.method != "POST":
+
+        messages.error(
+            request,
+            "La operación solicitada no está permitida.",
+        )
+
+        return redirect(
+            "entradas_web:mis-entradas"
+        )
+
+    entrada = get_object_or_404(
+        Entrada,
+        codigo=codigo,
+        detalle_compra__compra__usuario=request.user,
+    )
+
+    estados_ocultables = (
+        Entrada.Estado.UTILIZADA,
+        Entrada.Estado.ANULADA,
+    )
+
+    if entrada.estado not in estados_ocultables:
+
+        messages.error(
+            request,
+            "Una entrada válida no puede ocultarse.",
+        )
+
+        return redirect(
+            "entradas_web:mis-entradas"
+        )
+
+    entrada.oculta_usuario = True
+
+    entrada.save(
+        update_fields=[
+            "oculta_usuario",
+        ]
+    )
+
+    messages.success(
+        request,
+        "La entrada fue retirada de Mis entradas.",
+    )
+
+    return redirect(
+        "entradas_web:mis-entradas"
     )

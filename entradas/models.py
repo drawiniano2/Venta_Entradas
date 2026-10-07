@@ -1,4 +1,4 @@
-﻿import uuid
+import uuid
 
 from django.db import models
 
@@ -43,6 +43,13 @@ class Entrada(models.Model):
     utilizada_en = models.DateTimeField(
         null=True,
         blank=True,
+    )
+
+    # Permite retirar entradas antiguas de "Mis entradas"
+    # sin eliminarlas de la base de datos.
+    # Conserva UUID, compra, estado y trazabilidad.
+    oculta_usuario = models.BooleanField(
+        default=False,
     )
 
     class Meta:

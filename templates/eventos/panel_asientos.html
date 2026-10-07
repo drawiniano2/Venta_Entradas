@@ -2962,9 +2962,9 @@
                 max-width: none !important;
 
                 grid-template-columns:
-                    minmax(260px, max-content)
+                    minmax(180px, max-content)
                     340px
-                    minmax(260px, max-content) !important;
+                    minmax(180px, max-content) !important;
 
                 grid-template-areas:
                     "izquierda escenario derecha" !important;
@@ -2984,7 +2984,7 @@
             > .zona-lateral {
 
                 width: max-content !important;
-                min-width: 260px !important;
+                min-width: 180px !important;
                 max-width: none !important;
 
                 overflow: visible !important;
@@ -3000,7 +3000,7 @@
             > .locacion-mapa {
 
                 width: max-content !important;
-                min-width: 260px !important;
+                min-width: 180px !important;
                 max-width: none !important;
 
                 /*
@@ -3027,9 +3027,9 @@
                 min-width: 100% !important;
 
                 grid-template-columns:
-                    minmax(260px, max-content)
+                    minmax(180px, max-content)
                     minmax(520px, max-content)
-                    minmax(260px, max-content) !important;
+                    minmax(180px, max-content) !important;
             }
 
 
@@ -3038,7 +3038,7 @@
             .zona-lateral {
 
                 width: max-content !important;
-                min-width: 260px !important;
+                min-width: 180px !important;
                 max-width: none !important;
             }
 
@@ -3541,19 +3541,21 @@
                 display: grid !important;
 
                 grid-template-columns:
-                    minmax(420px, 1fr)
+                    max-content
                     340px
-                    minmax(420px, 1fr) !important;
+                    max-content !important;
 
                 grid-template-areas:
                     "izquierda escenario derecha" !important;
 
-                column-gap: 36px !important;
+                column-gap: 28px !important;
 
                 align-items: center !important;
+                justify-content: center !important;
 
-                width: 100% !important;
-                min-width: 1250px !important;
+                width: max-content !important;
+                min-width: 100% !important;
+                max-width: none !important;
 
                 box-sizing: border-box !important;
             }
@@ -3567,10 +3569,11 @@
 
                 grid-area: izquierda !important;
 
-                width: 100% !important;
+                width: max-content !important;
                 min-width: 0 !important;
+                max-width: none !important;
 
-                justify-self: stretch !important;
+                justify-self: end !important;
 
                 box-sizing: border-box !important;
             }
@@ -3613,10 +3616,11 @@
 
                 grid-area: derecha !important;
 
-                width: 100% !important;
+                width: max-content !important;
                 min-width: 0 !important;
+                max-width: none !important;
 
-                justify-self: stretch !important;
+                justify-self: start !important;
 
                 box-sizing: border-box !important;
             }
@@ -3632,8 +3636,8 @@
             > .zona-lateral
             > .locacion-mapa {
 
-                width: 100% !important;
-                max-width: 100% !important;
+                width: max-content !important;
+                max-width: none !important;
 
                 min-width: 0 !important;
 

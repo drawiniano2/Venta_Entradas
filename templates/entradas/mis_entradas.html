@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
@@ -371,6 +371,45 @@
 
         .view-button:hover {
             filter: brightness(1.1);
+        }
+
+        /* =====================================================
+           OCULTAR ENTRADA
+           ===================================================== */
+
+        .ticket-buttons {
+            display: flex;
+            flex-direction: column;
+            align-items: stretch;
+            gap: 8px;
+            width: 100%;
+        }
+
+        .hide-form {
+            margin: 0;
+            padding: 0;
+        }
+
+        .hide-button {
+            width: 100%;
+            padding: 10px 16px;
+
+            border: 1px solid rgba(239, 107, 115, 0.45);
+            border-radius: 10px;
+
+            background: rgba(239, 107, 115, 0.08);
+
+            color: var(--danger);
+            font-family: inherit;
+            font-size: 12px;
+            font-weight: 900;
+
+            cursor: pointer;
+        }
+
+        .hide-button:hover {
+            background: rgba(239, 107, 115, 0.16);
+            border-color: var(--danger);
         }
 
 
@@ -839,12 +878,37 @@
                             {% endif %}
 
 
-                            <a
-                                href="{% url 'entradas_web:detalle-entrada' entrada.codigo %}"
-                                class="view-button"
-                            >
-                                Ver entrada
-                            </a>
+                            <div class="ticket-buttons">
+
+                                <a
+                                    href="{% url 'entradas_web:detalle-entrada' entrada.codigo %}"
+                                    class="view-button"
+                                >
+                                    Ver entrada
+                                </a>
+
+                                {% if entrada.estado == "UTILIZADA" or entrada.estado == "ANULADA" %}
+
+                                    <form
+                                        method="post"
+                                        action="{% url 'entradas_web:ocultar-entrada' entrada.codigo %}"
+                                        class="hide-form"
+                                    >
+                                        {% csrf_token %}
+
+                                        <button
+                                            type="submit"
+                                            class="hide-button"
+                                            onclick="return confirm('¿Quieres retirar esta entrada de Mis entradas? El registro se conservará en el sistema.');"
+                                        >
+                                            Ocultar
+                                        </button>
+
+                                    </form>
+
+                                {% endif %}
+
+                            </div>
 
                         </div>
 
