@@ -1,4 +1,4 @@
-﻿from django.contrib import messages
+from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import ValidationError
 from django.shortcuts import get_object_or_404, redirect, render
@@ -109,7 +109,7 @@ def mis_compras_web(request):
 
     compras = (
         Compra.objects
-        .filter(usuario=request.user)
+        .filter(usuario=request.user, oculta_en_historial=False)
         .prefetch_related(
             "detalles__tipo_entrada__evento",
             "detalles__entradas",
@@ -124,3 +124,36 @@ def mis_compras_web(request):
             "compras": compras,
         },
     )
+
+# ============================================================
+# OCULTAR COMPRA DEL HISTORIAL PERSONAL
+# ============================================================
+
+@login_required
+def ocultar_compra_web(request, compra_id):
+    """
+    Oculta una compra del historial visible del propietario.
+
+    No elimina la compra ni modifica pagos,
+    stock o entradas emitidas.
+    """
+
+    if request.method != "POST":
+        return redirect("compras_web:mis-compras")
+
+    compra = get_object_or_404(
+        Compra,
+        pk=compra_id,
+        usuario=request.user,
+    )
+
+    if not compra.oculta_en_historial:
+        compra.oculta_en_historial = True
+        compra.save(update_fields=["oculta_en_historial"])
+
+        messages.success(
+            request,
+            f"Compra #{compra.pk} retirada de Mis compras. El registro se conserva.",
+        )
+
+    return redirect("compras_web:mis-compras")

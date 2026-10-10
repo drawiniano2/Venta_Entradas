@@ -56,6 +56,10 @@ class Compra(models.Model):
         blank=True,
     )
 
+    oculta_en_historial = models.BooleanField(
+        default=False,
+        help_text="Oculta la compra del historial visible del usuario.",
+    )
     class Meta:
         ordering = ("-creada_en",)
         verbose_name = "compra"
@@ -135,7 +139,13 @@ class DetalleCompra(models.Model):
         constraints = [
             models.UniqueConstraint(
                 fields=("compra", "tipo_entrada"),
-                name="detalle_unico_tipo_entrada_por_compra",
+                condition=models.Q(asiento__isnull=True),
+                name="detalle_general_unico_por_compra",
+            ),
+            models.UniqueConstraint(
+                fields=("compra", "asiento"),
+                condition=models.Q(asiento__isnull=False),
+                name="detalle_asiento_unico_por_compra",
             ),
         ]
 

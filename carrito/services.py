@@ -2,6 +2,7 @@ from django.core.exceptions import ValidationError
 from django.db import transaction
 
 from compras.models import Compra, DetalleCompra
+from eventos.models import TipoEntrada
 
 from .models import Carrito
 
@@ -54,24 +55,94 @@ def confirmar_carrito(usuario):
     # aquí solamente comprobamos disponibilidad.
     # NO descontamos stock.
     # --------------------------------------------------------
+    cantidades_por_tipo = {}
+
     for item in items:
         if item.cantidad < 1:
             raise ValidationError(
                 "Todos los items deben tener una cantidad mayor que cero."
             )
 
-        if item.cantidad > item.tipo_entrada.stock_disponible:
+        tipo_id = item.tipo_entrada_id
+
+        cantidades_por_tipo[tipo_id] = (
+            cantidades_por_tipo.get(tipo_id, 0) + item.cantidad
+        )
+
+    tipos_bloqueados = {
+        tipo.pk: tipo
+        for tipo in TipoEntrada.objects
+        .select_for_update()
+        .filter(pk__in=sorted(cantidades_por_tipo))
+        .order_by("pk")
+    }
+
+    for tipo_id, cantidad_total in cantidades_por_tipo.items():
+        tipo = tipos_bloqueados.get(tipo_id)
+
+        if tipo is None or not tipo.activo:
             raise ValidationError(
-                (
-                    f"Stock insuficiente para "
-                    f"'{item.tipo_entrada.nombre}'. "
-                    f"Disponible: "
-                    f"{item.tipo_entrada.stock_disponible}. "
-                    f"Solicitado: {item.cantidad}."
-                )
+                "Uno de los tipos de entrada no est? disponible."
+            )
+
+        if cantidad_total > tipo.stock_disponible:
+            raise ValidationError(
+                f"Stock insuficiente para '{tipo.nombre}'. "
+                f"Disponible: {tipo.stock_disponible}. "
+                f"Solicitado: {cantidad_total}."
             )
 
     # --------------------------------------------------------
+    # Validacion de asientos y modalidad del evento.
+    asientos_seleccionados = set()
+
+    for item in items:
+        tipo = tipos_bloqueados[item.tipo_entrada_id]
+        modalidad = tipo.evento.modalidad_entrada
+
+        if modalidad == "UBICACION":
+            if item.asiento_id is None or item.cantidad != 1:
+                raise ValidationError(
+                    "Cada entrada con ubicacion requiere un asiento y cantidad 1."
+                )
+
+            if item.asiento_id in asientos_seleccionados:
+                raise ValidationError(
+                    "Hay un asiento repetido en el carrito."
+                )
+
+            asientos_seleccionados.add(item.asiento_id)
+            asiento = item.asiento
+            locacion = asiento.locacion
+
+            if (
+                locacion.evento_id != tipo.evento_id
+                or locacion.tipo_entrada_id != tipo.pk
+            ):
+                raise ValidationError(
+                    "El asiento no corresponde al evento y tipo de entrada."
+                )
+
+            if not asiento.activo or not locacion.activo:
+                raise ValidationError(
+                    "Uno de los asientos no esta activo."
+                )
+
+        elif item.asiento_id is not None:
+            raise ValidationError(
+                "Una entrada general no debe tener asiento."
+            )
+
+    if asientos_seleccionados:
+        ocupados = DetalleCompra.objects.filter(
+            asiento_id__in=asientos_seleccionados,
+            compra__estado=Compra.Estado.PAGADO,
+        ).exists()
+
+        if ocupados:
+            raise ValidationError(
+                "Uno de los asientos seleccionados ya fue vendido."
+            )
     # Creamos la compra inicialmente como PENDIENTE.
     # El total se establecerá desde los detalles reales.
     # --------------------------------------------------------
@@ -92,10 +163,10 @@ def confirmar_carrito(usuario):
         detalles.append(
             DetalleCompra(
                 compra=compra,
-                tipo_entrada=item.tipo_entrada,
+                tipo_entrada=tipos_bloqueados[item.tipo_entrada_id],
                 asiento=item.asiento,
                 cantidad=item.cantidad,
-                precio_unitario=item.tipo_entrada.precio,
+                precio_unitario=tipos_bloqueados[item.tipo_entrada_id].precio,
             )
         )
 

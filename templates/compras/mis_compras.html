@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
@@ -505,6 +505,46 @@
                 padding: 19px;
             }
         }
+
+        /* =====================================================
+           BOTON OCULTAR COMPRA
+           ===================================================== */
+
+        .form-ocultar-compra {
+            margin-top: 9px;
+        }
+
+        .btn-ocultar-compra {
+            min-height: 39px;
+            padding: 0 17px;
+
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+
+            border: 1px solid rgba(248, 113, 113, 0.35);
+            border-radius: 9px;
+
+            background: rgba(239, 68, 68, 0.09);
+            color: #fca5a5;
+
+            font-family: inherit;
+            font-size: 11px;
+            font-weight: 900;
+
+            cursor: pointer;
+            transition: background 0.2s ease, color 0.2s ease;
+        }
+
+        .btn-ocultar-compra:hover {
+            background: rgba(239, 68, 68, 0.20);
+            color: #ffffff;
+        }
+
+        .btn-ocultar-compra:focus-visible {
+            outline: 2px solid #fca5a5;
+            outline-offset: 3px;
+        }
     </style>
 </head>
 
@@ -737,6 +777,23 @@
                             >
                                 Ver detalle
                             </a>
+
+                            <!-- OCULTAR COMPRA -->
+                            <form
+                                method="post"
+                                action="{% url 'compras_web:ocultar-compra' compra.id %}"
+                                class="form-ocultar-compra"
+                            >
+                                {% csrf_token %}
+
+                                <button
+                                    type="submit"
+                                    class="btn-ocultar-compra"
+                                    onclick="return confirm('¿Quieres retirar esta compra de Mis compras? El registro y las entradas QR se conservarán.');"
+                                >
+                                    Ocultar
+                                </button>
+                            </form>
 
                         </div>
 
